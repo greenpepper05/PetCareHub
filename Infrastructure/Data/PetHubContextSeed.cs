@@ -7,12 +7,12 @@ public class PetHubContextSeed
 {
     public static async Task SeedAsync(PetHubContext context, UserManager<AppUser> userManager)
     {
-        if (!userManager.Users.Any(x => x.UserName == "admin@text.com"))
+        if (!userManager.Users.Any(x => x.UserName == "admin3@test.com"))
         {
             var user = new AppUser
             {
-                UserName = "admin@text.com",
-                Email = "admin@text.com",
+                UserName = "admin3@test.com",
+                Email = "admin3@test.com",
             };
 
             await userManager.CreateAsync(user, "Pa$$w0rd");

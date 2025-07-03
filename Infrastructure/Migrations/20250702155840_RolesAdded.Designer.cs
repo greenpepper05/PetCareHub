@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(PetHubContext))]
-    partial class PetHubContextModelSnapshot : ModelSnapshot
+    [Migration("20250702155840_RolesAdded")]
+    partial class RolesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,7 +46,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("Core.Entities.AppUser", b =>
@@ -151,19 +154,19 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2b47e01c-b426-4752-8da3-694554df671e",
+                            Id = "8cc557f6-1962-44ad-b702-d9563995a2c2",
                             Name = "SuperAdmin",
                             NormalizedName = "SUPERADMIN"
                         },
                         new
                         {
-                            Id = "f067ecde-72fb-4403-8684-8cbc15800727",
+                            Id = "7f480c80-5b4f-4384-8126-aa8daf7a4322",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "ec69e20c-2c1c-4064-b978-6c02430294af",
+                            Id = "b567050d-6775-4d0c-8e96-950bdbac7167",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
