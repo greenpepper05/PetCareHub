@@ -8,6 +8,7 @@ namespace Infrastructure.Data;
 public class PetHubContext(DbContextOptions options) : IdentityDbContext<AppUser>(options)
 {
     public DbSet<Address> Addresses { get; set; }
+    public DbSet<Pet> Pets { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
