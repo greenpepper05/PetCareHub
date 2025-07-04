@@ -1,6 +1,7 @@
 using API.DTOs;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,28 +16,27 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit) 
     {
         var user = await userManager.GetUserAsync(User);
 
-        if (user != null)
+        if (user == null) return NotFound("No user found");
+
+        var pet = new Pet
         {
-            var pet = new Pet
-            {
-                Name = createPetDto.Name,
-                Breed = createPetDto.Breed,
-                Species = createPetDto.Species,
-                Birthdate = createPetDto.Birthdate,
-                Gender = createPetDto.Gender,
-                OwnerId = user.Id
-            };
+            Name = createPetDto.Name,
+            Breed = createPetDto.Breed,
+            Species = createPetDto.Species,
+            Birthdate = createPetDto.Birthdate,
+            Gender = createPetDto.Gender,
+            OwnerId = user.Id
+        };
 
-            unit.Repository<Pet>().Add(pet);
+        unit.Repository<Pet>().Add(pet);
 
-            if (await unit.Complete())
-            {
-                return CreatedAtAction("GetPetById", new { id = pet.Id }, pet);
-            }
+        if (await unit.Complete())
+        {
+            return CreatedAtAction("GetPetById", new { id = pet.Id }, pet);
         }
 
         return NoContent();
-        
+
     }
 
     [HttpGet("{id:int}")]
@@ -45,5 +45,18 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit) 
         var pet = unit.Repository<Pet>().GetByIdAsync(id);
 
         return Ok(await pet);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<Pet>>> GetPets()
+    {
+        var user = await userManager.GetUserAsync(User);
+
+        if (user == null) return NotFound("No user found!");
+
+        var spec = new PetByOwnerIdSpecification(user.Id.ToString());
+        var pets = await unit.Repository<Pet>().ListAsync(spec);
+
+        return Ok(pets);
     }
 }
