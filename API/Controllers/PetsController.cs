@@ -8,15 +8,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit) : BaseApiController
 {
+
+    // CREATE PET PROFILE WITH OWNER ID
+
     [HttpPost]
     public async Task<ActionResult> AddPet(CreatePetDto createPetDto)
     {
-        var user = await userManager.GetUserAsync(User);
 
-        if (user == null) return NotFound("No user found");
+        var owner = await userManager.FindByIdAsync(createPetDto.OwnerId);
+        if (owner == null) return NotFound("User no found");
 
         var pet = new Pet
         {
@@ -25,7 +28,7 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit) 
             Species = createPetDto.Species,
             Birthdate = createPetDto.Birthdate,
             Gender = createPetDto.Gender,
-            OwnerId = user.Id
+            OwnerId = createPetDto.OwnerId
         };
 
         unit.Repository<Pet>().Add(pet);
@@ -39,6 +42,8 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit) 
 
     }
 
+    // SELECT PET BY ID
+
     [HttpGet("{id:int}")]
     public async Task<ActionResult> GetPetById(int id)
     {
@@ -46,6 +51,8 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit) 
 
         return Ok(await pet);
     }
+
+    // SELECT ALL PETS
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<Pet>>> GetPets()

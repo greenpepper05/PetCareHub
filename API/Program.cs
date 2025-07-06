@@ -48,7 +48,18 @@ try
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<PetHubContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     await context.Database.MigrateAsync();
+
+    string[] roles = ["SuperAdmin", "Admin", "Customer"];
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
     await PetHubContextSeed.SeedAsync(context, userManager);
 }
 catch (Exception ex)

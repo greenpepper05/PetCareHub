@@ -1,19 +1,23 @@
-using System;
 using System.Security.Claims;
 using API.DTOs;
 using API.Extensions;
 using Core.Entities;
+using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-public class AccountController(SignInManager<AppUser> signInManager) : BaseApiController
+
+public class AccountController(SignInManager<AppUser> signInManager,
+    UserManager<AppUser> userManager, IUnitOfWork unit) : BaseApiController
 {
 
     // GET USER INFRO
 
+    [Authorize]
     [HttpGet("user-info")]
     public async Task<ActionResult> GetUserInfo()
     {
@@ -23,9 +27,11 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
 
         return Ok(new
         {
+            user.Id,
             user.FirstName,
             user.LastName,
             user.Email,
+            user.PasswordHash,
             Roles = User.FindFirstValue(ClaimTypes.Role)
         });
 
@@ -56,6 +62,8 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
             return ValidationProblem();
         }
 
+        await userManager.AddToRoleAsync(user, "Customer");
+
         return Ok();
     }
 
@@ -71,11 +79,26 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
     }
 
     // GET AUTHENTICATION STATUS
-
+    [Authorize]
     [HttpGet("auth-status")]
     public ActionResult GetAuthState()
     {
         return Ok(new { IsAuthenicated = User.Identity?.IsAuthenticated ?? false });
+    }
+
+    // GET ALL PETS BY THE LOGGED-IN USER
+    
+    [Authorize]
+    [HttpGet("my-pets")]
+    public async Task<ActionResult<IReadOnlyList<Pet>>> GetMyPets()
+    {
+        var user = await userManager.GetUserAsync(User);
+
+        if (user == null) return Unauthorized("User not found");
+
+        var pets = await unit.Repository<Pet>().ListAsync(new BaseSpecification<Pet>(p => p.OwnerId == user.Id));
+
+        return Ok(pets);
     }
 
     // TO BE UPDATE LATER

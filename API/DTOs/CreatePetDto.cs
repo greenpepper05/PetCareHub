@@ -14,5 +14,7 @@ public class CreatePetDto
     public DateTime Birthdate { get; set; }
     [Required]
     public string Gender { get; set; } = string.Empty;
+    [Required]
+    public string OwnerId { get; set; } = string.Empty;
 
 }

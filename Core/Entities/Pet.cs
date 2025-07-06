@@ -7,7 +7,6 @@ public class Pet : BaseEntity
     public required string Species { get; set; }
     public required DateTime Birthdate { get; set; }
     public required string Gender { get; set; }
-
-    public string OwnerId { get; set; }
-    public AppUser Owner { get; set; }
+    public required string OwnerId { get; set; }
+    
 }
