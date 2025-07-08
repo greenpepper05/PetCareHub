@@ -1,4 +1,5 @@
 using API.DTOs;
+using API.Extensions;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -17,7 +18,7 @@ public class AppointmentsController(IUnitOfWork unit,
     [HttpPost]
     public async Task<ActionResult> CreateAppointment(CreateAppointmentDto appointmentDto)
     {
-        var user = await userManager.FindByIdAsync(appointmentDto.OwnerId);
+        var user = await userManager.GetUserByEmail(User);
 
         if (user == null) return NotFound("User not found");
 
@@ -36,11 +37,17 @@ public class AppointmentsController(IUnitOfWork unit,
             return CreatedAtAction("GetAppointmentById", new { id = appointment.Id }, appointment);
         }
 
-        return Ok();
+        return Ok(new
+        {
+            Service = appointmentDto.ServiceName,
+            Date = appointmentDto.AppointmentDate,
+            Pet = appointmentDto.PetId,
+            OwnerId = user.Id,
+        });
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<IReadOnlyList<Appointment>>> GetAppointmentById(int id)
+    public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
     {
         var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
 
@@ -49,10 +56,20 @@ public class AppointmentsController(IUnitOfWork unit,
 
     // GET ALL SERVICES
 
-    [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<AppointmentService>>> GetServices()
+    [HttpGet("services")]
+    public async Task<ActionResult<IReadOnlyList<Service>>> GetServices()
     {
-        var services = await unit.Repository<AppointmentService>().ListAllAsync();
+        var services = await unit.Repository<Service>().ListAllAsync();
         return Ok(services);
+    }
+
+    // GET ALL APPOINTMENTS
+
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<Appointment>>> GetAppointments()
+    {
+        var appointments = await unit.Repository<Appointment>().ListAllAsync();
+
+        return Ok(appointments);
     }
 }

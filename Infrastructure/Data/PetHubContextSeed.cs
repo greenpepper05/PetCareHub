@@ -31,9 +31,9 @@ public class PetHubContextSeed
             await userManager.AddToRoleAsync(user, "Admin");
         }
 
-        if (!context.AppointmentServices.Any())
+        if (!context.Services.Any())
         {
-            var services = new List<AppointmentService>
+            var services = new List<Service>
             {
                 new() { Name = "Consultation", Description = "General pet consultation"},
                 new() { Name = "Vaccination", Description = "Scheduled vaccination"},
@@ -42,8 +42,9 @@ public class PetHubContextSeed
                 new() { Name = "Surgery", Description = "Pre-scheduled veterinary surgery"},
             };
 
-            context.AppointmentServices.AddRange(services);
+            context.Services.AddRange(services);
             await context.SaveChangesAsync();
+            
         }
     }
 }

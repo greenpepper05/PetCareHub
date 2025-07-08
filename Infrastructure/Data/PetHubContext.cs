@@ -10,7 +10,7 @@ public class PetHubContext(DbContextOptions options) : IdentityDbContext<AppUser
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Pet> Pets { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
-    public DbSet<AppointmentService> AppointmentServices { get; set; }
+    public DbSet<Service> Services { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

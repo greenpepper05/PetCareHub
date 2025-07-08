@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Config;
 
-public class AppointmentServicesConfiguration : IEntityTypeConfiguration<AppointmentService>
+public class AppointmentServicesConfiguration : IEntityTypeConfiguration<Service>
 {
-    public void Configure(EntityTypeBuilder<AppointmentService> builder)
+    public void Configure(EntityTypeBuilder<Service> builder)
     {
         builder.Property(x => x.Price).HasColumnType("decimal(18,2)");
     }
