@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -7,7 +8,7 @@
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class ServicesModification : Migration
+    public partial class FixPetIdType : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,6 +30,44 @@ namespace Infrastructure.Migrations
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: "efdec29c-152b-4713-b99a-e6498095528f");
+
+            migrationBuilder.AddColumn<int>(
+                name: "ClinicId",
+                table: "AspNetUsers",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AlterColumn<int>(
+                name: "PetId",
+                table: "Appointments",
+                type: "int",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
+
+            migrationBuilder.AddColumn<int>(
+                name: "ClinicId",
+                table: "Appointments",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.CreateTable(
+                name: "Clinics",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OwnerId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClinicName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clinics", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Services",
@@ -67,45 +106,103 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { "1c1594f1-d0b9-4249-9dc8-4b54f2f90cb4", null, "Admin", "ADMIN" },
-                    { "3a4040ff-6509-45f3-a227-81eb13f067d8", null, "Customer", "CUSTOMER" },
-                    { "c93c55bf-1956-4167-84ba-294ae08d0521", null, "SuperAdmin", "SUPERADMIN" }
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_ClinicId",
+                table: "AspNetUsers",
+                column: "ClinicId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_ClinicId",
+                table: "Appointments",
+                column: "ClinicId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_PetId",
+                table: "Appointments",
+                column: "PetId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceSchedule_ServiceId",
                 table: "ServiceSchedule",
                 column: "ServiceId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Appointments_Clinics_ClinicId",
+                table: "Appointments",
+                column: "ClinicId",
+                principalTable: "Clinics",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Appointments_Pets_PetId",
+                table: "Appointments",
+                column: "PetId",
+                principalTable: "Pets",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_Clinics_ClinicId",
+                table: "AspNetUsers",
+                column: "ClinicId",
+                principalTable: "Clinics",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Appointments_Clinics_ClinicId",
+                table: "Appointments");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Appointments_Pets_PetId",
+                table: "Appointments");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_AspNetUsers_Clinics_ClinicId",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Clinics");
+
             migrationBuilder.DropTable(
                 name: "ServiceSchedule");
 
             migrationBuilder.DropTable(
                 name: "Services");
 
-            migrationBuilder.DeleteData(
-                table: "AspNetRoles",
-                keyColumn: "Id",
-                keyValue: "1c1594f1-d0b9-4249-9dc8-4b54f2f90cb4");
+            migrationBuilder.DropIndex(
+                name: "IX_AspNetUsers_ClinicId",
+                table: "AspNetUsers");
 
-            migrationBuilder.DeleteData(
-                table: "AspNetRoles",
-                keyColumn: "Id",
-                keyValue: "3a4040ff-6509-45f3-a227-81eb13f067d8");
+            migrationBuilder.DropIndex(
+                name: "IX_Appointments_ClinicId",
+                table: "Appointments");
 
-            migrationBuilder.DeleteData(
-                table: "AspNetRoles",
-                keyColumn: "Id",
-                keyValue: "c93c55bf-1956-4167-84ba-294ae08d0521");
+            migrationBuilder.DropIndex(
+                name: "IX_Appointments_PetId",
+                table: "Appointments");
+
+            migrationBuilder.DropColumn(
+                name: "ClinicId",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "ClinicId",
+                table: "Appointments");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "PetId",
+                table: "Appointments",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(int),
+                oldType: "int",
+                oldNullable: true);
 
             migrationBuilder.CreateTable(
                 name: "AppointmentServices",

@@ -11,10 +11,12 @@ public class PetHubContext(DbContextOptions options) : IdentityDbContext<AppUser
     public DbSet<Pet> Pets { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<Service> Services { get; set; }
+    public DbSet<Clinic> Clinics { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(RoleConfiguration).Assembly);
+        // modelBuilder.ApplyConfigurationsFromAssembly(typeof(RoleConfiguration).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppointmentConfiguration).Assembly);
     }
 }

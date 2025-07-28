@@ -1,7 +1,9 @@
+using System.Formats.Asn1;
 using API.DTOs;
 using API.Extensions;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +30,8 @@ public class AppointmentsController(IUnitOfWork unit,
             AppointmentDate = appointmentDto.AppointmentDate,
             PetId = appointmentDto.PetId,
             OwnerId = user.Id,
+            Notes = appointmentDto.Notes,
+            ClinicId = appointmentDto.ClinicId
         };
 
         unit.Repository<Appointment>().Add(appointment);
@@ -37,12 +41,15 @@ public class AppointmentsController(IUnitOfWork unit,
             return CreatedAtAction("GetAppointmentById", new { id = appointment.Id }, appointment);
         }
 
-        return Ok(new
+        return Ok(new AppointmentDto
         {
-            Service = appointmentDto.ServiceName,
-            Date = appointmentDto.AppointmentDate,
-            Pet = appointmentDto.PetId,
-            OwnerId = user.Id,
+            Id = appointment.Id,
+            ServiceName = appointment.ServiceName,
+            AppointmentDate = appointment.AppointmentDate,
+            PetId = appointment.PetId,
+            OwnerId = appointment.OwnerId,
+            Notes = appointment.Notes,
+            ClinicId = appointmentDto.ClinicId
         });
     }
 
@@ -68,8 +75,56 @@ public class AppointmentsController(IUnitOfWork unit,
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<Appointment>>> GetAppointments()
     {
-        var appointments = await unit.Repository<Appointment>().ListAllAsync();
+        var user = await userManager.GetUserByEmail(User);
+        if (user == null) return Unauthorized();
+
+        var spec = new AppointmentByOwnerIdSpec(user.Id);
+
+        var appointments = await unit.Repository<Appointment>().ListAsync(spec);
 
         return Ok(appointments);
+    }
+
+    // UPDATE APPOINTMENT
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateAppointment(int id, UpdateAppointmentDto dto)
+    {
+        var user = await userManager.GetUserByEmail(User);
+        if (user == null) return Unauthorized();
+
+        var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
+        if (appointment == null) return NotFound();
+
+        if (appointment.OwnerId != user.Id) return Forbid();
+
+        appointment.AppointmentDate = dto.AppointmentDate;
+        appointment.Notes = dto.Notes;
+
+        unit.Repository<Appointment>().Update(appointment);
+
+        if (await unit.Complete()) return NoContent();
+
+        return BadRequest("Failed to update appointment");
+    }
+
+    // DELETE APPOINTMENT
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> CancelAppointment(int id)
+    {
+        var user = await userManager.GetUserByEmail(User);
+        if (user == null) return Unauthorized();
+
+        var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
+        if (appointment == null) return NotFound();
+
+        if (appointment.OwnerId != user.Id) return Forbid();
+
+        unit.Repository<Appointment>().Remove(appointment);
+
+        if (await unit.Complete()) return NoContent();
+
+        return BadRequest("Failed to cancel appointment");
     }
 }

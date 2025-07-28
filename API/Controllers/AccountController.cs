@@ -47,7 +47,8 @@ public class AccountController(SignInManager<AppUser> signInManager,
             FirstName = registerDto.FirstName,
             LastName = registerDto.LastName,
             Email = registerDto.Email,
-            UserName = registerDto.Email
+            UserName = registerDto.Email,
+            ClinicId = registerDto.ClinicId
         };
 
         var result = await signInManager.UserManager.CreateAsync(user, registerDto.Password);
