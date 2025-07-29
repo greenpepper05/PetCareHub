@@ -18,7 +18,7 @@ public class AppointmentsController(IUnitOfWork unit,
     // CREATE APPOINTMENTS
 
     [HttpPost]
-    public async Task<ActionResult> CreateAppointment(CreateAppointmentDto appointmentDto)
+    public async Task<ActionResult> CreateAppointment([FromBody] CreateAppointmentDto appointmentDto)
     {
         var user = await userManager.GetUserByEmail(User);
 
@@ -26,7 +26,7 @@ public class AppointmentsController(IUnitOfWork unit,
 
         var appointment = new Appointment
         {
-            ServiceName = appointmentDto.ServiceName,
+            ServiceId = appointmentDto.ServiceId,
             AppointmentDate = appointmentDto.AppointmentDate,
             PetId = appointmentDto.PetId,
             OwnerId = user.Id,
@@ -41,22 +41,17 @@ public class AppointmentsController(IUnitOfWork unit,
             return CreatedAtAction("GetAppointmentById", new { id = appointment.Id }, appointment);
         }
 
-        return Ok(new AppointmentDto
-        {
-            Id = appointment.Id,
-            ServiceName = appointment.ServiceName,
-            AppointmentDate = appointment.AppointmentDate,
-            PetId = appointment.PetId,
-            OwnerId = appointment.OwnerId,
-            Notes = appointment.Notes,
-            ClinicId = appointmentDto.ClinicId
-        });
+        return BadRequest("Failed to create appointment");
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
     {
-        var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
+        var spec = new AppointmentWithDetailsSpec(id);
+
+        var appointment = await unit.Repository<Appointment>().GetEntityWithSpec(spec);
+
+        if (appointment == null) return NotFound();
 
         return Ok(appointment);
     }

@@ -1,11 +1,13 @@
 using API.DTOs;
 using Core.Entities;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 public class ServiceScheduleController(IUnitOfWork unit,
     UserManager<AppUser> userManager) : BaseApiController
 {
@@ -27,7 +29,7 @@ public class ServiceScheduleController(IUnitOfWork unit,
     }
 
     [HttpPost]
-    public async Task<ActionResult<ServiceScheduleDto>> CreateSchedule(ServiceScheduleDto dto)
+    public async Task<ActionResult<ServiceScheduleDto>> CreateSchedule(CreateServiceScheduleDto dto)
     {
         var schedule = new ServiceSchedule
         {
@@ -39,7 +41,17 @@ public class ServiceScheduleController(IUnitOfWork unit,
 
         unit.Repository<ServiceSchedule>().Add(schedule);
 
-        if (await unit.Complete()) return NoContent();
+        if (await unit.Complete())
+        {
+            var result = new ServiceSchedule
+            {
+                ServiceName = schedule.ServiceName,
+                SessionCount = schedule.SessionCount,
+                IntervalInDays = schedule.IntervalInDays,
+                ServiceId = schedule.ServiceId
+            };
+            return CreatedAtAction("GetById", new { id = schedule.Id }, result);
+        }
 
         return BadRequest("Problem Creating schedule");
     }

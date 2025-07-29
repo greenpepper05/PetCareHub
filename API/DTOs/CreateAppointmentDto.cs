@@ -4,12 +4,15 @@ namespace API.DTOs;
 
 public class CreateAppointmentDto
 {
-    [Required]
-    public string ServiceName { get; set; } = string.Empty;
-    [Required]
+    [Required(ErrorMessage = "Service is required")]
+    public int ServiceId { get; set; }
+    [Required(ErrorMessage = "Appointment date is required")]
     public DateTime AppointmentDate { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Pet is required")]
     public int PetId { get; set; }
+    [Required(ErrorMessage = "Owner is required")]
+    public string OwnerId { get; set; } = string.Empty;
     public string? Notes { get; set; }
+    [Required(ErrorMessage = "Clinic is Required")]
     public int ClinicId { get; set; }
 }

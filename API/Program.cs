@@ -1,6 +1,9 @@
+using API.DTOs;
 using API.Middleware;
 using Core.Entities;
 using Core.Interfaces;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +24,11 @@ builder.Services.AddAuthentication();
 builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<PetHubContext>();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+// builder.Services.AddValidatorsFromAssemblyContaining<CreateServiceDtoValidator>();
+// builder.Services.AddValidatorsFromAssemblyContaining<CreateServiceScheduleDtoValidator>();
 
 
 

@@ -45,9 +45,9 @@ public class AdminController(IUnitOfWork unit,
         var query = appointments.Select(a => new AppointmentDto
         {
             Id = a.Id,
-            ServiceName = a.ServiceName,
+            ServiceId = a.ServiceId,
             AppointmentDate = a.AppointmentDate,
-            // PetId = a.PetId,
+            PetId = a.PetId,
             Notes = a.Notes,
             OwnerId = a.OwnerId
         }).ToList();
@@ -84,7 +84,7 @@ public class AdminController(IUnitOfWork unit,
     // CREATE SERVICE
 
     [HttpPost]
-    public async Task<ActionResult<ServiceDto>> CreateService(ServiceDto dto)
+    public async Task<ActionResult<ServiceDto>> CreateService(CreateServiceDto dto)
     {
         var service = new Service
         {
@@ -97,7 +97,13 @@ public class AdminController(IUnitOfWork unit,
 
         if (await unit.Complete())
         {
-            return CreatedAtAction("GetServiceById", new { id = service.Id }, service);
+            return CreatedAtAction("GetServiceById", new { id = service.Id }, new ServiceDto
+            {
+                Id = service.Id,
+                Name = service.Name,
+                Description = service.Description,
+                Price = service.Price
+            });
         }
 
         return BadRequest("Problem Creating service");
