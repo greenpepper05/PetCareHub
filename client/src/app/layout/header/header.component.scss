@@ -1,0 +1,16 @@
+header {
+    background-color: white;
+}
+
+.custom-button {
+    color: var(--white);
+    background-color: var(--primary);
+    padding: 8px 32px;
+}
+
+a {
+    &.active {
+        color: var(--primary);
+        text-decoration: underline;
+    }
+}

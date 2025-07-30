@@ -1,0 +1,18 @@
+@use '@angular/material' as mat;
+
+:root {
+  @include mat.button-overrides((
+    filled-container-shape: '6px',
+    outlined-container-shape: '6px',
+    filled-container-color: var(--primary)
+  ));
+
+  --primary: #0078AA;
+  --secondary: #3AB4F2;
+  --white: #F6F6F6;
+  --yellow: #F2DF3A;
+}
+
+body {
+  background-color: var(--white);
+}

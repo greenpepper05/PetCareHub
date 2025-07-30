@@ -1,0 +1,34 @@
+@if (services) {
+
+    <div class="services-heading">
+        <h1 class="services-title">Our Services</h1>
+    </div>
+    
+    <div class="services-content w-full py-12 bg-[var(--white)] text-center">
+        <h1 class="inline-block bg-[var(--yellow)] text-black font-bold text-xl px-6 py-2 rounded-md -shadow-md mb-12">
+            What PetCareHub Offers
+        </h1>
+        
+        <!-- Card Container -->
+        <div class="container flex flex-wrap gap-8 justify-evenly rounded-lg p-6 text-left">
+            <!-- Card -->
+            @for (service of services; track service.id)
+            {
+                <div class="bg-white rounded-lg p-8 shadow-md shadow-gray-400 text-left w-[30%]">
+                <div class="flex mb-2 items-center">
+                    <img class="h-12 mb-3 mr-2" src="/assets/images/icons/{{service.id}}.png" alt="{{service.name}}">
+                    <h2 class="font-semibold text-xl mb-2 ml-2">{{service.name}}</h2>
+                </div>
+                <ul class="list-disc ml-12 text-lg">
+                    <li>{{service.description}}</li>
+                </ul>
+            </div>
+            }
+        </div>
+        <div class="mt-12">
+            <button routerLink="/appointment" class="bg-[var(--primary)] text-[var(--white)] font-medium px-8 py-4 rounded-md shadow-md hover:bg-[#056b95] transition cursor-pointer">
+                Book an Appointment
+            </button>
+        </div>
+    </div>
+}
