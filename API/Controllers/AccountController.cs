@@ -17,7 +17,6 @@ public class AccountController(SignInManager<AppUser> signInManager,
 
     // GET USER INFRO
 
-    [Authorize]
     [HttpGet("user-info")]
     public async Task<ActionResult> GetUserInfo()
     {
@@ -27,12 +26,10 @@ public class AccountController(SignInManager<AppUser> signInManager,
 
         return Ok(new
         {
-            user.Id,
             user.FirstName,
             user.LastName,
             user.Email,
-            user.PasswordHash,
-            Roles = User.FindFirstValue(ClaimTypes.Role)
+            user.Id
         });
 
     }
@@ -80,7 +77,6 @@ public class AccountController(SignInManager<AppUser> signInManager,
     }
 
     // GET AUTHENTICATION STATUS
-    [Authorize]
     [HttpGet("auth-status")]
     public ActionResult GetAuthState()
     {

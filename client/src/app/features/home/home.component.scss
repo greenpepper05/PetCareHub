@@ -1,0 +1,31 @@
+.cta-content {
+    padding-left: 10%;
+    padding-top: 10%;
+    text-shadow:  2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.feature-card {
+    background-color: var(--white);
+    color: var(--primary);
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.feature-card img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.feature-card h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.feature-card p {
+    color: #000;
+}

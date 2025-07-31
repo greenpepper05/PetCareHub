@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Authorize(Roles = "Admin,SuperAdmin")]
+// [Authorize(Roles = "Admin,SuperAdmin")]
 public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit) : BaseApiController
 {
 

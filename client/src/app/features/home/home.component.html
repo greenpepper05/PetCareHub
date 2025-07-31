@@ -1,1 +1,68 @@
-<p>home works!</p>
+<div class="relative w-[100%] h-[70vh]">
+    <div class="absolute inset-0 bg-[url('/assets/images/background/bg1.jpg')] bg-no-repeat bg-cover bg-[50%_35%] blur-xs z-0"></div>
+
+    <div class="absolute inset-0 bg-black opacity-50 z-10"></div>
+
+    <div class="cta-content absolute z-20 flex flex-col justify-center items-start">
+        <h2 class="uppercase bg-[var(--white)] block px-4 py-2  mb-4 font-semibold rounded-lg">
+            Welcome to {{title}}!
+        </h2>
+        <h1 class="text-7xl text-[var(--yellow)] max-w-3xl">
+            Where Innovation meets Pet Care
+        </h1>
+        <button class="mt-8 px-6 py-3 bg-[var(--primary)] text-[var(--white)] text-lg font-semibold rounded-lg shadow-lg hover:bg-[#056b95] transition duration-300 ease-in-out cursor-pointer">Learn more</button>
+    </div>
+
+    <!-- Card container -->
+    <div class="absolute left-1/2 transform -translate-x-1/2 container mx-auto px-4 sm:px-8 md:px16 flex sm:flex-row justify-around align-middle items-center bottom-[-8%] sm:bottom-[-5%] w-full z-30 gap-4">
+        <!-- Card -->
+        <div class="feature-card">
+            <img src="/assets/images/icons/automation.png" alt="">
+            <div class="">
+                <h1 class="text-2xl">Automation</h1>
+                <p class="text-sm">Send/Receive reminders autonomously</p>
+            </div>
+        </div>
+        <div class="feature-card">
+            <img src="" alt="">
+            <h1 class="text-2xl">Automation</h1>
+        </div>
+        <div class="feature-card">
+            <img src="/assets/images/icons/pawprint.png" alt="">
+            <div class="">
+                <h1 class="text-2xl">Pet Profiles</h1>
+                <p class="text-sm">Create pet profiles</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="services-content w-full py-12 bg-[var(--white)] mt-20 text-center">
+    <h2 class="inline-block bg-[var(--yellow)] text-black font-bold text-xl px-6 py-2 rounded-md -shadow-md mb-12">
+        Services
+    </h2>
+    
+    <h1 class="text-6xl mb-8">What PetCareHub Offers</h1>
+
+    <!-- Card Container -->
+    <div class="container flex flex-wrap gap-8 justify-evenly rounded-lg p-6 text-left">
+        <!-- Card -->
+        @for (service of services; track service.id)
+        {
+            <div class="bg-white rounded-lg p-8 shadow-md shadow-gray-400 text-left w-[30%]">
+            <div class="flex mb-2 items-center">
+                <img class="h-12 mb-3 mr-2" src="/assets/images/icons/{{service.id}}.png" alt="{{service.name}}">
+                <h2 class="font-semibold text-xl mb-2 ml-2">{{service.name}}</h2>
+            </div>
+            <ul class="list-disc ml-12 text-lg">
+                <li>{{service.description}}</li>
+            </ul>
+        </div>
+        }
+    </div>
+    <div class="mt-12">
+        <button routerLink="/services" class="bg-[var(--primary)] text-[var(--white)] font-medium px-8 py-4 rounded-md shadow-md hover:bg-[#056b95] transition cursor-pointer">
+            View all Services
+        </button>
+    </div>
+</div>

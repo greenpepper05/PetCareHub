@@ -14,9 +14,15 @@
             <a class="hover:text-[var(--primary)] cursor-pointer hover:underline">About us</a>
         </nav>
         <div class="flex gap-3 align-middle">
-            <button mat-flat-button class="custom-button">
-                Sign up
-            </button>
+            @if (accountService.currentUser()){
+                <button mat-stroke-button (click)="logout()">
+                    Logout
+                </button>   
+            } @else {
+                <button routerLink="/account/login" mat-flat-button class="custom-button">        
+                    Sign up
+                </button>
+            }
         </div>
     </div>
 </header>
