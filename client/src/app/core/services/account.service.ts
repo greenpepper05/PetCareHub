@@ -17,6 +17,12 @@ export class AccountService {
     params = params.append('useCookies', true);
     return this.http.post<User>(this.baseUrl + 'login', values, {params});
   }
+  
+  adminLogin(credentials: {email: string; password: string;}) {
+    return this.http.post(`${this.baseUrl}login?useCookies=true`, credentials, {
+      withCredentials: true
+    })
+  }
 
   register(values: any) {
     return this.http.post(this.baseUrl + 'account/register', values);

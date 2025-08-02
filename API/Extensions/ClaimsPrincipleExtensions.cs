@@ -26,4 +26,5 @@ public static class ClaimsPrincipleExtensions
 
         return email;
     }
+
 }

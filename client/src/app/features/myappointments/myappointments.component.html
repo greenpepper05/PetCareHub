@@ -1,0 +1,26 @@
+<div class="mx-auto mt-32">
+    <h2 class="font-semibold text-2xl mb-6 text-center">My Appointments</h2>
+    <div class="flex flex-col">
+        <div class="w-full">
+            <table class="min-w-full divide-y divide-gray-200 cursor-pointer">
+                <thead class="bg-gray-50">
+                    <tr class="uppercase text-gray-600 text-sm">
+                        <th class="text-left">Appointment Date</th>
+                        <th class="text-left">Service</th>
+                        <th class="text-left">Pet</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @for (appointment of appointments; track appointment.id) {
+                        <tr routerLink="/myappointments/{{ appointment.id }}" class="hover:bg-gray-100">
+                            <td>{{ appointment.appointmentDate | date}}</td>
+                            <td>{{ appointment.service?.name }}</td>
+                            <td>{{ appointment.pet?.name }}</td>
+                            <td></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

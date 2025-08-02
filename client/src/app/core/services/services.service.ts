@@ -9,6 +9,6 @@ export class ServicesService {
   private http = inject(HttpClient);
 
   getServices() {
-    return this.http.get<any>(this.baseUrl + 'admin/services')
+    return this.http.get<any>(this.baseUrl + 'services')
   }
 }

@@ -1,0 +1,21 @@
+<div class="h-screen p-4">
+    <h1 class="text-2xl font-bold">Pets</h1>
+    <div class="">
+        <table>
+            <thead>
+                <tr>
+                    <th>Pet Id</th>
+                    <th>Pet Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (pet of pets; track pet.id){
+                    <tr>
+                        <td>{{ pet.pet?.id}}</td>
+                        <td>{{ pet.pet?.name}}</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

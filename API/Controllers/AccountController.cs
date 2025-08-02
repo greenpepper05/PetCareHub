@@ -23,13 +23,15 @@ public class AccountController(SignInManager<AppUser> signInManager,
         if (User.Identity?.IsAuthenticated == false) return NoContent();
 
         var user = await signInManager.UserManager.GetUserByEmail(User);
+        var roles = await userManager.GetRolesAsync(user);
 
-        return Ok(new
+        return Ok(new UserInfoDto
         {
-            user.FirstName,
-            user.LastName,
-            user.Email,
-            user.Id
+            Id = user.Id,
+            Email = user.Email!,
+            FirstName = user.FirstName!,
+            LastName = user.LastName!,
+            Role = roles.FirstOrDefault()!
         });
 
     }
@@ -80,7 +82,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
     [HttpGet("auth-status")]
     public ActionResult GetAuthState()
     {
-        return Ok(new { IsAuthenicated = User.Identity?.IsAuthenticated ?? false });
+        return Ok(new { IsAuthenticated = User.Identity?.IsAuthenticated ?? false });
     }
 
     // GET ALL PETS BY THE LOGGED-IN USER

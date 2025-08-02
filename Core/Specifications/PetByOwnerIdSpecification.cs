@@ -9,4 +9,5 @@ public class PetByOwnerIdSpecification : BaseSpecification<Pet>
     public PetByOwnerIdSpecification(string onwerId) : base(p => p.OwnerId == onwerId)
     {
     }
+    
 }

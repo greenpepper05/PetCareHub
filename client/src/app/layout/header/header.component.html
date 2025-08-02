@@ -15,12 +15,13 @@
         </nav>
         <div class="flex gap-3 align-middle">
             @if (accountService.currentUser()){
-                <button mat-stroke-button (click)="logout()">
+                <button mat-flat-button routerLink="/myappointments">My Appointments</button>
+                <button mat-stroked-button (click)="logout()">
                     Logout
                 </button>   
             } @else {
                 <button routerLink="/account/login" mat-flat-button class="custom-button">        
-                    Sign up
+                    Sign in
                 </button>
             }
         </div>

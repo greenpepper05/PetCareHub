@@ -47,22 +47,13 @@ public class AppointmentsController(IUnitOfWork unit,
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
     {
-        var spec = new AppointmentWithDetailsSpec(id);
+        var spec = new AppointmentWithIncludesSpec(id);
 
         var appointment = await unit.Repository<Appointment>().GetEntityWithSpec(spec);
 
         if (appointment == null) return NotFound();
 
         return Ok(appointment);
-    }
-
-    // GET ALL SERVICES
-
-    [HttpGet("services")]
-    public async Task<ActionResult<IReadOnlyList<Service>>> GetServices()
-    {
-        var services = await unit.Repository<Service>().ListAllAsync();
-        return Ok(services);
     }
 
     // GET ALL APPOINTMENTS
@@ -73,7 +64,23 @@ public class AppointmentsController(IUnitOfWork unit,
         var user = await userManager.GetUserByEmail(User);
         if (user == null) return Unauthorized();
 
-        var spec = new AppointmentByOwnerIdSpec(user.Id);
+        var spec = new AppointmentByOwnerIdWithIncludeSpec(user.Id);
+
+        var appointments = await unit.Repository<Appointment>().ListAsync(spec);
+
+        return Ok(appointments);
+    }
+
+    // GET APPOINTMENT BY CLINIC ID
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("clinic")]
+    public async Task<ActionResult<IReadOnlyList<Appointment>>> GetAppointmentByClinic()
+    {
+        var user = await userManager.GetUserByEmail(User);
+        if (user == null) return Unauthorized();
+
+        var spec = new AppointmentSpec(user.ClinicId);
 
         var appointments = await unit.Repository<Appointment>().ListAsync(spec);
 

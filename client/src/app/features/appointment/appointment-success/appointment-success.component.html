@@ -1,1 +1,68 @@
-<p>appointment-success works!</p>
+<div *ngIf="appointment" class="flex justify-center mt-32 mb-32">
+    <div class="w-1/2">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl px-4 py-2 bg-[var(--yellow)] mb-6">Appointment Information</h1>
+        </div>
+        <div class="bg-[var(--white)] border border-gray-200 shadow-sm p-10 rounded-lg">
+            <div class="">
+                <h1 class="text-2xl font-bold">Pet Details:</h1>
+                <div class="flex px-8 my-2">
+                    <div class="w-1/2 ">
+                        <p class="text-lg leading-loose">
+                            Name: 
+                            <strong>
+                                {{ appointment.pet?.name }}
+                            </strong></p>
+                        <p class="text-lg leading-loose">
+                            Birthdate: 
+                            <strong>
+                                {{ appointment.pet?.birthdate | date}}
+                            </strong>
+                        </p>
+                    </div>
+                    <div class="w-1/2">
+                        <p class="text-lg leading-loose">
+                            Breed: 
+                            <strong>        
+                                {{ appointment.pet?.breed  }}
+                            </strong>
+                        </p>
+                        <p class="text-lg leading-loose">
+                            Species: 
+                            <strong>
+                                {{ appointment.pet?.species }}
+                            </strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <h1 class="text-2xl font-bold">Appointment Details:</h1>
+                <div class="flex px-8 my-2">
+                    <div class="w-1/2">
+                        <p class="text-lg leading-loose">
+                            Service name: 
+                            <strong>
+                                {{ appointment.service?.name || 'N/A' }}
+                            </strong>
+                        </p>
+                        <p class="text-lg leading-loose">
+                            Appointment date: 
+                            <strong>
+                                {{ appointment.appointmentDate | date:'mediumDate' }}
+                            </strong>
+                        </p>
+                    </div>
+                    <div class="w-1/2">
+                        <p class="text-lg leading-loose">
+                            Appointment status: 
+                            <strong>
+                                {{ appointment.status }}
+                            </strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

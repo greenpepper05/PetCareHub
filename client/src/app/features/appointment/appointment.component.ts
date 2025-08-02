@@ -3,7 +3,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatCard } from "@angular/material/card";
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { AppointmentService } from '../../core/services/appointment.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatOption, provideNativeDateAdapter} from '@angular/material/core';
@@ -14,6 +14,8 @@ import { MatStepperModule} from '@angular/material/stepper';
 import { MatSelectModule} from '@angular/material/select';
 import { Pet } from '../../shared/models/pet';
 import { AccountService } from '../../core/services/account.service';
+import { Appointment } from '../../shared/models/appointment';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-appointment',
@@ -22,12 +24,14 @@ import { AccountService } from '../../core/services/account.service';
     ReactiveFormsModule,
     MatFormField,
     MatLabel,
+    MatButton,
     MatInputModule,
     MatDatepickerModule,
     MatRadioModule,
     MatStepperModule,
     MatOption,
-    MatSelectModule
+    MatSelectModule,
+    RouterLink
 ],
   templateUrl: './appointment.component.html',
   styleUrl: './appointment.component.scss'
@@ -49,7 +53,7 @@ export class AppointmentComponent implements OnInit{
   }
 
   appointmentForm = this.fb.group({
-    appoisntmentDate: [''],
+    appointmentDate: [''],
     petid: [''],
     ownerid: [''],
     serviceid: [''],
@@ -71,7 +75,7 @@ export class AppointmentComponent implements OnInit{
     serviceId: ['']
   })
 
-  onSubmit() {
+  async onSubmit() {
     const currentUser = this.accountSerive.currentUser();
 
     if (!currentUser) {
@@ -81,29 +85,29 @@ export class AppointmentComponent implements OnInit{
 
     const ownerid = currentUser.id;
 
-    this.petProfileForm.patchValue({ ownerid});
+    this.petProfileForm.patchValue({ ownerid });
 
     console.log(this.petProfileForm.value)
+
     this.petService.createPetProfile(this.petProfileForm.value).subscribe({
       next: (pet : Pet) => {
-        const selectedService = this.servicesForm.get('serviceId')?.value;
-
-        this.appointmentForm.patchValue({ 
-          petid: pet.id,
-          ownerid: pet.ownerid,
-          serviceid: selectedService
-        });
-        
-        this.appointmentForm.patchValue({ serviceid: selectedService});
+        const selectedService = Number(this.servicesForm.get('serviceId')?.value);
+        const clinicId = 1;
 
         const payload = {
-          serviceId: Number(this.servicesForm.value.serviceId),
-          ownerId: this.accountSerive.currentUser()?.id ?? '',
-          petId: Number(this.petProfileForm.value.id),
-          appointmentDate : this.appointmentForm.value.appoisntmentDate 
-        }
+          serviceId: selectedService,
+          ownerId: ownerid,
+          petId: pet.id,
+          appointmentDate : this.appointmentForm.value.appointmentDate,
+          clinicid: clinicId
+        };
+
+        console.log('📦 Sending appointment payload:', payload);
         this.appointmentService.createAppointment(payload).subscribe({
-          next: () => this.router.navigate(['appointments/appointment-confirmation']),
+          next: (response: Appointment) => {
+            this.appointmentService.appointmentComplete = true;
+            this.router.navigate(['/appointment-success', response.id]);
+          },
           error: error => console.error('Appointment error', error)
         })
       },

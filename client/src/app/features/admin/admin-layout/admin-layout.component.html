@@ -1,0 +1,32 @@
+<mat-sidenav-container>
+    <mat-sidenav mode="side" opened class="p-2">
+        <div class="flex flex-col justify-between h-full p-4 bg-[var(--primary)] text-[var(--white)] rounded-2xl">
+            <mat-list>
+                <mat-list-item>
+                    <a routerLink="/admin/dashboard" class="flex align-middle gap-4 text-[var(--white)]">
+                        <mat-icon>dashboard</mat-icon>
+                        <h1>Dashboard</h1>
+                    </a>
+                </mat-list-item>
+                <mat-list-item>
+                    <a routerLink="/admin/appointments" class="flex align-middle gap-4 text-[var(--white)]">
+                        <mat-icon>description</mat-icon>
+                        <h1>Appointments</h1>
+                    </a>
+                </mat-list-item>
+                <mat-list-item>
+                    <a routerLink="/admin/pets" class="flex align-middle gap-4 text-[var(--white)]">
+                        <mat-icon>pets</mat-icon>
+                        <h1>Pets</h1>
+                    </a>
+                </mat-list-item>
+            </mat-list>
+            <button class="" mat-flat-button (click)="logout()">Logout</button>
+        </div>
+        
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+    
+</mat-sidenav-container>

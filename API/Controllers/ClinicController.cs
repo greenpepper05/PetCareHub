@@ -15,4 +15,5 @@ public class ClinicController(IUnitOfWork unit) : BaseApiController
 
         return Ok(clinic);
     }
+
 }
