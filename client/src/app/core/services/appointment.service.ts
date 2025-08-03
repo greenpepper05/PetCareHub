@@ -38,4 +38,6 @@ export class AppointmentService {
   getAppointmentByClinic() {
     return this.http.get<Appointment[]>(this.baseUrl + 'appointments/clinic');
   }
+
+  
 }

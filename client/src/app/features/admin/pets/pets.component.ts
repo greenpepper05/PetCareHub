@@ -1,6 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AppointmentService } from '../../../core/services/appointment.service';
 import { Appointment } from '../../../shared/models/appointment';
+import { Pet } from '../../../shared/models/pet';
+import { PetService } from '../../../core/services/pet.service';
 
 @Component({
   selector: 'app-pets',
@@ -9,11 +11,11 @@ import { Appointment } from '../../../shared/models/appointment';
   styleUrl: './pets.component.scss'
 })
 export class PetsComponent implements OnInit {
-  private pet = inject(AppointmentService);
-  pets: Appointment[] = [];
+  private pet = inject(PetService);
+  pets: Pet[] = [];
 
   ngOnInit(): void {
-    this.pet.getAppointmentByClinic().subscribe({
+    this.pet.getPetByClinic().subscribe({
       next: pets => {
         this.pets = pets;
       }

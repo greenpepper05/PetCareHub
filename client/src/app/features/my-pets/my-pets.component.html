@@ -1,0 +1,27 @@
+<div class="mx-auto my-32">
+    <div class="text-center">
+        <h1 class="inline-block content-center font-bold text-2xl mb-6 text-center bg-[var(--yellow)] px-8 py-2 rounded-md shadow-md">My Pets</h1>
+    </div>
+    <div class="container flex flex-wrap gap-8 justify-evenly p-6 text-left">
+        @for (pet of pets; track pet.id) {
+            <div class="flex flex-wrap bg-[var(--primary)] text-[var(--white)] rounded-2xl p-8 shadow-md shadow-gray-400 text-left w-[45%]">
+                <div class="w-1/2">
+                    <img src="" alt="" class="bg-[var(--white)] w-full h-full rounded-xl">
+                </div>
+                <div class="w-1/2 pl-4">
+                    <p>ID</p>
+                    <h1 class="text-2xl font-bold text-[var(--yellow)]">{{ pet.id }}</h1>
+                    <p>Name</p>
+                    <h1 class="text-2xl font-bold text-[var(--yellow)]">{{ pet.name }}</h1>
+                    <p>Birthday</p>
+                    <h1 class="text-2xl font-bold text-[var(--yellow)]">{{ pet.birthdate | date }}</h1>
+                    <p>Breed</p>
+                    <h1 class="text-2xl font-bold text-[var(--yellow)]">{{ pet.breed }}</h1>
+                    <p>Species</p>
+                    <h1 class="text-2xl font-bold text-[var(--yellow)]">{{ pet.species }}</h1>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

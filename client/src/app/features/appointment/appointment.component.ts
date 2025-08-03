@@ -1,12 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { MatCard } from "@angular/material/card";
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { AppointmentService } from '../../core/services/appointment.service';
 import { Router, RouterLink } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatOption, provideNativeDateAdapter} from '@angular/material/core';
+import { provideNativeDateAdapter} from '@angular/material/core';
 import { PetService } from '../../core/services/pet.service';
 import { ServicesService } from '../../core/services/services.service';
 import { MatRadioModule} from '@angular/material/radio';
@@ -29,9 +28,8 @@ import { MatButton } from '@angular/material/button';
     MatDatepickerModule,
     MatRadioModule,
     MatStepperModule,
-    MatOption,
     MatSelectModule,
-    RouterLink
+    RouterLink,
 ],
   templateUrl: './appointment.component.html',
   styleUrl: './appointment.component.scss'
@@ -44,11 +42,17 @@ export class AppointmentComponent implements OnInit{
   private accountSerive = inject(AccountService);
   private router = inject(Router);
   services: any[] = [];
+  pets: Pet[] = [];
   
   ngOnInit(): void {
-      this.servicesService.getServices().subscribe({
+    this.servicesService.getServices().subscribe({
       next: response => this.services = response,
       error: error => console.log(error)
+    })
+    this.petService.getPetsByOwner().subscribe({
+      next: pets => {
+        this.pets = pets
+      }
     })
   }
 
@@ -60,16 +64,6 @@ export class AppointmentComponent implements OnInit{
     notes: [''],
     clinicid: [''],
   });
-
-  petProfileForm = this.fb.group({
-    id: [''],
-    name: [''],
-    breed: [''],
-    species: [''],
-    birthdate: [''],
-    gender: [''],
-    ownerid: ['']
-  })
 
   servicesForm = this.fb.group({
     serviceId: ['']
@@ -84,34 +78,24 @@ export class AppointmentComponent implements OnInit{
     }
 
     const ownerid = currentUser.id;
+    const selectedPetId = this.appointmentForm.get('petid')?.value;
+    const selectedService = Number(this.servicesForm.get('serviceId')?.value);
+    const clinicId = 1;
 
-    this.petProfileForm.patchValue({ ownerid });
-
-    console.log(this.petProfileForm.value)
-
-    this.petService.createPetProfile(this.petProfileForm.value).subscribe({
-      next: (pet : Pet) => {
-        const selectedService = Number(this.servicesForm.get('serviceId')?.value);
-        const clinicId = 1;
-
-        const payload = {
+    const data = {
           serviceId: selectedService,
           ownerId: ownerid,
-          petId: pet.id,
+          petId: selectedPetId,
           appointmentDate : this.appointmentForm.value.appointmentDate,
           clinicid: clinicId
-        };
+    };
 
-        console.log('📦 Sending appointment payload:', payload);
-        this.appointmentService.createAppointment(payload).subscribe({
-          next: (response: Appointment) => {
-            this.appointmentService.appointmentComplete = true;
-            this.router.navigate(['/appointment-success', response.id]);
-          },
-          error: error => console.error('Appointment error', error)
-        })
+    this.appointmentService.createAppointment(data).subscribe({
+      next: (response : Appointment) => {
+        this.appointmentService.appointmentComplete = true;
+        this.router.navigate(['/appointment-success', response.id]);
       },
-      error: error => console.error('Pet creation error', error)
+      error: err => console.error('Appointment error', err)
     })
   }
 

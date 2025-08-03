@@ -20,7 +20,6 @@ export class MyappointmentsComponent implements OnInit {
   ngOnInit(): void {
     this.appointmentService.getAppointmentForUser().subscribe({
       next: appointments => {
-        console.log(appointments); 
         this.appointments = appointments;
       } 
     })

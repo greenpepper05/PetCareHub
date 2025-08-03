@@ -15,4 +15,12 @@ export class PetService {
   createPetProfile(values: any) {
     return this.http.post<Pet>(this.baseUrl + 'pets', values);
   }
+
+  getPetsByOwner() {
+    return this.http.get<Pet[]>(this.baseUrl + 'pets');
+  }
+
+  getPetByClinic() {
+    return this.http.get<Pet[]>(this.baseUrl + 'pets/all');
+  }
 }

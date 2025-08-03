@@ -1,0 +1,37 @@
+<div class="flex justify-center mt-32 mb-32">
+    <form [formGroup]="petProfileForm" class="p-8 shadow-sm">       
+        <div class="flex gap-4 mt-2">
+            <mat-form-field appearance="outline" class="w-1/2 mb-4">
+                <mat-label>Name</mat-label>
+                <input formControlName="name" type="text" placeholder="Luna" matInput/>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-1/4 mb-4">
+                <mat-label>Birthdate</mat-label>
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <input formControlName="birthdate" matInput [matDatepicker]="picker"/>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-1/4 mb-4">
+                <mat-label>Gender</mat-label>
+                <mat-select formControlName="gender">
+                    <mat-option value="Male">Male</mat-option>
+                    <mat-option value="Female">Female</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="flex gap-4">
+            <mat-form-field appearance="outline" class="w-1/2 mb-4">
+                <mat-label>Breed</mat-label>
+                <input formControlName="breed" type="text" placeholder="Feline" matInput />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-1/2 mb-4">
+                <mat-label>Species</mat-label>
+                <input formControlName="species" type="text" placeholder="Cat" matInput />
+            </mat-form-field>
+        </div>
+        <div class="flex justify-end">
+            <button mat-flat-button class="bg-[var(--primary)]" (click)="createPet()">Create</button>
+        </div>
+    </form>
+</div>

@@ -15,14 +15,14 @@
             @for (service of services; track service.id)
             {
                 <div class="bg-white rounded-lg p-8 shadow-md shadow-gray-400 text-left w-[30%]">
-                <div class="flex mb-2 items-center">
-                    <img class="h-12 mb-3 mr-2" src="/assets/images/icons/{{service.id}}.png" alt="{{service.name}}">
-                    <h2 class="font-semibold text-xl mb-2 ml-2">{{service.name}}</h2>
+                    <div class="flex mb-2 items-center">
+                        <img class="h-12 mb-3 mr-2" src="/assets/images/icons/{{service.id}}.png" alt="{{service.name}}">
+                        <h2 class="font-semibold text-xl mb-2 ml-2">{{service.name}}</h2>
+                    </div>
+                    <ul class="list-disc ml-12 text-lg">
+                        <li>{{service.description}}</li>
+                    </ul>
                 </div>
-                <ul class="list-disc ml-12 text-lg">
-                    <li>{{service.description}}</li>
-                </ul>
-            </div>
             }
         </div>
         <div class="mt-12">
@@ -31,4 +31,5 @@
             </button>
         </div>
     </div>
+
 }

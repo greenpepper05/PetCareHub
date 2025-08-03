@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-// [Authorize(Roles = "Admin,SuperAdmin")]
 public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit) : BaseApiController
 {
 
@@ -19,7 +18,7 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit) 
     {
 
         var owner = await userManager.FindByIdAsync(createPetDto.OwnerId);
-        if (owner == null) return NotFound("User no found");
+        if (owner == null) return NotFound("User not found");
 
         var pet = new Pet
         {
@@ -52,18 +51,42 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit) 
         return Ok(await pet);
     }
 
-    // SELECT ALL PETS
-
-    [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<Pet>>> GetPets()
+    // SELECT PETS BY CLINIC
+    [Authorize(Roles = "Admin")]
+    [HttpGet("clinic")]
+    public async Task<ActionResult<IReadOnlyList<Pet>>> GetPetsByClinic()
     {
         var user = await userManager.GetUserAsync(User);
 
         if (user == null) return NotFound("No user found!");
 
-        var spec = new PetByOwnerIdSpecification(user.Id.ToString());
+        var spec = new PetByClinicIdSpecification(user.ClinicId);
         var pets = await unit.Repository<Pet>().ListAsync(spec);
 
         return Ok(pets);
     }
-}
+
+    // SELECT PETS BY OWNER
+
+    [Authorize]
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<Pet>>> GetPetsByOnwer()
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user == null) return NotFound("No user found");
+
+        var spec = new PetByOwnerIdSpec(user.Id.ToString());
+
+        var pets = await unit.Repository<Pet>().ListAsync(spec);
+
+        return Ok(pets);
+    }
+
+    [HttpGet("all")]
+    public async Task<ActionResult<IReadOnlyList<Pet>>> GetPets()
+    {
+        var pet = unit.Repository<Pet>().ListAllAsync();
+
+        return Ok(await pet);
+    }
+}   

@@ -1,4 +1,4 @@
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
 import { ServicesComponent } from './features/services/services.component';
 import { AppointmentComponent } from './features/appointment/appointment.component';
@@ -11,11 +11,12 @@ import { MyappointmentsDetailComponent } from './features/myappointments/myappoi
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { DashboardComponent } from './features/admin/dashboard/dashboard.component';
 import { AdminLayoutComponent } from './features/admin/admin-layout/admin-layout.component';
-import { NgModule } from '@angular/core';
 import { AppointmentsComponent } from './features/admin/appointments/appointments.component';
 import { PetsComponent } from './features/admin/pets/pets.component';
 import { AdminLoginComponent } from './features/admin/admin-account/admin-login/admin-login.component';
 import { adminAuthGuard } from './core/guards/admin-auth-guard';
+import { MyPetsComponent } from './features/my-pets/my-pets.component';
+import { CreatePetComponent } from './features/create-pet/create-pet.component';
 
 export const routes: Routes = [
     {
@@ -36,10 +37,12 @@ export const routes: Routes = [
             {path: '', component: HomeComponent,},
             {path: 'services', component: ServicesComponent},
             {path: 'appointment', component: AppointmentComponent, canActivate: [authGuard]},
-            {path: 'appointment-success', component: AppointmentSuccessComponent},
-            {path: 'appointment-success/:id', component: AppointmentSuccessComponent},
-            {path: 'myappointments', component: MyappointmentsComponent},
-            {path: 'myappointments/:id', component: MyappointmentsDetailComponent},
+            {path: 'appointment-success', component: AppointmentSuccessComponent, canActivate: [authGuard]},
+            {path: 'appointment-success/:id', component: AppointmentSuccessComponent, canActivate: [authGuard]},
+            {path: 'myappointments', component: MyappointmentsComponent, canActivate: [authGuard]},
+            {path: 'myappointments/:id', component: MyappointmentsDetailComponent, canActivate: [authGuard]},
+            {path: 'create-pet', component: CreatePetComponent, canActivate: [authGuard]},
+            {path: 'mypets', component: MyPetsComponent, canActivate: [authGuard]},
             {path: 'account/login', component: LoginComponent},
             {path: 'account/register', component: RegisterComponent},
             {path: '**', redirectTo: '', pathMatch: 'full'},

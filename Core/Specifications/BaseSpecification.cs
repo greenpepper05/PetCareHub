@@ -11,7 +11,7 @@ public class BaseSpecification<T>(Expression<Func<T, bool>>? criteria) : ISpecif
 
     public Expression<Func<T, object>>? OrderByDescending { get; private set; }
 
-    public List<Expression<Func<T, object>>>? Includes { get; } = [];
+    public List<Expression<Func<T, object>>> Includes { get; } = [];
 
     public List<string> IncludeStrings { get; } = [];
 
