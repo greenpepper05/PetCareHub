@@ -52,5 +52,9 @@ public class GenericRepository<T>(PetHubContext context) : IGenericRepository<T>
     {
         return SpecificationEvaluator<T>.GetQuery(context.Set<T>().AsQueryable(), spec);
     }
-    
+
+    public async Task AddRangeAsync(IEnumerable<T> entities)
+    {
+        await context.Set<T>().AddRangeAsync(entities);
+    }
 }

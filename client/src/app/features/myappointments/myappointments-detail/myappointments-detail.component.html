@@ -1,9 +1,48 @@
 @if (appointment) {
-    <mat-card class="py-8 shadow-sm max-w-screen-lg mx-auto bg-white">
-        <div class="px-4 w-full">
-            <div class="flex justify-between items-center align-center">
-                <h2 class="text-2xl text-center font-semibold">Appointment summary for appointment #{{appointment.id}}</h2>
+    <div class="w-full my-32 ">
+        <h1 class="text-3xl font-bold text-center mb-10">Appointment Details</h1>
+        <div class="bg-white py-8 px-4 shadow-sm max-w-screen-lg mx-auto rounded-2xl">
+            <div class="px-4 w-full">
+                <div class="">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-semibold">Appointment Id: <strong>{{appointment.id}}</strong></h1>
+                        <p class="text-lg uppercase font-semibold w-1/2 ">Status: <strong class="bg-[var(--yellow)] px-4 py-2 rounded-md">{{ appointment.status}}</strong></p>
+                    </div>
+                    <div class="flex justify-between mb-4">
+                        <div class="w-1/2">
+                            <h1 class="text-lg font-semibold"> Appointment Date</h1>
+                            <p class="text-lg font-bold uppercase">{{ appointment.appointmentDate | date}}</p>
+                        </div>
+                        <div class="w-1/2">
+                            <h1 class="text-lg font-semibold">Service</h1>
+                            <p class="text-lg font-bold uppercase">{{ appointment.service?.name}}</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between mb-4">
+                        <div class="w-1/2">
+                            <h1 class="text-lg font-semibold">Pet name</h1>
+                            <p class="text-lg font-bold uppercase">{{ appointment.pet?.name }}</p>
+                        </div>
+                        <div class="w-1/2">
+                            <h1 class="text-lg font-semibold">Birthdate</h1>
+                            <p class="text-lg font-bold uppercase">{{ appointment.pet?.birthdate | date}}</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between mb-4">
+                        <div class="w-1/2">
+                            <h1 class="text-lg font-semibold">Breed</h1>
+                            <p class="text-lg font-bold uppercase">{{ appointment.pet?.breed }}</p>
+                        </div>
+                        <div class="w-1/2">
+                            <h1 class="text-lg font-semibold">Species</h1>
+                            <p class="text-lg font-bold uppercase">{{ appointment.pet?.species}}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </mat-card>
+        <div class="flex justify-center mt-5">
+            <button class="w-xs" routerLink="/myappointments" mat-flat-button>Done</button>
+        </div>
+    </div>
 }

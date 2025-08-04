@@ -2,22 +2,25 @@
     <h1 class="text-2xl font-bold mb-8">Appointment</h1>
     <div class="flex">
         <div class="w-3/4">
-            <div class="">
+            <div class="bg-white py-8 px-4">
                 <table class="min-w-full divide-y divide-gray-200 cursor-pointer">
-                    <thead class="uppercase text-gray-600 text-sm">
-                        <tr>
-                            <th>Appointment Date</th>
-                            <th>Pet name</th>
-                            <th>Services</th>
-                            <th>Status</th>
+                    <thead class="uppercase text-gray-600 text-sm h-[40px]">
+                        <tr class="text-lg">
+                            <th>ID</th>
+                            <th class="text-left">Pet name</th>
+                            <th class="text-left">Services</th>
+                            <th class="text-left">Appointment Date</th>
+                            <th class="text-left">Status</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @for (appointment of appointments; track appointment.id) {
-                            <tr>
-                                <td>{{ appointment.appointmentDate | date}}</td>
+                            <tr routerLink="/admin/appointment/{{appointment.id}}" 
+                                class="h-[40px] hover:bg-[var(--primary)] hover:text-[var(--white)]">
+                                <td class="text-center">{{ appointment.id}}</td>
                                 <td>{{ appointment.pet?.name}}</td>
                                 <td>{{ appointment.service?.name}}</td>
+                                <td>{{ appointment.appointmentDate | date}}</td>
                                 <td>{{ appointment.status}}</td>
                             </tr>
                         }

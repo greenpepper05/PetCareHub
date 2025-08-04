@@ -1,0 +1,25 @@
+.step {
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  transition: background 0.2s;
+}
+
+.step:hover {
+  background-color: #e0e0e0;
+}
+
+.step.active {
+  background-color: #4caf50;
+  color: white;
+  border-color: #4caf50;
+}
+
+.stepper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 1rem;
+}

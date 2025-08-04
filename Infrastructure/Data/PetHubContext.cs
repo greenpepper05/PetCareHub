@@ -12,6 +12,7 @@ public class PetHubContext(DbContextOptions options) : IdentityDbContext<AppUser
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<Service> Services { get; set; }
     public DbSet<Clinic> Clinics { get; set; }
+    public DbSet<ProcedureStep> ProcedureSteps { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

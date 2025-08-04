@@ -39,5 +39,8 @@ export class AppointmentService {
     return this.http.get<Appointment[]>(this.baseUrl + 'appointments/clinic');
   }
 
-  
+  updateStatus(id: number, status: string) {
+    return this.http.patch<Appointment>(`${this.baseUrl}appointments/${id}/status`, {status});
+  }
+
 }

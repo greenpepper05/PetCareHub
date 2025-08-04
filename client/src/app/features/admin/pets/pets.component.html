@@ -1,21 +1,34 @@
-<div class="h-screen p-4">
+<div class="h-screen p-4 w-full">
     <h1 class="text-2xl font-bold">Pets</h1>
-    <div class="">
-        <table>
-            <thead>
-                <tr>
-                    <th>Pet Id</th>
-                    <th>Pet Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (pet of pets; track pet.id){
-                    <tr>
-                        <td>{{ pet.id}}</td>
-                        <td>{{ pet.name}}</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <div class="flex">
+        <div class="w-3/4">
+            <div class="bg-white py-8 px-4">
+                <table class="min-w-full divide-y divide-gray-200 cursor-pointer">
+                    <thead class="uppercase text-gray-600 text-sm h-[40px]">
+                        <tr class="text-lg">
+                            <th>Id</th>
+                            <th class="text-left">Pet Name</th>
+                            <th class="text-left">Gender</th>
+                            <th class="text-left">Breed</th>
+                            <th class="text-left">Species</th>
+                            <th class="text-left">Birthdate</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @for (pet of pets; track pet.id){
+                            <tr class="h-[40px] hover:bg-[var(--primary)] hover:text-[var(--white)]">
+                                <td class="text-center">{{ pet.id }}</td>
+                                <td>{{ pet.name }}</td>
+                                <td>{{ pet.gender }}</td>
+                                <td>{{ pet.breed }}</td>
+                                <td>{{ pet.species }}</td>
+                                <td>{{ pet.birthdate | date }}</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
     </div>
 </div>

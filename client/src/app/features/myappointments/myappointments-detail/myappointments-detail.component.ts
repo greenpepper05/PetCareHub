@@ -1,13 +1,17 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AppointmentService } from '../../../core/services/appointment.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Appointment } from '../../../shared/models/appointment';
 import { MatCard } from '@angular/material/card';
+import { DatePipe } from '@angular/common';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-myappointments-detail',
   imports: [
-    MatCard
+    DatePipe,
+    MatButton,
+    RouterLink
   ],
   templateUrl: './myappointments-detail.component.html',
   styleUrl: './myappointments-detail.component.scss'
@@ -28,5 +32,5 @@ export class MyappointmentsDetailComponent implements OnInit {
       next: appointment => this.appointment = appointment
     })
   }
-  
+
 }

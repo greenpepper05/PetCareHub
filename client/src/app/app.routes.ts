@@ -17,6 +17,7 @@ import { AdminLoginComponent } from './features/admin/admin-account/admin-login/
 import { adminAuthGuard } from './core/guards/admin-auth-guard';
 import { MyPetsComponent } from './features/my-pets/my-pets.component';
 import { CreatePetComponent } from './features/create-pet/create-pet.component';
+import { AppointmentDetailComponent } from './features/admin/appointments/appointment-detail/appointment-detail.component';
 
 export const routes: Routes = [
     {
@@ -26,6 +27,7 @@ export const routes: Routes = [
         children: [
             { path: 'dashboard', component: DashboardComponent},
             { path: 'appointments', component: AppointmentsComponent},
+            { path: 'appointment/:id', component: AppointmentDetailComponent},
             { path: 'pets', component: PetsComponent},
         ]
     },

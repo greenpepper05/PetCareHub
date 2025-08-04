@@ -20,7 +20,7 @@ public class PetHubContextSeed
                 }
             }
         }
-        
+
         if (!userManager.Users.Any(x => x.UserName == "admin4@test.com"))
         {
             var user = new AppUser
@@ -90,5 +90,6 @@ public class PetHubContextSeed
             context.Services.AddRange(services);
             await context.SaveChangesAsync();
         }
+        
     }
 }

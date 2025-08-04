@@ -67,7 +67,7 @@ export class AppointmentComponent implements OnInit{
 
   servicesForm = this.fb.group({
     serviceId: ['']
-  })
+  });
 
   async onSubmit() {
     const currentUser = this.accountSerive.currentUser();

@@ -1,16 +1,26 @@
 using API.DTOs;
+using API.Job;
 using API.Middleware;
 using Core.Entities;
 using Core.Interfaces;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Infrastructure.Data;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddHangfire(config =>
+{
+    config.UseMemoryStorage();
+});
+builder.Services.AddHangfireServer();
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<PetHubContext>(opt =>
@@ -29,8 +39,9 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 // builder.Services.AddValidatorsFromAssemblyContaining<CreateServiceDtoValidator>();
 // builder.Services.AddValidatorsFromAssemblyContaining<CreateServiceScheduleDtoValidator>();
-
-
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<AppointmentReminderJob>();
 
 var app = builder.Build();
 
@@ -46,6 +57,13 @@ app.UseAuthorization();
 
 app.UseDefaultFiles();
 // app.UseStaticFiles();
+app.UseHangfireDashboard("/hangfire");
+RecurringJob.AddOrUpdate<AppointmentReminderJob>(
+    "daily-appointment-reminder",
+    job => job.SendReminderAsync(),
+    Cron.Daily()
+);
+// BackgroundJob.Enqueue<AppointmentReminderJob>(job => job.SendReminderAsync());
 
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<AppUser>();

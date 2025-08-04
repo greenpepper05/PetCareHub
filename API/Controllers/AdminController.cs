@@ -3,6 +3,7 @@ using API.Extensions;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -129,12 +130,12 @@ public class AdminController(IUnitOfWork unit,
 
         return BadRequest("Problem updating service");
 
-        
+
     }
 
     // DELETE SERVICE
 
-    [HttpPut("{id}")]
+    [HttpDelete("{id}")]
     public async Task<ActionResult> UpdateService(int id, ServiceDto dto)
     {
         var service = await unit.Repository<Service>().GetByIdAsync(id);
@@ -143,5 +144,7 @@ public class AdminController(IUnitOfWork unit,
         unit.Repository<Service>().Remove(service);
         return NoContent();
     }
+
+    
 
 }

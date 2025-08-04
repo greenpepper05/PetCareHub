@@ -5,6 +5,7 @@ namespace Core.Specifications;
 
 public class BaseSpecification<T>(Expression<Func<T, bool>>? criteria) : ISpecification<T>
 {
+
     public Expression<Func<T, bool>>? Criteria => criteria;
 
     public Expression<Func<T, object>>? OrderBy { get; private set; }
@@ -52,3 +53,16 @@ public class BaseSpecification<T>(Expression<Func<T, bool>>? criteria) : ISpecif
         IsDistinct = true;
     }
 }
+
+
+
+// public abstract class BaseSpecification<T> : ISpecification<T>
+// {
+//     public Expression<Func<T, bool>> Criteria { get; protected set; }
+//     public List<Expression<Func<T, object>>> Include { get; } = new();
+
+//     protected void AddIncludes(Expression<Func<T, object>> includeExpression)
+//     {
+//         Include.Add(includeExpression);
+//     }
+// }

@@ -3,7 +3,9 @@ using API.DTOs;
 using API.Extensions;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Models;
 using Core.Specifications;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +14,7 @@ namespace API.Controllers;
 
 [Authorize]
 public class AppointmentsController(IUnitOfWork unit,
-    UserManager<AppUser> userManager) : BaseApiController
+    UserManager<AppUser> userManager, IEmailService emailService) : BaseApiController
 {
 
     // CREATE APPOINTMENTS
@@ -31,7 +33,8 @@ public class AppointmentsController(IUnitOfWork unit,
             PetId = appointmentDto.PetId,
             OwnerId = user.Id,
             Notes = appointmentDto.Notes,
-            ClinicId = appointmentDto.ClinicId
+            ClinicId = appointmentDto.ClinicId,
+
         };
 
         unit.Repository<Appointment>().Add(appointment);
@@ -87,9 +90,49 @@ public class AppointmentsController(IUnitOfWork unit,
         return Ok(appointments);
     }
 
+    [HttpPatch("{id}/status")]
+    public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateAppointmentStatusDto dto)
+    {
+        var spec = new AppointmentWithUserSpec(id);
+
+        var appointment = await unit.Repository<Appointment>().GetEntityWithSpec(spec);
+
+        if (appointment == null) return NotFound();
+
+        appointment.Status = dto.Status;
+        await unit.Complete();
+
+        var subject = "";
+        var message = "";
+
+        switch (dto.Status.ToLower())
+        {
+            case "confirmed":
+                subject = "Your Appointment is Confirmed";
+                message = $"Hello <strong>{appointment?.Owner?.FirstName} {appointment?.Owner?.LastName}</strong>,  <br><br>Your appointment on {appointment?.AppointmentDate:MMMM dd, yyyy} has been <strong>confirmed</strong>. <br><br>Thank you!";
+                break;
+            case "cancelled":
+                subject = "Appointment Cancelled";
+                message = $"Hello <strong>{appointment?.Owner?.FirstName} {appointment?.Owner?.LastName}</strong>, <br><br>Your appoiuntment on {appointment?.AppointmentDate:MMMM dd, yyyy} has been <strong>cancelled.</strong> <br><br>Thank you!";
+                break;
+
+        }
+
+        var email = appointment?.Owner?.Email;
+
+        if (!string.IsNullOrEmpty(subject) && !string.IsNullOrEmpty(message) && !string.IsNullOrWhiteSpace(email))
+        {
+            await emailService.SendEmailAsync(email, subject, message);
+
+        }
+
+        return NoContent();
+    }
+
     // UPDATE APPOINTMENT
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
+
     public async Task<ActionResult> UpdateAppointment(int id, UpdateAppointmentDto dto)
     {
         var user = await userManager.GetUserByEmail(User);
@@ -112,7 +155,7 @@ public class AppointmentsController(IUnitOfWork unit,
 
     // DELETE APPOINTMENT
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<ActionResult> CancelAppointment(int id)
     {
         var user = await userManager.GetUserByEmail(User);
@@ -129,4 +172,95 @@ public class AppointmentsController(IUnitOfWork unit,
 
         return BadRequest("Failed to cancel appointment");
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("confirm/{id}")]
+    public async Task<IActionResult> ConfirmAppointment(int id)
+    {
+        var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
+
+        if (appointment == null) return NotFound();
+
+        appointment.Status = "Confirmed";
+
+        await unit.Complete();
+
+        var user = await userManager.FindByIdAsync(appointment.OwnerId);
+        await emailService.SendEmailAsync(
+            user?.Email!,
+            "Your Appointment is Confirmed",
+            $"<p> Hi {user?.FirstName} {user?.LastName}, </p><p>Your appointment on <strong>{appointment.AppointmentDate:MMMM dd, yyyy}</strong> has been confirmed.</p>"
+        );
+
+        return Ok();
+    }
+
+    [HttpPost("{id}/step")]
+    public async Task<ActionResult> UpdateAppointmentStep(int id, [FromBody] StepDto dto)
+    {
+        var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
+        if (appointment == null) return NotFound();
+
+        appointment.Status = dto.Step;
+        await unit.Complete();
+
+        var user = await userManager.FindByIdAsync(appointment.OwnerId);
+        if (user == null) return NotFound("User not found");
+
+        string subject = $"Appointment Step Update - {dto.Step}";
+        string body = dto.Step switch
+        {
+            "Brushing" => $"<p>Hi {user.FirstName},</p><p>Your pet's grooming has started with <strong>Brushing</strong>.</p>",
+            "Bathing" => $"<p>Hi {user.FirstName},</p><p>Your pet is now being <strong>bathed</strong>.</p>",
+            "Drying" => $"<p>Hi {user.FirstName},</p><p>Your pet is now in the <strong>drying</strong> phase.</p>",
+            "Ear Cleaning" => $"<p>Hi {user.FirstName},</p><p>We are now <strong>cleaning your pet's ears</strong>.</p>",
+            "Nail Trimming" => $"<p>Hi {user.FirstName},</p><p>Your pet's <strong>nails are being trimmed</strong>.</p>",
+            "Coat Trimming" => $"<p>Hi {user.FirstName},</p><p>We are <strong>trimming your pet's coat</strong> for a fresh look.</p>",
+            "Completed" => $"<p>Hi {user.FirstName},</p><p>Your pet's grooming session has been <strong>completed</strong>. You may now pick them up.</p>",
+            _ => $"<p>Hi {user.FirstName},</p><p>Status updated to: <strong>{dto.Step}</strong>.</p>"
+        };
+
+        await emailService.SendEmailAsync(user.Email!, subject, body);
+
+        return Ok();
+    }
+
+    // [HttpPut("{id}/start")]
+    // public async Task<ActionResult> StartAppointment(int id)
+    // {
+    //     var spec = new AppointmentWithServiceProcedureSpec(id);
+
+    //     var appointment = await unit.Repository<Appointment>().GetEntityWithSpec(spec);
+
+    //     if (appointment == null) return NotFound("Appointment not found");
+
+    //     appointment.Status = AppointmentStatus.Ongoing;
+
+    //     if (appointment.Service?.Name == "Pet Grooming")
+    //     {
+    //         if (appointment.Procedures == null)
+    //             appointment.Procedures = new List<ServiceProcedure>();
+
+    //         var groomingSteps = new List<string>
+    //         {
+    //             "Brushing", "Bathing", "Drying", "Earing Cleaning", "Nail Trimming", "Coat Trimming"
+    //         };
+
+    //         var procedureSteps = groomingSteps.Select(step => new ProcedureStep
+    //         {
+    //             AppointmentId = appointment.Id,
+    //             StepName = step,
+    //             IsCompleted = false,
+    //             StartedAt = null,
+    //             CompletedAt = null
+    //         });
+
+    //         await unit.Repository<ProcedureStep>().AddRangeAsync(procedureSteps);
+
+    //         await unit.Complete();
+
+    //     }
+
+    //     return NoContent();
+    // }
 }

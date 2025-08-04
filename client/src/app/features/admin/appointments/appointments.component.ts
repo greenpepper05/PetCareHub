@@ -5,6 +5,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatCalendar, MatDatepicker, MatDatepickerModule } from "@angular/material/datepicker";
 import { AppointmentService } from '../../../core/services/appointment.service';
 import { Appointment } from '../../../shared/models/appointment';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-appointments',
@@ -13,7 +14,8 @@ import { Appointment } from '../../../shared/models/appointment';
     CommonModule,
     MatDatepickerModule,
     MatCardModule,
-    DatePipe
+    DatePipe,
+    RouterLink
 ],
   templateUrl: './appointments.component.html',
   styleUrl: './appointments.component.scss'
