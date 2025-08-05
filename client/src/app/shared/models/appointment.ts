@@ -1,16 +1,20 @@
-import { Pet } from "./pet";
-import { Service } from "./services";
-import { User } from "./user";
-
 export type Appointment = {
-    id: number;
-    serviceId: number;
-    status: string;
-    appointmentDate: string;
-    petId: number;
-    ownerId: string;
-    clinicId: number;
-    pet?: Pet;
-    service?: Service;
-    owner?: User;
+  id: number;
+  appointmentDate: string;
+  status: string;
+  notes: string | null;
+  clinicId: number;
+  clinicName: string | null;
+  ownerId: string;
+  ownerEmail: string;
+
+  petId: number;
+  petName: string;
+  petBreed: string;
+  petSpecies: string;
+  petGender: string;
+  petBirthdate: string;
+
+  serviceId: number;
+  serviceName: string;
 }

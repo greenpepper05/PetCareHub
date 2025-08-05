@@ -1,9 +1,9 @@
-using System.Formats.Asn1;
 using API.DTOs;
 using API.Extensions;
+using API.RequestHelpters;
+using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
-using Core.Models;
 using Core.Specifications;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +14,7 @@ namespace API.Controllers;
 
 [Authorize]
 public class AppointmentsController(IUnitOfWork unit,
-    UserManager<AppUser> userManager, IEmailService emailService) : BaseApiController
+    UserManager<AppUser> userManager, IEmailService emailService, IMapper mapper) : BaseApiController
 {
 
     // CREATE APPOINTMENTS
@@ -56,38 +56,54 @@ public class AppointmentsController(IUnitOfWork unit,
 
         if (appointment == null) return NotFound();
 
-        return Ok(appointment);
+        var appointmentDto = mapper.Map<AppointmentDto>(appointment);
+
+        return Ok(appointmentDto);
     }
 
     // GET ALL APPOINTMENTS
-
+    [Authorize(Roles = "Customer")]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<Appointment>>> GetAppointments()
     {
         var user = await userManager.GetUserByEmail(User);
         if (user == null) return Unauthorized();
 
-        var spec = new AppointmentByOwnerIdWithIncludeSpec(user.Id);
-
+        var spec = new AppointmentByOwnerIdSpec(user.Id);
         var appointments = await unit.Repository<Appointment>().ListAsync(spec);
 
-        return Ok(appointments);
+        var data = mapper.Map<IReadOnlyList<AppointmentDto>>(appointments);
+
+        return Ok(data);
     }
 
     // GET APPOINTMENT BY CLINIC ID
 
     [Authorize(Roles = "Admin")]
     [HttpGet("clinic")]
-    public async Task<ActionResult<IReadOnlyList<Appointment>>> GetAppointmentByClinic()
+    public async Task<ActionResult<IReadOnlyList<Appointment>>> GetAppointmentByClinic(
+        [FromQuery] AppointmentSpecParams specParams
+    )
     {
         var user = await userManager.GetUserByEmail(User);
         if (user == null) return Unauthorized();
 
-        var spec = new AppointmentSpec(user.ClinicId);
+        var clinicId = user.ClinicId;
 
+        var spec = new AppointmentSpecification(specParams, clinicId);
+        var countSpec = new AppointmentSpecification(specParams, clinicId);
+
+        var totalItems = await unit.Repository<Appointment>().CountAsync(countSpec);
         var appointments = await unit.Repository<Appointment>().ListAsync(spec);
 
-        return Ok(appointments);
+        var data = mapper.Map<IReadOnlyList<AppointmentDto>>(appointments);
+        
+        return Ok(new Pagination<AppointmentDto>(
+            specParams.PageIndex,
+            specParams.PageSize,
+            totalItems,
+            data
+        ));
     }
 
     [HttpPatch("{id}/status")]

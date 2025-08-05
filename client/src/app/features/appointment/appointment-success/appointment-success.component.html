@@ -11,12 +11,12 @@
                         <p class="text-lg leading-loose">
                             Name: 
                             <strong>
-                                {{ appointment.pet?.name }}
+                                {{ appointment.petName }}
                             </strong></p>
                         <p class="text-lg leading-loose">
                             Birthdate: 
                             <strong>
-                                {{ appointment.pet?.birthdate | date}}
+                                {{ appointment.petBirthdate | date}}
                             </strong>
                         </p>
                     </div>
@@ -24,13 +24,13 @@
                         <p class="text-lg leading-loose">
                             Breed: 
                             <strong>        
-                                {{ appointment.pet?.breed  }}
+                                {{ appointment.petBreed  }}
                             </strong>
                         </p>
                         <p class="text-lg leading-loose">
                             Species: 
                             <strong>
-                                {{ appointment.pet?.species }}
+                                {{ appointment.petSpecies }}
                             </strong>
                         </p>
                     </div>
@@ -43,7 +43,7 @@
                         <p class="text-lg leading-loose">
                             Service name: 
                             <strong>
-                                {{ appointment.service?.name || 'N/A' }}
+                                {{ appointment.serviceName || 'N/A' }}
                             </strong>
                         </p>
                         <p class="text-lg leading-loose">

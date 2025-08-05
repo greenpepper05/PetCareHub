@@ -235,6 +235,49 @@ namespace Infrastructure.Migrations
                     b.ToTable("Pets");
                 });
 
+            modelBuilder.Entity("Core.Entities.PetServiceHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClinicId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataOfService")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PetId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VisitType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
+
+                    b.HasIndex("ClinicId");
+
+                    b.HasIndex("PetId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("PetServiceHistories");
+                });
+
             modelBuilder.Entity("Core.Entities.ProcedureStep", b =>
                 {
                     b.Property<int>("Id")
@@ -534,6 +577,39 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("ClinicId");
 
                     b.Navigation("Clinic");
+                });
+
+            modelBuilder.Entity("Core.Entities.PetServiceHistory", b =>
+                {
+                    b.HasOne("Core.Entities.Appointment", "Appointment")
+                        .WithMany()
+                        .HasForeignKey("AppointmentId");
+
+                    b.HasOne("Core.Entities.Clinic", "Clinic")
+                        .WithMany()
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.Pet", "Pet")
+                        .WithMany()
+                        .HasForeignKey("PetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.Service", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Appointment");
+
+                    b.Navigation("Clinic");
+
+                    b.Navigation("Pet");
+
+                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("Core.Entities.ProcedureStep", b =>

@@ -18,8 +18,8 @@
                             class="hover:bg-[var(--primary)] hover:text-[var(--white)] h-[40px]">
                                 <td class="text-center">{{ appointment.id}}</td>
                                 <td>{{ appointment.appointmentDate | date}}</td>
-                                <td>{{ appointment.service?.name }}</td>
-                                <td>{{ appointment.pet?.name }}</td>
+                                <td>{{ appointment.serviceName }}</td>
+                                <td>{{ appointment.petName }}</td>
                                 <td></td>
                             </tr>
                         }

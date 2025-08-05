@@ -14,25 +14,37 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @for (appointment of appointments; track appointment.id) {
+                        @for (appointment of appointments?.data; track appointment.id) {
                             <tr routerLink="/admin/appointment/{{appointment.id}}" 
                                 class="h-[40px] hover:bg-[var(--primary)] hover:text-[var(--white)]">
                                 <td class="text-center">{{ appointment.id}}</td>
-                                <td>{{ appointment.pet?.name}}</td>
-                                <td>{{ appointment.service?.name}}</td>
+                                <td>{{ appointment.petName}}</td>
+                                <td>{{ appointment.serviceName}}</td>
                                 <td>{{ appointment.appointmentDate | date}}</td>
                                 <td>{{ appointment.status}}</td>
                             </tr>
                         }
                     </tbody>
-                    
                 </table>
+                <mat-paginator
+                    class="items-center mt-4"
+                    (page)="handlePageEvent($event)"
+                    [length]="appointments?.count"
+                    [pageSize]="appointmentParams.pageSize"
+                    [showFirstLastButtons]="true"
+                    [pageSizeOptions]="pageSizeOptions"
+                    [pageIndex]="appointmentParams.pageNumber - 1"
+                    aria-label="Select page"
+                >
+                </mat-paginator>
             </div>
         </div>
         <div class="w-1/4 m-4">
+
             <mat-calendar [(selected)]="selected" class="shadow-sm rounded-lg">
 
             </mat-calendar>
+
         </div>
     </div>
     

@@ -1,9 +1,11 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { User } from '../../shared/models/user';
 import { Observable } from 'rxjs';
 import { Appointment } from '../../shared/models/appointment';
+import { Pagination } from '../../shared/models/pagination';
+import { AppointmentParams } from '../../shared/models/appointmentParams';
 
 @Injectable({
   providedIn: 'root'
@@ -35,12 +37,25 @@ export class AppointmentService {
     return this.http.get<Appointment[]>(this.baseUrl + 'appointments');
   }
 
-  getAppointmentByClinic() {
-    return this.http.get<Appointment[]>(this.baseUrl + 'appointments/clinic');
-  }
-
   updateStatus(id: number, status: string) {
     return this.http.patch<Appointment>(`${this.baseUrl}appointments/${id}/status`, {status});
   }
 
+
+  getAppointmentByClinic(appointmentParams: AppointmentParams) {
+    let params = new HttpParams();
+
+    if (appointmentParams.sort) {
+      params = params.append('sort', appointmentParams.sort);
+    }
+
+    if (appointmentParams.search) {
+      params = params.append('search', appointmentParams.search);
+    }
+
+    params = params.append('pageSize', appointmentParams.pageSize);  
+    params = params.append('pageIndex', appointmentParams.pageNumber);
+    
+    return this.http.get<Pagination<Appointment>>(this.baseUrl + 'appointments/clinic', { params });
+  }
 }

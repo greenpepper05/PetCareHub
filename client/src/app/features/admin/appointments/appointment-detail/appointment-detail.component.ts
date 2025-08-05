@@ -48,7 +48,7 @@ export class AppointmentDetailComponent implements OnInit {
     this.appointmentService.getAppointmentDetail(+id).subscribe({
       next: appointment => {
         this.appointment = appointment;
-        this.services = appointment?.service;
+        // this.services = appointment;
       } 
     })
   }

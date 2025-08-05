@@ -42,7 +42,7 @@ export class CreatePetComponent {
     species: ['', Validators.required],
     birthdate: ['', Validators.required],
     gender: ['', Validators.required],
-    ownerid: [this.currentUser]
+    ownerId: [this.currentUser]
   });
 
 

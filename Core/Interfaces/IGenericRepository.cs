@@ -14,4 +14,5 @@ public interface IGenericRepository<T> where T : BaseEntity
     void Remove(T entity);
     bool Exists(int id);
     Task AddRangeAsync(IEnumerable<T> entities);
+    Task<int> CountAsync(ISpecification<T> spec);
 }

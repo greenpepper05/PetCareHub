@@ -1,3 +1,6 @@
+@if (busyService.loading) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}
 <header class="shadow-md p-3 w-full">
     <div class="flex align-middle items-center justify-between max-w-screen-2xl mx-auto py-6">
         <div routerLink="/" class="flex align-middle items-center cursor-pointer">
@@ -21,7 +24,7 @@
                 <button mat-flat-button routerLink="/myappointments">My Appointments</button>
                 <button mat-stroked-button (click)="logout()">
                     Logout
-                </button>   
+                </button>
             } @else {
                 <button routerLink="/account/register" mat-stroked-button class="">        
                     Register

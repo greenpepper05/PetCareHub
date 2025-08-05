@@ -7,6 +7,8 @@ import { MatButton } from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatListModule} from '@angular/material/list';
 import {MatIconModule} from '@angular/material/icon';
+import { BusyService } from '../../../core/services/busy.service';
+import { MatProgressBar } from '@angular/material/progress-bar';
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
@@ -18,7 +20,8 @@ import {MatIconModule} from '@angular/material/icon';
     MatButton,
     MatListModule,
     MatDividerModule,
-    MatIconModule
+    MatIconModule,
+    MatProgressBar
   ],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.scss'
@@ -26,7 +29,8 @@ import {MatIconModule} from '@angular/material/icon';
 export class AdminLayoutComponent {
   accountService = inject(AccountService);
   private router = inject(Router);
-
+  busyService = inject(BusyService);
+  
   logout() {
     this.accountService.logout().subscribe({
       next: () => {

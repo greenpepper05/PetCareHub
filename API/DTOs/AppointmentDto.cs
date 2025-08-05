@@ -5,15 +5,20 @@ namespace API.DTOs;
 public class AppointmentDto
 {
     public int Id { get; set; }
-    [Required(ErrorMessage = "Appointment date is required")]
     public DateTime AppointmentDate { get; set; }
-    [Required(ErrorMessage = "Service is required")]
-    public int ServiceId { get; set; }
-    [Required(ErrorMessage = "Pet is required")]
+    public string Status { get; set; } = string.Empty;
     public int PetId { get; set; }
-    public string? Notes { get; set; }
-    [Required(ErrorMessage = "Owner is required")]
-    public string OwnerId { get; set; } = string.Empty;
-    [Required(ErrorMessage = "Clinic is required")]
+    public string PetName { get; set; } = string.Empty;
+    public string PetBreed { get; set; } = string.Empty;
+    public string PetSpecies { get; set; } = string.Empty;
+    public string PetGender { get; set; } = string.Empty;
+    public string PetBirthdate { get; set; } = string.Empty;
+    public int ServiceId { get; set; }
+    public string ServiceName { get; set; } = string.Empty;
     public int ClinicId { get; set; }
+    public string ClinicName { get; set; } = string.Empty;
+    public string OwnerId { get; set; } = string.Empty;
+    public string OwnerEmail { get; set; } = string.Empty;
+    public string? Notes { get; set; }
+
 }

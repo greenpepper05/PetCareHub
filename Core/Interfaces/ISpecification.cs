@@ -11,5 +11,13 @@ public interface ISpecification<T>
     List<string> IncludeStrings { get; }
     IQueryable<T> ApplyCriteria(IQueryable<T> query);
     bool IsDistinct { get; }
+    int Take { get; }
+    int Skip { get; }
+    bool IsPagingEnabled { get; }
 
+}
+
+public interface ISpecification<T, TResult> : ISpecification<T>
+{
+    Expression<Func<T, TResult>>? Select { get; }
 }

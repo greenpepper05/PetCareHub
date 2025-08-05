@@ -1,0 +1,33 @@
+<div class="h-screen  p-4">
+    <h1 class="text-2xl font-bold mb-8">Pet Services</h1>
+    <div class="flex">
+        <div class="w-3/4">
+            <table class="min-w-full divide-y divide-gray-200 cursor-pointer">
+                <thead class="uppercase text-gray-600 text-sm h-[40px]">
+                    <tr class="text-lg">
+                        <th>ID</th>
+                        <th class="text-left">Pet name</th>
+                        <th class="text-left">Services</th>
+                        <th class="text-left">Appointment Date</th>
+                        <th class="text-left">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @for (history of histories; track history.id) {
+                        <tr routerLink="/admin/pet-service/{{history.petId}}" 
+                            class="h-[40px] hover:bg-[var(--primary)] hover:text-[var(--white)]">
+                            <td class="text-center">{{ history.id}}</td>
+                            <td>{{ history.petName}}</td>
+                            <td>{{ history.serviceName}}</td>
+                            <td>{{ history.dateofService | date}}</td>
+                            <td>{{ history.notes}}</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="w-1/4 flex justify-end">
+            <button mat-flat-button routerLink="/admin/pet-service/create">Create Service</button>
+        </div>
+    </div>
+</div>
