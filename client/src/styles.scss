@@ -1,4 +1,6 @@
 @use '@angular/material' as mat;
+@import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&family=Margarine&display=swap');
+
 
 :root {
   @include mat.button-overrides((
@@ -11,10 +13,17 @@
   --secondary: #3AB4F2;
   --white: #F6F6F6;
   --yellow: #F2DF3A;
+
 }
 
 body {
   background-color: var(--white);
+  font-family: 'Cabin', sans-serif;
+  font-weight: 400;
+}
+
+h1, h2, h3 {
+  font-family: 'Margarine', sans-serif;
 }
 
 .mdc-notched-outline__notch {

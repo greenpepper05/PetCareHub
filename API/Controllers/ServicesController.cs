@@ -16,4 +16,12 @@ public class ServicesController(IUnitOfWork unit) : BaseApiController
         return Ok(services);
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<IReadOnlyList<Service>>> GetService(int id)
+    {
+        var service = await unit.Repository<Service>().GetByIdAsync(id);
+
+        return Ok(service);
+    }
+
 }

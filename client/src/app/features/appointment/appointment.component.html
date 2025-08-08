@@ -7,7 +7,7 @@
             <mat-step label="Select/Create Pet Profile">
                 <form [formGroup]="appointmentForm">
                 <div class="flex justify-center items-center gap-4 mt-4">
-                        <mat-form-field appearance="fill" class="w-full max-w-md">        
+                        <mat-form-field appearance="outline" class="w-full max-w-md">        
                             <mat-label>Select a Pet</mat-label>
                             <mat-select formControlName="petid" >
                                 @for (pet of pets; track pet.id) {

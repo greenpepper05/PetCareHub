@@ -4,7 +4,7 @@ export interface PetServiceHistory {
     petName: string;
     serviceName: string;
     clinicName: string;
-    dateofService: string;
+    dateOfService: string;
     notes?: string;
     appointmentId?: number;
 }

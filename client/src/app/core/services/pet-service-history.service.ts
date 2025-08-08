@@ -11,12 +11,12 @@ export class PetServiceHistoryService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
-  createPetServiceHistory(history: Partial<PetServiceHistory>) {
-    return this.http.post<PetServiceHistory>(this.baseUrl + 'petservicehistory', history);
+  createPetServiceHistory(payload: any): Observable<PetServiceHistory> {
+    return this.http.post<PetServiceHistory>(this.baseUrl + 'petservicehistory', payload);
   }
 
-  getPetHistoryByPetId(petId: number): Observable<PetServiceHistory[]> {
-    return this.http.get<PetServiceHistory[]>(`${this.baseUrl}petservicehistory/${petId}`)
+  getPetHistoryByPetId(id: number){
+    return this.http.get<PetServiceHistory>(this.baseUrl + 'petservicehistory/' + id);
   }
 
   getAll(): Observable<PetServiceHistory[]> {

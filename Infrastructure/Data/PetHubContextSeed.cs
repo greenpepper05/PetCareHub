@@ -9,6 +9,18 @@ public class PetHubContextSeed
         UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
     {
 
+        if (!context.Clinics.Any())
+        {
+            var clinic = new Clinic
+            {
+                OwnerId = "system",
+                ClinicName = "default",
+            };
+
+            context.Clinics.AddRange(clinic);
+            await context.SaveChangesAsync();
+        }
+        
         if (!roleManager.Roles.Any())
         {
             string[] roles = ["SuperAdmin", "Admin", "Customer"];
@@ -64,17 +76,7 @@ public class PetHubContextSeed
             await context.SaveChangesAsync();
         }
 
-        if (!context.Clinics.Any())
-        {
-            var clinic = new Clinic
-            {
-                OwnerId = "system",
-                ClinicName = "default",
-            };
-
-            context.Clinics.AddRange(clinic);
-            await context.SaveChangesAsync();
-        }
+        
 
         if (!context.Services.Any())
         {

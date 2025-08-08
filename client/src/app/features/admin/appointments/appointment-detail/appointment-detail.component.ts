@@ -5,7 +5,7 @@ import { Appointment } from '../../../../shared/models/appointment';
 import { MatButton } from '@angular/material/button';
 import { DatePipe } from '@angular/common';
 import { MatFormField, MatLabel, MatOption, MatSelect } from '@angular/material/select';
-import { Service } from '../../../../shared/models/services';
+import { Services } from '../../../../shared/models/services';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment.development';
@@ -32,7 +32,7 @@ export class AppointmentDetailComponent implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private http = inject(HttpClient);
   appointment?: Appointment;
-  services?: Service;
+  services?: Services;
 
   ngOnInit(): void {
     this.loadAppointment();

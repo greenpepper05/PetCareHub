@@ -23,7 +23,7 @@ import { NotFoundComponent } from './shared/components/not-found/not-found.compo
 import { ServerErrorComponent } from './shared/components/server-error/server-error.component';
 import { PetServiceComponent } from './features/admin/pet-service/pet-service.component';
 import { PetServiceDetailComponent } from './features/admin/pet-service/pet-service-detail/pet-service-detail.component';
-import { CreateComponent } from './features/admin/pet-service/create/create.component';
+import { ServicesDetailComponent } from './features/services/services-detail/services-detail.component';
 
 export const routes: Routes = [
     {
@@ -35,7 +35,6 @@ export const routes: Routes = [
             { path: 'appointments', component: AppointmentsComponent},
             { path: 'appointment/:id', component: AppointmentDetailComponent},
             { path: 'pets', component: PetsComponent},
-            { path: 'pet-service/create', component: CreateComponent},
             { path: 'pet-service', component: PetServiceComponent},
             { path: 'pet-service/:id', component: PetServiceDetailComponent},
 
@@ -48,6 +47,7 @@ export const routes: Routes = [
         children: [
             {path: '', component: HomeComponent,},
             {path: 'services', component: ServicesComponent},
+            {path: 'services-detail/:id', component: ServicesDetailComponent},
             {path: 'appointment', component: AppointmentComponent, canActivate: [authGuard]},
             {path: 'appointment-success', component: AppointmentSuccessComponent, canActivate: [authGuard]},
             {path: 'appointment-success/:id', component: AppointmentSuccessComponent, canActivate: [authGuard]},

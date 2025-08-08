@@ -10,12 +10,12 @@ import { MatInput } from '@angular/material/input';
 @Component({
   selector: 'app-register',
   imports: [
-    MatCard,
     MatButton,
     MatFormField,
     MatLabel,
     ReactiveFormsModule,
-    MatInput
+    MatInput,
+    RouterLink
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'

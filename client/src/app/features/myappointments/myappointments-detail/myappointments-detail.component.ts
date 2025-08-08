@@ -2,7 +2,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { AppointmentService } from '../../../core/services/appointment.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Appointment } from '../../../shared/models/appointment';
-import { MatCard } from '@angular/material/card';
 import { DatePipe } from '@angular/common';
 import { MatButton } from '@angular/material/button';
 
@@ -34,3 +33,4 @@ export class MyappointmentsDetailComponent implements OnInit {
   }
 
 }
+

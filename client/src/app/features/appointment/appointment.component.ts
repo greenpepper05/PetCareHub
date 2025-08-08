@@ -90,6 +90,7 @@ export class AppointmentComponent implements OnInit{
           clinicid: clinicId
     };
 
+    console.log(data);
     this.appointmentService.createAppointment(data).subscribe({
       next: (response : Appointment) => {
         this.appointmentService.appointmentComplete = true;

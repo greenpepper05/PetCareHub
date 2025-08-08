@@ -1,39 +1,37 @@
 <div class="h-screen p-4">
     <h1 class="text-2xl font-bold mb-8">Pet Service Detail</h1>
     <div class="bg-white p-8 shadow-md rounded-md w-1/2">
-                <div class="flex justify-between items-center mb-8">
-                    <h1 class="text-xl font-bold"></h1>
-                    <button routerLink="/admin/pet-service" mat-stroked-button>Back</button>
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-xl font-bold"></h1>
+            <button routerLink="/admin/pet-service" mat-stroked-button>Back</button>
+        </div>
+        <div class="">
+            <div class="flex justify-between mb-4">
+                <div class="w-1/2">
+                    <h1 class="text-lg font-semibold"> Pet Id</h1>
+                    <p class="text-lg font-bold uppercase">{{petService?.petId}}</p>
                 </div>
-                <div class="">
-                    <div class="flex justify-between mb-4">
-                        <div class="w-1/2">
-                            <h1 class="text-lg font-semibold"> Pet Id</h1>
-                            <p class="text-lg font-bold uppercase">3002</p>
-                        </div>
-                        <div class="w-1/2">
-                            <h1 class="text-lg font-semibold">Pet Name</h1>
-                            <p class="text-lg font-bold uppercase">Max</p>
-                        </div>
-                    </div>
-                    <div class="flex justify-between mb-4">
-                        <div class="w-1/2">
-                            <h1 class="text-lg font-semibold">Service Name</h1>
-                            <p class="text-lg font-bold uppercase">Vaccination</p>
-                        </div>
-                        <div class="w-1/2">
-                            <h1 class="text-lg font-semibold">Visit Type</h1>
-                            <p class="text-lg font-bold uppercase">Walk-in</p>
-                        </div>
-                    </div>
-                    <div class="flex justify-between mb-4">
-                        <div class="w-1/2">
-                            <h1 class="text-lg font-semibold">Note</h1>
-                            <p class="text-lg font-bold uppercase">Routine Vaccination</p>
-                        </div>
-                        
-                    </div>
-                    
+                <div class="w-1/2">
+                    <h1 class="text-lg font-semibold">Pet Name</h1>
+                    <p class="text-lg font-bold uppercase">{{petService?.petName}}</p>
                 </div>
             </div>
+            <div class="flex justify-between mb-4">
+                <div class="w-1/2">
+                    <h1 class="text-lg font-semibold">Service Name</h1>
+                    <p class="text-lg font-bold uppercase">Vaccination</p>
+                </div>
+                <div class="w-1/2">
+                    <h1 class="text-lg font-semibold">Visit Type</h1>
+                    <p class="text-lg font-bold uppercase">Walk-in</p>
+                </div>
+            </div>
+            <div class="flex justify-between mb-4">
+                <div class="w-1/2">
+                    <h1 class="text-lg font-semibold">Note</h1>
+                    <p class="text-lg font-bold uppercase">Routine Vaccination</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

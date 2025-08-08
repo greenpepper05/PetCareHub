@@ -3,20 +3,23 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
-using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 public class PetServiceHistoryController(IUnitOfWork unit, IMapper mapper) : BaseApiController
 {
-    [HttpGet("{petId}")]
-    public async Task<ActionResult<IReadOnlyList<PetServiceHistoryDto>>> GetHistoryByPetId(int petId)
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<PetServiceHistory>> GetHistoryByPetId(int id)
     {
-        var spec = new PetServiceHistorySpec(petId);
-        var histories = await unit.Repository<PetServiceHistory>().ListAsync(spec);
-        return Ok(mapper.Map<IReadOnlyList<PetServiceHistoryDto>>(histories));
-        
+        var spec = new PetServiceHistorySpec(id);
+        var histories = await unit.Repository<PetServiceHistory>().GetEntityWithSpec(spec);
+
+        return Ok(mapper.Map<PetServiceHistoryDto>(histories));
+
     }
 
     [HttpGet]
@@ -28,7 +31,7 @@ public class PetServiceHistoryController(IUnitOfWork unit, IMapper mapper) : Bas
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateHistory([FromBody]CreatePetServiceHistoryDto dto)
+    public async Task<ActionResult> CreateHistory([FromBody] CreatePetServiceHistoryDto dto)
     {
         try
         {

@@ -18,7 +18,7 @@ import { MatButton } from '@angular/material/button';
 export class PetServiceDetailComponent implements OnInit{
   private activatedRoute = inject(ActivatedRoute);
   private petServiceHistory = inject(PetServiceHistoryService);
-  petService?: PetServiceHistory[];
+  petService?: PetServiceHistory;
 
   ngOnInit(): void {
     this.loadPetHistory();
@@ -27,9 +27,10 @@ export class PetServiceDetailComponent implements OnInit{
   loadPetHistory() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (!id) return;
+
     this.petServiceHistory.getPetHistoryByPetId(+id).subscribe({
-      next: (petService) => {
-        this.petService = petService;
+      next: petServices => {
+        this.petService = petServices;
       } 
     })
   }
