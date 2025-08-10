@@ -41,7 +41,7 @@
         </div>
         <div class="w-1/4 m-4">
 
-            <mat-calendar [(selected)]="selected" class="shadow-sm rounded-lg">
+            <mat-calendar [(selected)]="selected" class="shadow-sm rounded-lg" (selectedChange)="onDateChange($event)">
 
             </mat-calendar>
 

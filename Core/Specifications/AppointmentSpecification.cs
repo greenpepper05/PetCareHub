@@ -5,25 +5,9 @@ namespace Core.Specifications;
 
 public class AppointmentSpecification : BaseSpecification<Appointment>
 {
-    public AppointmentSpecification(AppointmentSpecParams specParams, int clinicId) : base(x => x.ClinicId == clinicId)
+    public AppointmentSpecification(AppointmentSpecParams specParams, int clinicId, DateTime date) : base(x => x.ClinicId == clinicId && x.AppointmentDate.Date == date.Date)
     {
         ApplyPaging(specParams.PageSize * (specParams.PageIndex - 1), specParams.PageSize);
-
-        switch (specParams.Sort)
-        {
-            case "latestToOldest":
-                AddOrderByDescending(x => x.AppointmentDate);
-                break;
-            case "oldestToLates":
-                AddOrderBy(x => x.AppointmentDate);
-                break;
-            case "name":
-                AddOrderByDescending(x => x.Pet!.Name);
-                break;
-            default:
-                AddOrderByDescending(x => x.AppointmentDate);
-                break;
-        }
 
         AddInclude(x => x.Pet!);
         AddInclude(x => x.Service!);

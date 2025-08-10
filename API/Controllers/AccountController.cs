@@ -31,6 +31,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
             Email = user.Email!,
             FirstName = user.FirstName!,
             LastName = user.LastName!,
+            Contact = user.Contact!,
             Role = roles.FirstOrDefault()!
         });
 
@@ -46,6 +47,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
             FirstName = registerDto.FirstName,
             LastName = registerDto.LastName,
             Email = registerDto.Email,
+            Contact = registerDto.Contact,
             UserName = registerDto.Email,
             ClinicId = registerDto.ClinicId
         };
@@ -86,7 +88,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
     }
 
     // GET ALL PETS BY THE LOGGED-IN USER
-    
+
     [Authorize]
     [HttpGet("my-pets")]
     public async Task<ActionResult<IReadOnlyList<Pet>>> GetMyPets()
@@ -100,26 +102,26 @@ public class AccountController(SignInManager<AppUser> signInManager,
         return Ok(pets);
     }
 
-    // TO BE UPDATE LATER
+    [Authorize(Roles = "Admin")]
+    [HttpGet("user/{id}")]
+    public async Task<ActionResult<UserDto>> GetUserById(string id)
+    {
+        var user = await userManager.FindByIdAsync(id);
 
-    // [Authorize]
-    // public async Task<ActionResult<Address>> CreateOrUpdateAddress(AddressDto addressDto)
-    // {
-    //     var user = await signInManager.UserManager.GetUserByEmail(User);
+        if (user == null) return NotFound("User not found");
 
-    //     if (user.Address == null)
-    //     {
-    //         user.Address = addressDto.ToEntity();
-    //     }
-    //     else
-    //     {
-    //         user.Address.UpdateFromDto(addressDto);
-    //     }
+        var roles = await userManager.GetRolesAsync(user);
 
-    //     var result = await signInManager.UserManager.UpdateAsync(user);
+        return Ok(new UserDto
+        {
+            Id = user.Id,
+            Email = user.Email!,
+            FirstName = user.FirstName!,
+            LastName = user.LastName!,
+            Contact = user.Contact!,
+            Role = roles.FirstOrDefault() ?? "Customer"
+        });
+        
+    }
 
-    //     if (!result.Succeeded) return BadRequest("Problem updating user address");
-
-    //     return Ok(user.Address.ToDto());
-    // }
 }

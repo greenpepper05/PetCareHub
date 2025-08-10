@@ -9,19 +9,28 @@ import { MatButton } from '@angular/material/button';
 import { ServicesService } from '../../../core/services/services.service';
 import { Services } from '../../../shared/models/services';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatCalendar, MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { environment } from '../../../../environments/environment.development';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @Component({
   selector: 'app-pet-service',
   standalone: true,
+  providers: [provideNativeDateAdapter()],
   imports: [
     DatePipe,
     MatButton,
     ReactiveFormsModule,
+    RouterLink,
+    MatDatepickerModule
   ],
   templateUrl: './pet-service.component.html',
-  styleUrl: './pet-service.component.scss'
+  styleUrl: './pet-service.component.scss',
 })
 export class PetServiceComponent implements OnInit {
+  private baseUrl = environment.apiUrl;
   private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private services = inject(ServicesService);
@@ -32,6 +41,8 @@ export class PetServiceComponent implements OnInit {
   histories: PetServiceHistory[] = [];
   pets: Pet[] = [];
   serviceList: Services[] = [];
+  showForm = false;
+  selectedDate: Date = new Date();
 
   form = this.fb.group({
     ownerId: [''],
@@ -45,7 +56,8 @@ export class PetServiceComponent implements OnInit {
   });
   
   ngOnInit(): void {
-    this.loadHistory();
+    // this.loadHistory();
+    this.fetchHistoriesByDate(new Date());
     this.loadServices();
     this.loadPets();
     this.form.get('petId')?.valueChanges.subscribe((petId) => {
@@ -79,6 +91,15 @@ export class PetServiceComponent implements OnInit {
       }
     })
   }
+  
+  toggleForm() {
+    this.showForm = !this.showForm;
+    if (!this.showForm) {
+      this.form.reset({
+        visitType: '0'
+      });
+    }
+  }
 
   onSubmit() {
     if (this.form.valid) {
@@ -92,18 +113,29 @@ export class PetServiceComponent implements OnInit {
         notes:this.form.value.notes
       };
       
-      console.log(payload);
       this.service.createPetServiceHistory(payload).subscribe({
-        next: (response : PetServiceHistory) => 
-          
-          this.router.navigate(['/admin/pet-service/' + response.id])
-        
+        next: () => {
+          alert("Service added");
+          this.loadHistory();
+        }
         ,
         error: err => console.error('Failed to create history:', err)
       });
-
-      this.loadHistory();
+      
     }
+  }
+
+  fetchHistoriesByDate(date: Date) {
+    this.historyService.getPetHistoryByDateAndClinicId(date).subscribe({
+      next: data => {
+        this.histories = data;
+      }
+    })
+  }
+  
+  onDateChange(date: Date) {
+    this.selectedDate = date;
+    this.fetchHistoriesByDate(date);
   }
 
 }

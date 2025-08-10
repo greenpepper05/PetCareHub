@@ -1,37 +1,51 @@
-<div class="h-screen p-4">
-    <h1 class="text-2xl font-bold mb-8">Pet Service Detail</h1>
-    <div class="bg-white p-8 shadow-md rounded-md w-1/2">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-xl font-bold"></h1>
-            <button routerLink="/admin/pet-service" mat-stroked-button>Back</button>
+<div class="h-screen">
+
+    <div class="max-w-6xl mx-auto p-6 space-y-6">
+        <!-- Title/Header -->
+        <p class="text-3xl font-bold text-center">Pet Service Detail</p>
+        
+        <!-- Pet & Owner Info Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Pet Info Card -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-semibold mb-4">🐶 Pet Information</h3>
+                <div class="space-y-2 text-gray-700">
+                    <p><span class="font-semibold">Pet ID: </span><strong>{{ pet?.id }}</strong></p>
+                    <p><span class="font-semibold">Name: </span><strong>{{ pet?.name }}</strong></p>
+                    <p><span class="font-semibold">Birthday: </span><strong>{{ pet?.birthdate| date }}</strong></p>
+                    <p><span class="font-semibold">Breed: </span><strong>{{ pet?.breed }}</strong></p>
+                    <p><span class="font-semibold">Species: </span><strong>{{ pet?.species }}</strong></p>
+                </div>
+            </div>
+            
+            <!-- Owner Info Card -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-semibold mb-4">👤 Owner Information</h3>
+                <div class="space-y-2 text-gray-700">
+                    <p><span class="font-semibold">First Name: </span><strong>{{ owner?.firstName }}</strong></p>
+                    <p><span class="font-semibold">Last Name: </span><strong>{{ owner?.lastName }}</strong></p>
+                    <p><span class="font-semibold">Contact number: </span><strong>{{ owner?.contact}}</strong></p>
+                    <p><span class="font-semibold">Email: </span><strong>{{ owner?.email }}</strong></p>
+                    
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Service Detail Section -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-semibold mb-4">📝 Service Information</h3>
+                <div class="space-y-2 text-gray-700">
+                    <p><span class="font-semibold">Service ID: # </span><strong>{{ services?.id }}</strong></p>
+                    <p><span class="font-semibold">Service Name: </span><strong>{{ services?.serviceName }}</strong></p>
+                    <p><span class="font-semibold">Date of Service: </span><strong>{{ services?.dateOfService | date }}</strong></p>
+                    <p><span class="font-semibold">Visit Type: </span><strong>{{ services?.visitType}}</strong></p>
+                    <p><span class="font-semibold">Notes: </span><strong>{{ services?.notes ? services?.notes : 'N/A'}}</strong></p>
+                </div>
+            </div>
+            <div>
+                <button routerLink="/admin/pet-service" mat-flat-button>
+                    Done
+                </button>
+            </div>
         </div>
-        <div class="">
-            <div class="flex justify-between mb-4">
-                <div class="w-1/2">
-                    <h1 class="text-lg font-semibold"> Pet Id</h1>
-                    <p class="text-lg font-bold uppercase">{{petService?.petId}}</p>
-                </div>
-                <div class="w-1/2">
-                    <h1 class="text-lg font-semibold">Pet Name</h1>
-                    <p class="text-lg font-bold uppercase">{{petService?.petName}}</p>
-                </div>
-            </div>
-            <div class="flex justify-between mb-4">
-                <div class="w-1/2">
-                    <h1 class="text-lg font-semibold">Service Name</h1>
-                    <p class="text-lg font-bold uppercase">Vaccination</p>
-                </div>
-                <div class="w-1/2">
-                    <h1 class="text-lg font-semibold">Visit Type</h1>
-                    <p class="text-lg font-bold uppercase">Walk-in</p>
-                </div>
-            </div>
-            <div class="flex justify-between mb-4">
-                <div class="w-1/2">
-                    <h1 class="text-lg font-semibold">Note</h1>
-                    <p class="text-lg font-bold uppercase">Routine Vaccination</p>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>

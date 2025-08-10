@@ -80,9 +80,9 @@ public class AppointmentsController(IUnitOfWork unit,
     // GET APPOINTMENT BY CLINIC ID
 
     [Authorize(Roles = "Admin")]
-    [HttpGet("clinic")]
+    [HttpGet("clinic/by-date/")]
     public async Task<ActionResult<IReadOnlyList<Appointment>>> GetAppointmentByClinic(
-        [FromQuery] AppointmentSpecParams specParams
+        [FromQuery] AppointmentSpecParams specParams, [FromQuery] DateTime date
     )
     {
         var user = await userManager.GetUserByEmail(User);
@@ -90,8 +90,8 @@ public class AppointmentsController(IUnitOfWork unit,
 
         var clinicId = user.ClinicId;
 
-        var spec = new AppointmentSpecification(specParams, clinicId);
-        var countSpec = new AppointmentSpecification(specParams, clinicId);
+        var spec = new AppointmentSpecification(specParams, clinicId, date);
+        var countSpec = new AppointmentSpecification(specParams, clinicId, date);
 
         var totalItems = await unit.Repository<Appointment>().CountAsync(countSpec);
         var appointments = await unit.Repository<Appointment>().ListAsync(spec);

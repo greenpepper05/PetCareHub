@@ -6,7 +6,6 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-not-found',
   imports: [
-    MatIcon,
     MatButton,
     RouterLink
   ],

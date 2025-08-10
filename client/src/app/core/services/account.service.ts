@@ -44,4 +44,8 @@ export class AccountService {
   getAuthState() {
     return this.http.get<{isAuthenticated: boolean}>(this.baseUrl + 'account/auth-status');
   }
+
+  getUserById(id: string) {
+    return this.http.get<User>(`${this.baseUrl}account/user/` + id);
+  }
 }

@@ -4,12 +4,14 @@ using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 [Authorize]
-public class PetServiceHistoryController(IUnitOfWork unit, IMapper mapper) : BaseApiController
+public class PetServiceHistoryController(IUnitOfWork unit,
+    IMapper mapper, UserManager<AppUser> userManager) : BaseApiController
 {
 
     [HttpGet("{id:int}")]
@@ -22,10 +24,13 @@ public class PetServiceHistoryController(IUnitOfWork unit, IMapper mapper) : Bas
 
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<PetServiceHistoryDto>>> GetAll()
+    [Authorize(Roles = "Admin")]
+    [HttpGet("by-date")]
+    public async Task<ActionResult<IReadOnlyList<PetServiceHistoryDto>>> GetAll([FromQuery] DateTime date)
     {
-        var spec = new PetServiceHistorySpec();
+        var user = await userManager.GetUserAsync(User);
+        var clinicId = user!.ClinicId;
+        var spec = new PetServiceHistoryByClinicId(clinicId, date);
         var histories = await unit.Repository<PetServiceHistory>().ListAsync(spec);
         return Ok(mapper.Map<IReadOnlyList<PetServiceHistoryDto>>(histories));
     }

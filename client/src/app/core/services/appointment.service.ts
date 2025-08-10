@@ -38,11 +38,11 @@ export class AppointmentService {
   }
 
   updateStatus(id: number, status: string) {
-    return this.http.patch<Appointment>(`${this.baseUrl}appointments/${id}/status`, {status});
+    return this.http.patch<Appointment>(`${this.baseUrl}appointments/${id}/status/`, {status});
   }
 
 
-  getAppointmentByClinic(appointmentParams: AppointmentParams) {
+  getAppointmentByClinic(appointmentParams: AppointmentParams, date: Date) {
     let params = new HttpParams();
 
     if (appointmentParams.sort) {
@@ -55,7 +55,7 @@ export class AppointmentService {
 
     params = params.append('pageSize', appointmentParams.pageSize);  
     params = params.append('pageIndex', appointmentParams.pageNumber);
-    
-    return this.http.get<Pagination<Appointment>>(this.baseUrl + 'appointments/clinic', { params });
+    const formattedDate = date.toLocaleDateString('en-CA').split('T')[0];
+    return this.http.get<Pagination<Appointment>>(this.baseUrl + 'appointments/clinic/by-date?date=' + formattedDate, { params });
   }
 }

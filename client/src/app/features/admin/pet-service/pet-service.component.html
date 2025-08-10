@@ -1,130 +1,158 @@
-<div class="h-screen max-w-7xl  p-6">
-  <!-- Page Title -->
-  <p class="text-3xl font-bold mb-6">Pet Services</p>
+<div class="h-screen mx-auto p-6">
+  <div class="grid grid-cols-1 xl:grid-cols-[3fr_1fr] gap-6 h-full">
+    <!-- Left Section: Form + Table -->
+    <div class="h-fit">
+      <!-- Page Title -->
+      <p class="text-3xl font-bold mb-6">Pet Services</p>
 
-  <!-- Service Form -->
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-white p-6 rounded-xl shadow-md mb-8">
-    <!-- Pet ID -->
-    <div>
-      <label for="petId" class="block font-semibold mb-2">Pet ID</label>
-      <input type="text" id="petId" formControlName="petId"
-             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
-
-    <!-- Owner ID -->
-    <div>
-      <label for="ownerId" class="block font-semibold mb-2">Owner ID</label>
-      <input type="text" id="ownerId" formControlName="ownerId"
-             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
-
-    <!-- Service Dropdown -->
-    <div>
-      <label for="service" class="block font-semibold mb-2">Service</label>
-      <select id="service" formControlName="serviceId"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option >Select Service</option>
-            @for (service of serviceList;  track service.id) {
-                <option [value]="service.id">{{service.name}}</option>
-            }
-      </select>
-    </div>
-
-    <!-- Date Picker -->
-    <div>
-      <label for="date" class="block font-semibold mb-2">Date of Service</label>
-      <input type="date" id="date" formControlName="dateOfService"
-             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
-
-    <!-- Notes -->
-    <div class="md:col-span-2 lg:col-span-3">
-      <label for="notes" class="block font-semibold mb-2">Notes</label>
-      <textarea id="notes" formControlName="notes" rows="3"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-    </div>
-
-    <!-- Visit Type -->
-    <div>
-      <label for="visitType" class="block font-semibold mb-2">Visit Type</label>
-      <select id="visitType" formControlName="visitType"
-              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <option value="0">Appointment</option>
-        <option value="1">Walk-in</option>
-      </select>
-    </div>
-
-    <!-- Appointment ID -->
-    <div>
-      <label for="appointmentId" class="block font-semibold mb-2">Appointment ID (Optional)</label>
-      <input type="text" id="appointmentId" formControlName="appointmentId"
-             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
-    <div class="content-end">
-        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
-            Create Service
+      <!-- Toggle Button -->
+      <div class="mb-4">
+        <button
+          class="bg-[var(--primary)] text-white px-4 py-2 rounded-lg hover:bg-[var(--secondary)] transition"
+          (click)="toggleForm()"
+        >
+          {{ showForm ? 'Hide & Reset Form' : 'Show Service Form' }}
         </button>
-    </div>
-  </form>
+      </div>
 
-  <!-- Service Table -->
-  <div class="bg-white p-6 rounded-xl shadow-md overflow-x-auto">
-    <table class="min-w-full table-auto">
-      <thead>
-        <tr class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
-          <th class="px-4 py-3">ID</th>
-          <th class="px-4 py-3">Pet Name</th>
-          <th class="px-4 py-3">Service</th>
-          <th class="px-4 py-3">Appointment Date</th>
-          <th class="px-4 py-3">Notes</th>
-        </tr>
-      </thead>
-      <tbody class="text-sm text-gray-600">
-        @for (history of histories; track history.id) {
-        <tr class="border-b">
-          <td class="px-4 py-3">{{history.id }}</td>
-          <td class="px-4 py-3">{{ history.petName }}</td>
-          <td class="px-4 py-3">{{ history.serviceName }}</td>
-          <td class="px-4 py-3">{{ history.dateOfService | date}}</td>
-          <td class="px-4 py-3">{{ history.notes }}</td>
-        </tr>
-        }
-        <!-- Add dynamic rows here -->
-      </tbody>
-    </table>
+      <!-- Service Form -->
+      @if (showForm) {
+        <form
+          [formGroup]="form"
+          (ngSubmit)="onSubmit()"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-white p-6 rounded-xl shadow-md mb-8"
+        >
+          <!-- Pet ID -->
+      <div>
+        <label for="petId" class="block font-semibold mb-2">Pet ID</label>
+        <input
+          type="text"
+          id="petId"
+          formControlName="petId"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- Owner ID -->
+      <div>
+        <label for="ownerId" class="block font-semibold mb-2">Owner ID</label>
+        <input
+          type="text"
+          id="ownerId"
+          formControlName="ownerId"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- Service Dropdown -->
+      <div>
+        <label for="service" class="block font-semibold mb-2">Service</label>
+        <select
+          id="service"
+          formControlName="serviceId"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option>Select Service</option>
+          @for (service of serviceList; track service.id) {
+            <option [value]="service.id">{{ service.name }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Date Picker -->
+      <div>
+        <label for="date" class="block font-semibold mb-2">Date of Service</label>
+        <input
+          type="date"
+          id="date"
+          formControlName="dateOfService"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- Notes -->
+      <div class="md:col-span-2 lg:col-span-3">
+        <label for="notes" class="block font-semibold mb-2">Notes</label>
+        <textarea
+          id="notes"
+          formControlName="notes"
+          rows="3"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        ></textarea>
+      </div>
+
+      <!-- Visit Type -->
+      <div>
+        <label for="visitType" class="block font-semibold mb-2">Visit Type</label>
+        <select
+          id="visitType"
+          formControlName="visitType"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="0">Appointment</option>
+          <option value="1">Walk-in</option>
+        </select>
+      </div>
+
+      <!-- Appointment ID -->
+      <div>
+        <label for="appointmentId" class="block font-semibold mb-2">Appointment ID (Optional)</label>
+        <input
+          type="text"
+          id="appointmentId"
+          formControlName="appointmentId"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- Submit Button -->
+      <div class="content-end">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid"
+        >
+          Create Service
+        </button>
+      </div>
+        </form>
+      }
+
+      <!-- Service Table -->
+      <div class="bg-white p-6 rounded-xl shadow-md overflow-x-auto">
+        <table class="min-w-full table-auto">
+          <thead>
+            <tr class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
+              <th class="px-4 py-3">ID</th>
+              <th class="px-4 py-3">Pet Name</th>
+              <th class="px-4 py-3">Service</th>
+              <th class="px-4 py-3">Appointment Date</th>
+              <th class="px-4 py-3">Notes</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm text-gray-600">
+            @for (history of histories; track history.id) {
+              <tr
+                routerLink="/admin/pet-service/{{ history.id }}"
+                class="border-b hover:bg-[var(--primary)] hover:text-[var(--white)]"
+              >
+                <td class="px-4 py-3">{{ history.id }}</td>
+                <td class="px-4 py-3">{{ history.petName }}</td>
+                <td class="px-4 py-3">{{ history.serviceName }}</td>
+                <td class="px-4 py-3">{{ history.dateOfService | date }}</td>
+                <td class="px-4 py-3">{{ history.notes }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Right Section: Calendar -->
+    <div class="bg-white rounded-xl shadow-md p-6 h-fit">
+      <h3 class="text-xl font-semibold mb-4 text-center">📅 Calendar</h3>
+      <mat-calendar [(selected)]="selectedDate" (selectedChange)="onDateChange($event)"></mat-calendar>
+    </div>
   </div>
 </div>
-
-<!-- <div class="h-screen  p-4">
-    <h1 class="text-2xl font-bold mb-8">Pet Services</h1>
-    <div class="flex">
-        <div class="w-3/4">
-            <table class="min-w-full divide-y divide-gray-200 cursor-pointer">
-                <thead class="uppercase text-gray-600 text-sm h-[40px]">
-                    <tr class="text-lg">
-                        <th>ID</th>
-                        <th class="text-left">Pet name</th>
-                        <th class="text-left">Services</th>
-                        <th class="text-left">Appointment Date</th>
-                        <th class="text-left">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @for (history of histories; track history.id) {
-                        <tr routerLink="/admin/pet-service/{{history.id}}" 
-                            class="h-[40px] hover:bg-[var(--primary)] hover:text-[var(--white)]">
-                            <td class="text-center">{{ history.id}}</td>
-                            <td>{{ history.petName}}</td>
-                            <td>{{ history.serviceName}}</td>
-                            <td>{{ history.dateOfService | date}}</td>
-                            <td>{{ history.notes}}</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="w-1/4 flex justify-end">
-            <button mat-flat-button routerLink="/admin/pet-service/create">Create Service</button>
-        </div>
-    </div>
-</div> -->

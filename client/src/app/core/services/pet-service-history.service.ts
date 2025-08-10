@@ -23,4 +23,9 @@ export class PetServiceHistoryService {
     return this.http.get<PetServiceHistory[]>(`${this.baseUrl}petservicehistory`);
   }
 
+  getPetHistoryByDateAndClinicId(date: Date) {
+    const formattedDate = date.toLocaleDateString('en-CA').split('T')[0];
+    return this.http.get<PetServiceHistory[]>(`${this.baseUrl}petservicehistory/by-date?date=${formattedDate}`);
+  }
+
 }

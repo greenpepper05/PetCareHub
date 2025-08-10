@@ -39,18 +39,27 @@ export class AppointmentsComponent implements OnInit{
     {name: 'Date Latest to Oldest', value: 'latestToOldest'},
     {name: 'Date Oldest to Latest', value: 'oldestToLates'},
   ]
+  selectedDate: Date = new Date();
   appointmentParams = new AppointmentParams();
   pageSizeOptions = [10,20,30];
 
 
   ngOnInit(): void {
-    this.getAppointments();
+    this.fetchHistoriesByDate(new Date());
   }
 
-  getAppointments() {
-    this.appointmentService.getAppointmentByClinic(this.appointmentParams).subscribe({
-      next: (response) => {
-        this.appointments = response;
+  // getAppointments() {
+  //   this.appointmentService.getAppointmentByClinic(this.appointmentParams).subscribe({
+  //     next: (response) => {
+  //       this.appointments = response;
+  //     }
+  //   })
+  // }
+
+  fetchHistoriesByDate(date: Date) {
+    this.appointmentService.getAppointmentByClinic(this.appointmentParams,date).subscribe({
+      next: data => {
+        this.appointments = data;
       }
     })
   }
@@ -58,25 +67,13 @@ export class AppointmentsComponent implements OnInit{
   handlePageEvent(event: PageEvent) {
     this.appointmentParams.pageNumber = event.pageIndex + 1;
     this.appointmentParams.pageSize = event.pageSize;
-    this.getAppointments();
+    // this.getAppointments();
   }
 
-  onSortChange(event: MatSelectionListChange) {
-    const selectedOption = event.options[0];
-    if (selectedOption) {
-      this.appointmentParams.sort = selectedOption.value;
-      this.appointmentParams.pageNumber = 1;
-      this.getAppointments();
-    }
+  onDateChange(date: Date) {
+    this.selectedDate = date;
+    this.fetchHistoriesByDate(date);
   }
 
-  // openFilterDialog() {
-  //   const dialogRef = this.dialogService.open(FilterDialogComponent , {
-  //     maxWidth: '500px',
-  //     data: {
-  //       sele
-  //     }
-  //   })
-  // }
 
 }
