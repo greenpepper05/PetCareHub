@@ -39,9 +39,9 @@
                 </mat-paginator>
             </div>
         </div>
-        <div class="w-1/4 m-4">
-
-            <mat-calendar [(selected)]="selected" class="shadow-sm rounded-lg" (selectedChange)="onDateChange($event)">
+        <div class="w-1/4 bg-white rounded-xl shadow-md p-6 h-fit">
+            <h3 class="text-xl font-semibold mb-4 text-center">📅 Calendar</h3>
+            <mat-calendar [(selected)]="selected" (selectedChange)="onDateChange($event)">
 
             </mat-calendar>
 

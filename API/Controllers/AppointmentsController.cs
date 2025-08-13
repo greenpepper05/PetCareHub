@@ -211,35 +211,6 @@ public class AppointmentsController(IUnitOfWork unit,
         return Ok();
     }
 
-    [HttpPost("{id}/step")]
-    public async Task<ActionResult> UpdateAppointmentStep(int id, [FromBody] StepDto dto)
-    {
-        var appointment = await unit.Repository<Appointment>().GetByIdAsync(id);
-        if (appointment == null) return NotFound();
-
-        appointment.Status = dto.Step;
-        await unit.Complete();
-
-        var user = await userManager.FindByIdAsync(appointment.OwnerId);
-        if (user == null) return NotFound("User not found");
-
-        string subject = $"Appointment Step Update - {dto.Step}";
-        string body = dto.Step switch
-        {
-            "Brushing" => $"<p>Hi {user.FirstName},</p><p>Your pet's grooming has started with <strong>Brushing</strong>.</p>",
-            "Bathing" => $"<p>Hi {user.FirstName},</p><p>Your pet is now being <strong>bathed</strong>.</p>",
-            "Drying" => $"<p>Hi {user.FirstName},</p><p>Your pet is now in the <strong>drying</strong> phase.</p>",
-            "Ear Cleaning" => $"<p>Hi {user.FirstName},</p><p>We are now <strong>cleaning your pet's ears</strong>.</p>",
-            "Nail Trimming" => $"<p>Hi {user.FirstName},</p><p>Your pet's <strong>nails are being trimmed</strong>.</p>",
-            "Coat Trimming" => $"<p>Hi {user.FirstName},</p><p>We are <strong>trimming your pet's coat</strong> for a fresh look.</p>",
-            "Completed" => $"<p>Hi {user.FirstName},</p><p>Your pet's grooming session has been <strong>completed</strong>. You may now pick them up.</p>",
-            _ => $"<p>Hi {user.FirstName},</p><p>Status updated to: <strong>{dto.Step}</strong>.</p>"
-        };
-
-        await emailService.SendEmailAsync(user.Email!, subject, body);
-
-        return Ok();
-    }
 
     // [HttpPut("{id}/start")]
     // public async Task<ActionResult> StartAppointment(int id)

@@ -21,6 +21,4 @@ public class Appointment : BaseEntity
 
     public string? Notes { get; set; }
 
-    public ICollection<ServiceProcedure> Procedures { get; set; } = new List<ServiceProcedure>();
-    public ICollection<ProcedureStep> ProcedureSteps { get; set; } = new List<ProcedureStep>();
 }
