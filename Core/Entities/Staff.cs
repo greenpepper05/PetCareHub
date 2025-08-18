@@ -7,13 +7,12 @@ public class Staff : BaseEntity
     public string Email { get; set; } = null!;
     public string PhoneNumber { get; set; } = null!;
 
-    public string Role { get; set; } = null!;
+    public string StaffRole { get; set; } = null!;
 
     public int ClinicId { get; set; }
     public Clinic Clinic { get; set; } = null!;
 
-    public ICollection<ServiceRecordProcedures> ServiceRecords { get; set; } = [];
-
+    public ICollection<ServiceRecord> ServiceRecord { get; set; } = [];
     public string? UserId { get; set; }
 
 }

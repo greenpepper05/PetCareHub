@@ -1,9 +1,9 @@
 namespace Core.Entities;
 
-public class ServiceRecordProcedureStep : BaseEntity
+public class ServiceRecordStep : BaseEntity
 {
-    public int ServiceProcedureId { get; set; }
-    public ServiceRecordProcedures? ServiceRecordProcedures { get; set; }
+    public int ServiceRecordId { get; set; }
+    public ServiceRecord? ServiceRecord { get; set; }
 
     public int ProcedureId { get; set; }
     public Procedure? Procedure { get; set; }

@@ -13,8 +13,12 @@ public class PetHubContextSeed
         {
             var clinic = new Clinic
             {
-                OwnerId = "system",
-                ClinicName = "default",
+                OwnerId = "2",
+                ClinicName = "Pawsionate Hands Veterinary Clinic",
+                Address = "Unit 2, Fairview Maliwalo Bldg., Zone 1, Maliwalo, Tarlac City",
+                PhoneNumber = "09193855281",
+                Email = "pawsionatehands@gmail.com"
+                
             };
 
             context.Clinics.AddRange(clinic);
@@ -23,7 +27,7 @@ public class PetHubContextSeed
         
         if (!roleManager.Roles.Any())
         {
-            string[] roles = ["SuperAdmin", "Admin", "Customer"];
+            string[] roles = ["SuperAdmin", "Admin", "Customer", "Staff"];
             foreach (var role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))
@@ -51,6 +55,7 @@ public class PetHubContextSeed
         {
             var user = new AppUser
             {
+                Id = "2",
                 UserName = "admin5@test.com",
                 Email = "admin5@test.com",
                 ClinicId = 1

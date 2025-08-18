@@ -7,4 +7,5 @@ public class Service : BaseEntity
     public decimal? Price { get; set; }
     public int ClinicId { get; set; }
     public Clinic Clinic { get; set; } = null!;
+    public ICollection<Procedure> Procedures { get; set; } = [];
 }

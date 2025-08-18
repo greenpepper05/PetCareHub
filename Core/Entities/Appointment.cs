@@ -8,7 +8,7 @@ public class Appointment : BaseEntity
     public string Status { get; set; } = AppointmentStatus.Pending;
 
     public int PetId { get; set; }
-    public Pet? Pet { get; set; }
+    public Pet Pet { get; set; } = null!;
 
     public required string OwnerId { get; set; }
     public AppUser? Owner { get; set; }
@@ -21,4 +21,5 @@ public class Appointment : BaseEntity
 
     public string? Notes { get; set; }
 
+    public ICollection<ServiceRecord> ServiceRecords { get; set; } = [];
 }

@@ -8,6 +8,11 @@ public class Pet : BaseEntity
     public required DateTime Birthdate { get; set; }
     public required string Gender { get; set; }
     public required string OwnerId { get; set; }
-    public int? ClinicId { get; set; }
-    public Clinic? Clinic { get; set; }
+    public AppUser Owner { get; set; } = null!;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+    public ICollection<Appointment> Appointments { get; set; } = [];
+    public ICollection<ServiceRecord> ServiceRecords { get; set; } = [];
+
 }

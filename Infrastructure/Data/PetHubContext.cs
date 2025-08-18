@@ -17,7 +17,6 @@ public class PetHubContext(DbContextOptions options) : IdentityDbContext<AppUser
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        // modelBuilder.ApplyConfigurationsFromAssembly(typeof(RoleConfiguration).Assembly);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppointmentConfiguration).Assembly);
     }
 }
