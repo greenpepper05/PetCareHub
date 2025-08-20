@@ -6,9 +6,9 @@ namespace Core.Specifications;
 
 public class PetByClinicIdSpecification : BaseSpecification<Pet>
 {
-    public PetByClinicIdSpecification(int clinicId) : base(p => p.ClinicId == clinicId)
-    {
-        AddInclude(x => x.Clinic!);
-    }
+    // public PetByClinicIdSpecification(int clinicId) : base(p => p.ClinicId == clinicId)
+    // {
+    //     AddInclude(x => x.Clinic!);
+    // }
     
 }

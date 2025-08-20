@@ -2,8 +2,8 @@ namespace Core.Entities;
 
 public class Clinic : BaseEntity
 {
-    public string OwnerId { get; set; } = null!;
-    public AppUser Owner { get; set; } = null!;
+    public string? OwnerId { get; set; }
+    public AppUser? Owner { get; set; }
     public required string ClinicName { get; set; }
     public string Address { get; set; } = null!;
     public string? PhoneNumber { get; set; }

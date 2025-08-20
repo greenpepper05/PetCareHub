@@ -32,29 +32,29 @@ public class AdminController(IUnitOfWork unit,
 
     // }
 
-    [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> GetAppointmentByClinic()
-    {
-        var user = await userManager.GetUserByEmail(User);
-        if (user == null) return Unauthorized();
+    // [HttpGet]
+    // public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> GetAppointmentByClinic()
+    // {
+    //     var user = await userManager.GetUserByEmail(User);
+    //     if (user == null) return Unauthorized();
 
-        var clinicId = user.ClinicId;
+    //     var clinicId = user.ClinicId;
 
-        var spec = new AppointmentByClinicIdSpec(clinicId);
-        var appointments = await unit.Repository<Appointment>().ListAsync(spec);
+    //     var spec = new AppointmentByClinicIdSpec(clinicId);
+    //     var appointments = await unit.Repository<Appointment>().ListAsync(spec);
 
-        var query = appointments.Select(a => new AppointmentDto
-        {
-            Id = a.Id,
-            ServiceId = a.ServiceId,
-            AppointmentDate = a.AppointmentDate,
-            PetId = a.PetId,
-            Notes = a.Notes,
-            OwnerId = a.OwnerId
-        }).ToList();
+    //     var query = appointments.Select(a => new AppointmentDto
+    //     {
+    //         Id = a.Id,
+    //         ServiceId = a.ServiceId,
+    //         AppointmentDate = a.AppointmentDate,
+    //         PetId = a.PetId,
+    //         Notes = a.Notes,
+    //         OwnerId = a.OwnerId
+    //     }).ToList();
 
-        return Ok(query);
-    }
+    //     return Ok(query);
+    // }
 
 
     // GET ALL SERVICES

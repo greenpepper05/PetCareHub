@@ -6,7 +6,7 @@ namespace Core.Specifications;
 
 public class PetServiceHistoryByClinicId : BaseSpecification<PetServiceHistory>
 {
-    public PetServiceHistoryByClinicId(int clinicId, DateTime date) :
+    public PetServiceHistoryByClinicId(int? clinicId, DateTime date) :
         base(p => p.ClinicId == clinicId && p.DateOfService.Date == date.Date)
     {
         AddInclude(x => x.Pet!);

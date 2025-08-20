@@ -14,10 +14,10 @@ public class ClinicConfiguration : IEntityTypeConfiguration<Clinic>
         builder.Property(c => c.Email).HasMaxLength(100);
         builder.Property(c => c.CreateAt).HasDefaultValueSql("GETUTCDATE()");
         builder.Property(c => c.UpdatedAt).HasDefaultValueSql("GETUTCDATE()").ValueGeneratedOnAddOrUpdate();
-        builder.HasMany(c => c.Services).WithOne(s => s.Clinic).HasForeignKey(s => s.ClinicId).OnDelete(DeleteBehavior.Cascade);
-        builder.HasMany(c => c.StaffMembers).WithOne(s => s.Clinic).HasForeignKey(s => s.ClinicId).OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(c => c.Services).WithOne(s => s.Clinic).HasForeignKey(s => s.ClinicId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasMany(c => c.StaffMembers).WithOne(s => s.Clinic).HasForeignKey(s => s.ClinicId).OnDelete(DeleteBehavior.Restrict);
         builder.HasIndex(c => c.ClinicName).IsUnique(true);
         builder.HasIndex(c => c.OwnerId);
-        builder.HasOne<AppUser>().WithMany().HasForeignKey(c => c.OwnerId).OnDelete(DeleteBehavior.SetNull);
+        builder.HasOne(c => c.Owner).WithMany().HasForeignKey(c => c.OwnerId).OnDelete(DeleteBehavior.SetNull);
     }
 }

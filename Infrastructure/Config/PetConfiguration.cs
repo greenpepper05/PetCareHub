@@ -14,7 +14,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property(p => p.Birthdate).IsRequired();
         builder.Property(p => p.Gender).IsRequired().HasMaxLength(10);
         builder.Property(p => p.OwnerId).IsRequired();
-        builder.HasOne(p => p.Owner).WithMany(u => u.Pets).HasForeignKey(p => p.OwnerId).OnDelete(DeleteBehavior.Cascade);
-        builder.HasMany(p => p.Appointments).WithOne(a => a.Pet).HasForeignKey(a => a.PetId).OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(p => p.Owner).WithMany(u => u.Pets).HasForeignKey(p => p.OwnerId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasMany(p => p.Appointments).WithOne(a => a.Pet).HasForeignKey(a => a.PetId).OnDelete(DeleteBehavior.Restrict);
     }
 }

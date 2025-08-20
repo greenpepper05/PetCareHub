@@ -14,7 +14,7 @@ public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.HasIndex(u => u.Contact).IsUnique(false);
         builder.HasIndex(u => u.ClinicId);
 
-        builder.HasMany(u => u.Pets).WithOne(p => p.Owner).HasForeignKey(p => p.OwnerId).OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(u => u.Pets).WithOne(p => p.Owner).HasForeignKey(p => p.OwnerId).OnDelete(DeleteBehavior.Restrict);
         builder.HasMany(u => u.Appointments).WithOne(a => a.Owner).HasForeignKey(a => a.OwnerId).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(u => u.Clinic).WithMany(c => c.Staff).HasForeignKey(u => u.ClinicId).OnDelete(DeleteBehavior.Restrict);
     }

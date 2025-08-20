@@ -34,11 +34,21 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit) 
 
         if (await unit.Complete())
         {
-            return CreatedAtAction("GetPetById", new { id = pet.Id }, pet);
+            var petDto = new PetDto
+            {
+                Id = pet.Id,
+                Name = pet.Name,
+                Breed = pet.Breed,
+                Species = pet.Species,
+                Birthdate = pet.Birthdate,
+                Gender = pet.Gender,
+                OwnerId = pet.OwnerId
+            };
+
+            return CreatedAtAction("GetPetsByOwner", new { id = pet.Id }, petDto);
         }
 
         return NoContent();
-
     }
 
     // SELECT PET BY ID
@@ -52,25 +62,25 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit) 
     }
 
     // SELECT PETS BY CLINIC
-    [Authorize(Roles = "Admin")]
-    [HttpGet("clinic")]
-    public async Task<ActionResult<IReadOnlyList<Pet>>> GetPetsByClinic()
-    {
-        var user = await userManager.GetUserAsync(User);
+    // [Authorize(Roles = "Admin")]
+    // [HttpGet("clinic")]
+    // public async Task<ActionResult<IReadOnlyList<Pet>>> GetPetsByClinic()
+    // {
+    //     var user = await userManager.GetUserAsync(User);
 
-        if (user == null) return NotFound("No user found!");
+    //     if (user == null) return NotFound("No user found!");
 
-        var spec = new PetByClinicIdSpecification(user.ClinicId);
-        var pets = await unit.Repository<Pet>().ListAsync(spec);
+    //     var spec = new PetByClinicIdSpecification(user.ClinicId);
+    //     var pets = await unit.Repository<Pet>().ListAsync(spec);
 
-        return Ok(pets);
-    }
+    //     return Ok(pets);
+    // }
 
     // SELECT PETS BY OWNER
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<Pet>>> GetPetsByOnwer()
+    public async Task<ActionResult<IReadOnlyList<Pet>>> GetPetsByOwner()
     {
         var user = await userManager.GetUserAsync(User);
         if (user == null) return NotFound("No user found");

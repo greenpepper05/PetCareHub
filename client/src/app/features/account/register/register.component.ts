@@ -1,11 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
-import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { first } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -31,18 +30,18 @@ export class RegisterComponent {
     email: ['', Validators.required],
     contact: ['', Validators.required],
     password: ['', Validators.required],
-    clinicId: [1]
+    clinicId: [null]
   });
 
   onSubmit() {
     
     const payload = {
       firstName: this.registerForm.value.firstName,
-      lastname: this.registerForm.value.lastName,
+      lastName: this.registerForm.value.lastName,
       email: this.registerForm.value.email,
       contact: this.registerForm.value.contact,
       password: this.registerForm.value.password,
-      clinicId: this.registerForm.value.clinicId
+      clinicId: this.registerForm.value.clinicId || null
     }
 
     this.accountService.register(payload).subscribe({

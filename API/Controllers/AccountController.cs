@@ -40,7 +40,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
     // REGISTER NEW USER
 
     [HttpPost("register")]
-    public async Task<ActionResult> Register(RegisterDto registerDto)
+    public async Task<ActionResult> Register([FromBody] RegisterDto registerDto)
     {
         var user = new AppUser
         {
