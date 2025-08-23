@@ -8,6 +8,7 @@ import { AccountService } from '../../../../core/services/account.service';
 import { Pet } from '../../../../shared/models/pet';
 import { User } from '../../../../shared/models/user';
 import { MatButton } from '@angular/material/button';
+import { ServiceRecordService } from '../../../../core/services/service-record.service';
 
 @Component({
   selector: 'app-pet-service-detail',
@@ -22,6 +23,7 @@ import { MatButton } from '@angular/material/button';
 export class PetServiceDetailComponent implements OnInit{
   private activatedRoute = inject(ActivatedRoute);
   private petServiceHistory = inject(PetServiceHistoryService);
+  private serviceRecord = inject(ServiceRecordService);
   private petService = inject(PetService);
   private user = inject(AccountService);
   services?: PetServiceHistory;
@@ -37,7 +39,7 @@ export class PetServiceDetailComponent implements OnInit{
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (!id) return;
 
-    this.petServiceHistory.getPetHistoryByPetId(+id).subscribe({
+    this.serviceRecord.getServiceRecordByPetId(+id).subscribe({
       next: (history) => {
         this.services = history;
         this.loadPet(history.petId);

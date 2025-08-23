@@ -16,4 +16,5 @@ public class CreatePetServiceHistoryDto
     public VisitType VisitType { get; set; }
 
     public int? AppointmentId { get; set; }
+    public string Status { get; set; } = string.Empty;
 }

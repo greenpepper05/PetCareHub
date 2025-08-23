@@ -51,7 +51,7 @@ public class PetHubContextSeed
                 UserName = "admin5@test.com",
                 Email = "admin5@test.com",
                 FirstName = "admin5",
-                LastName = "test5"
+                LastName = "test5",
             };
 
             await userManager.CreateAsync(user, "Pa$$w0rd");

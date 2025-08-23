@@ -129,20 +129,20 @@
               <th class="px-4 py-3">Pet Name</th>
               <th class="px-4 py-3">Service</th>
               <th class="px-4 py-3">Appointment Date</th>
-              <th class="px-4 py-3">Notes</th>
+              <th class="px-4 py-3">Status</th>
             </tr>
           </thead>
           <tbody class="text-sm text-gray-600">
-            @for (history of histories; track history.id) {
+            @for (record of records; track record.id) {
               <tr
-                routerLink="/admin/pet-service/{{ history.id }}"
+                routerLink="/admin/pet-service/{{ record.id }}"
                 class="border-b hover:bg-[var(--primary)] hover:text-[var(--white)]"
               >
-                <td class="px-4 py-3">{{ history.id }}</td>
-                <td class="px-4 py-3">{{ history.petName }}</td>
-                <td class="px-4 py-3">{{ history.serviceName }}</td>
-                <td class="px-4 py-3">{{ history.dateOfService | date }}</td>
-                <td class="px-4 py-3">{{ history.notes }}</td>
+                <td class="px-4 py-3">{{ record.id }}</td>
+                <td class="px-4 py-3">{{ record.petName }}</td>
+                <td class="px-4 py-3">{{ record.serviceName }}</td>
+                <td class="px-4 py-3">{{ record.dateOfService | date }}</td>
+                <td class="px-4 py-3">{{ record.status }}</td>
               </tr>
             }
           </tbody>

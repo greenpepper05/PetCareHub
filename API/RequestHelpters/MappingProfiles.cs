@@ -28,5 +28,13 @@ public class MappingProfiles : Profile
             .ForMember(d => d.DateOfService, o => o.MapFrom(s => s.DateOfService))
             .ForMember(d => d.VisitType, o => o.MapFrom(s => s.VisitType.ToString()));
 
+        CreateMap<CreateServiceRecordDto, ServiceRecord>();
+        CreateMap<ServiceRecord, ServiceRecordDto>()
+            .ForMember(d => d.PetName, o => o.MapFrom(s => s.Pet!.Name))
+            .ForMember(d => d.PetId, o => o.MapFrom(s => s.Pet!.Id))
+            .ForMember(d => d.ServiceName, o => o.MapFrom(s => s.Service!.Name))
+            .ForMember(d => d.ClinicName, o => o.MapFrom(s => s.Clinic!.ClinicName))
+            .ForMember(d => d.DateOfService, o => o.MapFrom(s => s.DateOfService))
+            .ForMember(d => d.VisitType, o => o.MapFrom(s => s.VisitType.ToString()));
     }
 }

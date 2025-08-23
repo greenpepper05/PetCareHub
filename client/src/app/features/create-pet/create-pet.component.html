@@ -1,5 +1,6 @@
 <div class="flex justify-center mt-32 mb-32">
     <form [formGroup]="petProfileForm" class="p-8 shadow-sm">       
+        <h1 class="text-2xl mb-8 text-center">Create Pet</h1>
         <div class="flex gap-4 mt-2">
             <mat-form-field appearance="outline" class="w-1/2 mb-4">
                 <mat-label>Name</mat-label>
@@ -30,7 +31,8 @@
                 <input formControlName="species" type="text" placeholder="Cat" matInput />
             </mat-form-field>
         </div>
-        <div class="flex justify-end">
+        <div class="flex justify-between">
+            <button routerLink="/appointment" mat-stroked-button>Back</button>
             <button mat-flat-button class="bg-[var(--primary)]" (click)="createPet()">Create</button>
         </div>
     </form>

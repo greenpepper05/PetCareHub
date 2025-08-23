@@ -8,4 +8,5 @@ public class UserInfoDto
     public string LastName { get; set; } = string.Empty;
     public string Contact { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+    public int? ClinicId { get; set; }
 }

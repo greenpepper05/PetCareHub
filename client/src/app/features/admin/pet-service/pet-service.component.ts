@@ -12,6 +12,8 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatCalendar, MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { environment } from '../../../../environments/environment.development';
+import { ServiceRecordService } from '../../../core/services/service-record.service';
+import { ServiceRecord } from '../../../shared/models/serviceRecord';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
@@ -30,15 +32,15 @@ import { environment } from '../../../../environments/environment.development';
   styleUrl: './pet-service.component.scss',
 })
 export class PetServiceComponent implements OnInit {
-  private baseUrl = environment.apiUrl;
-  private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private services = inject(ServicesService);
   private service = inject(PetServiceHistoryService);
   private router = inject(Router);
   private historyService = inject(PetServiceHistoryService);
+  private serviceRecord = inject(ServiceRecordService);
   private petService = inject(PetService);
-  histories: PetServiceHistory[] = [];
+  records: ServiceRecord[] = [];
+
   pets: Pet[] = [];
   serviceList: Services[] = [];
   showForm = false;
@@ -77,9 +79,9 @@ export class PetServiceComponent implements OnInit {
   }
 
   loadHistory() {
-    this.historyService.getAll().subscribe({
+    this.serviceRecord.getAll().subscribe({
       next: (data) => {
-        this.histories = data;
+        this.records = data;
       }
     })
   }
@@ -107,16 +109,16 @@ export class PetServiceComponent implements OnInit {
       const payload = {
         petId: this.form.value.petId,
         ownerId: this.form.value.ownerId,
-        clinicId: 1,
+        clinicId: 6,
         serviceId: this.form.value.serviceId,
         dateOfService: this.form.value.dateOfService,
         notes:this.form.value.notes
       };
       
-      this.service.createPetServiceHistory(payload).subscribe({
+      this.serviceRecord.createServiceRecord(payload).subscribe({
         next: () => {
           alert("Service added");
-          this.loadHistory();
+          // this.loadHistory();
         }
         ,
         error: err => console.error('Failed to create history:', err)
@@ -126,9 +128,9 @@ export class PetServiceComponent implements OnInit {
   }
 
   fetchHistoriesByDate(date: Date) {
-    this.historyService.getPetHistoryByDateAndClinicId(date).subscribe({
+    this.serviceRecord.getServiceRecordByDateAndClinicId(date).subscribe({
       next: data => {
-        this.histories = data;
+        this.records = data;
       }
     })
   }

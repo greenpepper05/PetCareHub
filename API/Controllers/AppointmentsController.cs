@@ -41,7 +41,16 @@ public class AppointmentsController(IUnitOfWork unit,
 
         if (await unit.Complete())
         {
-            return CreatedAtAction("GetAppointmentById", new { id = appointment.Id }, appointment);
+            var apptDto = new AppointmentDto
+            {
+                Id = appointment.Id,
+                AppointmentDate = appointment.AppointmentDate,
+                Status = appointment.Status,
+                PetId = appointment.PetId,
+                OwnerId = appointment.OwnerId
+            };
+
+            return CreatedAtAction("GetAppointmentById", new { id = appointment.Id }, apptDto);
         }
 
         return BadRequest("Failed to create appointment");
@@ -79,32 +88,37 @@ public class AppointmentsController(IUnitOfWork unit,
 
     // GET APPOINTMENT BY CLINIC ID
 
-    // [Authorize(Roles = "Admin")]
-    // [HttpGet("clinic/by-date/")]
-    // public async Task<ActionResult<IReadOnlyList<Appointment>>> GetAppointmentByClinic(
-    //     [FromQuery] AppointmentSpecParams specParams, [FromQuery] DateTime date
-    // )
-    // {
-    //     var user = await userManager.GetUserByEmail(User);
-    //     if (user == null) return Unauthorized();
+    [Authorize(Roles = "Admin")]
+    [HttpGet("clinic/by-date/")]
+    public async Task<ActionResult<IReadOnlyList<Appointment>>> GetAppointmentByClinic(
+        [FromQuery] AppointmentSpecParams specParams, [FromQuery] DateTime date
+    )
+    {
+        var user = await userManager.GetUserByEmail(User);
+        if (user == null) return Unauthorized();
 
-    //     var clinicId = user.ClinicId;
+        if (user.ClinicId == null)
+        {
+            return BadRequest("This admin is not assigned to a clinic.");
+        }
 
-    //     var spec = new AppointmentSpecification(specParams, clinicId, date);
-    //     var countSpec = new AppointmentSpecification(specParams, clinicId, date);
+        var clinicId = user.ClinicId.Value;
 
-    //     var totalItems = await unit.Repository<Appointment>().CountAsync(countSpec);
-    //     var appointments = await unit.Repository<Appointment>().ListAsync(spec);
+        var spec = new AppointmentSpecification(specParams, clinicId, date);
+        var countSpec = new AppointmentSpecification(specParams, clinicId, date);
 
-    //     var data = mapper.Map<IReadOnlyList<AppointmentDto>>(appointments);
+        var totalItems = await unit.Repository<Appointment>().CountAsync(countSpec);
+        var appointments = await unit.Repository<Appointment>().ListAsync(spec);
+
+        var data = mapper.Map<IReadOnlyList<AppointmentDto>>(appointments);
         
-    //     return Ok(new Pagination<AppointmentDto>(
-    //         specParams.PageIndex,
-    //         specParams.PageSize,
-    //         totalItems,
-    //         data
-    //     ));
-    // }
+        return Ok(new Pagination<AppointmentDto>(
+            specParams.PageIndex,
+            specParams.PageSize,
+            totalItems,
+            data
+        ));
+    }
 
     [HttpPatch("{id}/status")]
     public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateAppointmentStatusDto dto)

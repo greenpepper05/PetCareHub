@@ -89,7 +89,17 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit) 
 
         var pets = await unit.Repository<Pet>().ListAsync(spec);
 
-        return Ok(pets);
+        var result = pets.Select(p => new PetDto
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Breed = p.Breed,
+            Species = p.Species,
+            Birthdate = p.Birthdate,
+            Gender = p.Gender
+        }).ToList();
+
+        return Ok(result);
     }
 
     [HttpGet("all")]

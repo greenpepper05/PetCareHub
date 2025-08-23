@@ -8,7 +8,8 @@ import { PetService } from '../../core/services/pet.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { AccountService } from '../../core/services/account.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+
 
 @Component({
   selector: 'app-create-pet',
@@ -22,8 +23,9 @@ import { Router } from '@angular/router';
     MatOption,
     ReactiveFormsModule,
     MatInputModule,
-    MatButton
-  ],
+    MatButton,
+    RouterLink
+],
   templateUrl: './create-pet.component.html',
   styleUrl: './create-pet.component.scss'
 })

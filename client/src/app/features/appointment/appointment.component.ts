@@ -80,7 +80,7 @@ export class AppointmentComponent implements OnInit{
     const ownerid = currentUser.id;
     const selectedPetId = this.appointmentForm.get('petid')?.value;
     const selectedService = Number(this.servicesForm.get('serviceId')?.value);
-    const clinicId = 1;
+    const clinicId = 6;
     const date = this.appointmentForm.value.appointmentDate;
     const formattedDate = date ? new Date(date).toLocaleDateString('en-CA').split('T')[0] : '';
     const data = {

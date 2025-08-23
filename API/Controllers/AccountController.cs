@@ -32,7 +32,8 @@ public class AccountController(SignInManager<AppUser> signInManager,
             FirstName = user.FirstName!,
             LastName = user.LastName!,
             Contact = user.Contact!,
-            Role = roles.FirstOrDefault()!
+            Role = roles.FirstOrDefault()!,
+            ClinicId = user.ClinicId!
         });
 
     }
@@ -121,7 +122,28 @@ public class AccountController(SignInManager<AppUser> signInManager,
             Contact = user.Contact!,
             Role = roles.FirstOrDefault() ?? "Customer"
         });
-        
+
+    }
+
+    [Authorize]
+    [HttpPut("assign-clinic/{userId}")]
+    public async Task<ActionResult> AssignClinicToAdmin(string userId, [FromQuery] int clinicId)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+        if (user == null) return NotFound("User not found");
+
+        var clinic = await unit.Repository<Clinic>().GetByIdAsync(clinicId);
+        if (clinic == null) return NotFound("Clinic not found");
+
+        user.ClinicId = clinicId;
+
+        var result = await userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            return BadRequest("Failed to update user.");
+        }
+
+        return Ok(new { message = $"User {user.Email} successfully assigned to clinic {clinic.ClinicName}" });
     }
 
 }

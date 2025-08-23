@@ -49,7 +49,7 @@ export class AppointmentsComponent implements OnInit{
   }
 
   // getAppointments() {
-  //   this.appointmentService.getAppointmentByClinic(this.appointmentParams).subscribe({
+  //   this.appointmentService.getAppointmentByClinic(this.appointmentParams, date).subscribe({
   //     next: (response) => {
   //       this.appointments = response;
   //     }
