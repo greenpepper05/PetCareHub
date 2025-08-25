@@ -24,6 +24,7 @@ import { ServerErrorComponent } from './shared/components/server-error/server-er
 import { PetServiceComponent } from './features/admin/pet-service/pet-service.component';
 import { PetServiceDetailComponent } from './features/admin/pet-service/pet-service-detail/pet-service-detail.component';
 import { ServicesDetailComponent } from './features/services/services-detail/services-detail.component';
+import { ManageServicesComponent } from './features/admin/manage-services/manage-services.component';
 
 export const routes: Routes = [
     {
@@ -37,6 +38,7 @@ export const routes: Routes = [
             { path: 'pets', component: PetsComponent},
             { path: 'pet-service', component: PetServiceComponent},
             { path: 'pet-service/:id', component: PetServiceDetailComponent},
+            { path: 'manage-services', component: ManageServicesComponent},
 
         ]
     },
