@@ -9,6 +9,9 @@ import { Pet } from '../../../../shared/models/pet';
 import { User } from '../../../../shared/models/user';
 import { MatButton } from '@angular/material/button';
 import { ServiceRecordService } from '../../../../core/services/service-record.service';
+import { ServiceRecord } from '../../../../shared/models/serviceRecord';
+import { Procedures } from '../../../../shared/models/procedures';
+import { ProceduresService } from '../../../../core/services/procedures.service';
 
 @Component({
   selector: 'app-pet-service-detail',
@@ -22,11 +25,12 @@ import { ServiceRecordService } from '../../../../core/services/service-record.s
 })
 export class PetServiceDetailComponent implements OnInit{
   private activatedRoute = inject(ActivatedRoute);
-  private petServiceHistory = inject(PetServiceHistoryService);
   private serviceRecord = inject(ServiceRecordService);
+  private procedureService = inject(ProceduresService);
   private petService = inject(PetService);
   private user = inject(AccountService);
-  services?: PetServiceHistory;
+  services?: ServiceRecord;
+  procedures?: Procedures;
   pet?: Pet;
   owner?: User;
 
@@ -44,6 +48,7 @@ export class PetServiceDetailComponent implements OnInit{
         this.services = history;
         this.loadPet(history.petId);
         console.log(this.services);
+        this.loadProcedure(this.services.serviceId);
       } 
     })
   }
@@ -67,5 +72,17 @@ export class PetServiceDetailComponent implements OnInit{
         }
       }
     })
+  }
+  
+  loadProcedure(serviceId: number) {
+
+    if (!serviceId) return;
+
+    this.procedureService.getProcedures(+serviceId).subscribe({
+      next: (procedure) => {
+        this.procedures = procedure
+      }
+    })
+
   }
 }

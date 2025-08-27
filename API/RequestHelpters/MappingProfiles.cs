@@ -33,8 +33,15 @@ public class MappingProfiles : Profile
             .ForMember(d => d.PetName, o => o.MapFrom(s => s.Pet!.Name))
             .ForMember(d => d.PetId, o => o.MapFrom(s => s.Pet!.Id))
             .ForMember(d => d.ServiceName, o => o.MapFrom(s => s.Service!.Name))
+            .ForMember(d => d.ServiceId, o => o.MapFrom(s => s.ServiceId))
             .ForMember(d => d.ClinicName, o => o.MapFrom(s => s.Clinic!.ClinicName))
             .ForMember(d => d.DateOfService, o => o.MapFrom(s => s.DateOfService))
             .ForMember(d => d.VisitType, o => o.MapFrom(s => s.VisitType.ToString()));
+
+        CreateMap<Procedure, ProcedureDto>()
+            .ForMember(p => p.ServiceId, o => o.MapFrom(r => r.ServiceId))
+            .ForMember(p => p.Name, o => o.MapFrom(r => r.Name))
+            .ForMember(p => p.Description, o => o.MapFrom(r => r.Description))
+            .ForMember(p => p.Order, o => o.MapFrom(r => r.Order));
     }
 }

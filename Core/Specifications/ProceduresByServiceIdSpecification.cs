@@ -1,0 +1,16 @@
+using System;
+using System.Linq.Expressions;
+using Core.Entities;
+
+namespace Core.Specifications;
+
+public class ProceduresByServiceIdSpecification : BaseSpecification<Procedure>
+{
+    public ProceduresByServiceIdSpecification(int serviceId) : base(p => p.ServiceId == serviceId)
+    {
+    }
+
+    public ProceduresByServiceIdSpecification()
+    {
+    }
+}

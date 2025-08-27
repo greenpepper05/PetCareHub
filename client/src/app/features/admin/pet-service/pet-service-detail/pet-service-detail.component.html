@@ -40,11 +40,15 @@
                     <p><span class="font-semibold">Date of Service: </span><strong>{{ services?.dateOfService | date }}</strong></p>
                     <p><span class="font-semibold">Visit Type: </span><strong>{{ services?.visitType}}</strong></p>
                     <p><span class="font-semibold">Notes: </span><strong>{{ services?.notes ? services?.notes : 'N/A'}}</strong></p>
+                    <p><span class="font-semibold">Status: </span><strong>{{ services?.status}}</strong></p>
                 </div>
             </div>
             <div>
-                <button routerLink="/admin/pet-service" mat-flat-button>
-                    Done
+                <button routerLink="/admin/pet-service" mat-stroked-button>
+                    Back
+                </button>
+                <button mat-flat-button>
+                    Start Procedure
                 </button>
             </div>
         </div>

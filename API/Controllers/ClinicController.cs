@@ -75,7 +75,7 @@ public class ClinicController(IUnitOfWork unit,
     }
 
     [HttpPost("services/{serviceId}/procedures")]
-    public async Task<ActionResult> AddProcedure(int serviceId, [FromBody]ProcedureDto dto)
+    public async Task<ActionResult> AddProcedure(int serviceId, [FromBody] ProcedureDto dto)
     {
         var user = await userManager.GetUserByEmail(User);
         if (user?.ClinicId == null) return Unauthorized("User not assigned to a clinic");
@@ -102,6 +102,27 @@ public class ClinicController(IUnitOfWork unit,
             Description = service.Description,
             Price = service.Price,
         });
+    }
+
+
+    [HttpGet("services/{serviceId}/procedures")]
+    public async Task<ActionResult<IReadOnlyList<ProcedureDto>>> GetProcedure(int serviceId)
+    {
+        var user = await userManager.GetUserByEmail(User);
+        if (user?.ClinicId == null) return Unauthorized("User not assigned to a clinic");
+
+        var service = await unit.Repository<Service>().GetByIdAsync(serviceId);
+        if (service == null || service.ClinicId != user.ClinicId) return NotFound();
+
+        var spec = new ProceduresByServiceIdSpecification(serviceId);
+        var procedures = await unit.Repository<Procedure>().ListAsync(spec);
+
+        if (procedures == null || !procedures.Any()) return NotFound("No procedures found for this service");
+
+        var data = mapper.Map<IReadOnlyList<ProcedureDto>>(procedures);
+
+        return Ok(data);
+        
     }
 
 }

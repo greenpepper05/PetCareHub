@@ -3,6 +3,7 @@ export interface ServiceRecord {
     petId: number;
     petName: string;
     serviceName: string;
+    serviceId: number;
     clinicName: string;
     dateOfService: string;
     notes?: string;
