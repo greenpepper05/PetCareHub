@@ -1,5 +1,6 @@
 using Core.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data;
 
@@ -94,8 +95,8 @@ public class PetHubContextSeed
             var pet = new Pet
             {
                 Name = "Default Pet",
-                Breed = "Mixed",
-                Species = "Dog",
+                Breed = "Default",
+                Species = "Default",
                 Birthdate = new DateTime(2022, 1, 1),
                 Gender = "Male",
                 OwnerId = "1"
@@ -109,13 +110,14 @@ public class PetHubContextSeed
 
         if (!context.Services.Any())
         {
+            var clinic = await context.Clinics.FirstAsync();
             var services = new List<Service>
             {
-                new() { Name = "Consultation", Description = "General pet consultation", ClinicId = 6},
-                new() { Name = "Vaccination", Description = "Scheduled vaccination", ClinicId = 6},
-                new() { Name = "Deworming", Description = "Parasite treatment", ClinicId = 6},
-                new() { Name = "Pet Grooming", Description = "Bath, trim, and brush", ClinicId = 6},
-                new() { Name = "Surgery", Description = "Pre-scheduled veterinary surgery", ClinicId = 6},
+                new() { Name = "Consultation", Description = "General pet consultation", ClinicId = clinic.Id },
+                new() { Name = "Vaccination", Description = "Scheduled vaccination", ClinicId = clinic.Id},
+                new() { Name = "Deworming", Description = "Parasite treatment", ClinicId = clinic.Id},
+                new() { Name = "Pet Grooming", Description = "Bath, trim, and brush", ClinicId = clinic.Id},
+                new() { Name = "Surgery", Description = "Pre-scheduled veterinary surgery", ClinicId = clinic.Id},
             };
 
             context.Services.AddRange(services);

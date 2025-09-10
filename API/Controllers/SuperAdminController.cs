@@ -90,4 +90,21 @@ public class SuperAdminController(SignInManager<AppUser> signInManager, UserMana
 
         return BadRequest("Error Creating Clinic");
     }
+
+    // Update Admin
+
+    [HttpPost("update-admin/{id}")]
+    public async Task<ActionResult> UpdateAdminUser(UpdateAdminUser dto, string id)
+    {
+        var user = await userManager.FindByIdAsync(id);
+        if (user == null) return NotFound("No user found");
+
+        user.ClinicId = dto.ClinicId;
+
+        var result = await userManager.UpdateAsync(user);
+
+        if (result.Succeeded) return NoContent();
+
+        return BadRequest("Error Updating Admin User");
+    }
 }

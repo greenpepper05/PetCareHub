@@ -109,7 +109,7 @@ export class PetServiceComponent implements OnInit {
       const payload = {
         petId: this.form.value.petId,
         ownerId: this.form.value.ownerId,
-        clinicId: 6,
+        clinicId: 1,
         serviceId: this.form.value.serviceId,
         dateOfService: this.form.value.dateOfService,
         notes:this.form.value.notes

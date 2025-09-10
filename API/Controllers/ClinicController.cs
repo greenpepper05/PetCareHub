@@ -122,7 +122,46 @@ public class ClinicController(IUnitOfWork unit,
         var data = mapper.Map<IReadOnlyList<ProcedureDto>>(procedures);
 
         return Ok(data);
-        
+
+    }
+
+    [HttpPut("services/{serviceId}/procedures/reorder")]
+    public async Task<ActionResult> ReorderProcedures(int serviceId, [FromBody] List<ProcedureDto> dtos)
+    {
+        var user = await userManager.GetUserByEmail(User);
+        if (user?.ClinicId == null) return Unauthorized("User not assigned to a clinic");
+
+        var service = await unit.Repository<Service>().GetByIdAsync(serviceId);
+        if (service == null || service.ClinicId != user.ClinicId) return NotFound();
+
+        foreach (var dto in dtos)
+        {
+            var proc = await unit.Repository<Procedure>().GetByIdAsync(dto.Id);
+            if (proc == null || proc.ServiceId != serviceId) continue;
+
+            proc.Order = dto.Order;
+
+        }
+
+        await unit.Complete();
+        return Ok("Updated");
+    }
+
+    [HttpDelete("procedures/{id:int}")]
+    public async Task<ActionResult> DeleteProcedure(int id)
+    {
+        var user = await userManager.GetUserByEmail(User);
+
+        if (user == null) return Unauthorized();
+
+        var procedure = await unit.Repository<Procedure>().GetByIdAsync(id);
+        if (procedure == null) return NotFound();
+
+        unit.Repository<Procedure>().Remove(procedure);
+
+        if (await unit.Complete()) return NoContent();
+
+        return BadRequest("Failed to remove procedure");
     }
 
 }

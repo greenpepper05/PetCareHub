@@ -12,6 +12,8 @@ import { ServiceRecordService } from '../../../../core/services/service-record.s
 import { ServiceRecord } from '../../../../shared/models/serviceRecord';
 import { Procedures } from '../../../../shared/models/procedures';
 import { ProceduresService } from '../../../../core/services/procedures.service';
+import { ServiceRecordStep } from '../../../../shared/models/serviceRecordStep';
+import { ServiceRecordStepService } from '../../../../core/services/service-record-step.service';
 
 @Component({
   selector: 'app-pet-service-detail',
@@ -26,11 +28,11 @@ import { ProceduresService } from '../../../../core/services/procedures.service'
 export class PetServiceDetailComponent implements OnInit{
   private activatedRoute = inject(ActivatedRoute);
   private serviceRecord = inject(ServiceRecordService);
-  private procedureService = inject(ProceduresService);
+  private serviceRecordStep = inject(ServiceRecordStepService);
   private petService = inject(PetService);
   private user = inject(AccountService);
   services?: ServiceRecord;
-  procedures?: Procedures;
+  records?: ServiceRecordStep[] = [];
   pet?: Pet;
   owner?: User;
 
@@ -48,7 +50,7 @@ export class PetServiceDetailComponent implements OnInit{
         this.services = history;
         this.loadPet(history.petId);
         console.log(this.services);
-        this.loadProcedure(this.services.serviceId);
+        this.loadProcedure(this.services.id);
       } 
     })
   }
@@ -74,13 +76,14 @@ export class PetServiceDetailComponent implements OnInit{
     })
   }
   
-  loadProcedure(serviceId: number) {
 
-    if (!serviceId) return;
+  loadProcedure(recordId: number) {
 
-    this.procedureService.getProcedures(+serviceId).subscribe({
-      next: (procedure) => {
-        this.procedures = procedure
+    if (!recordId) return;
+
+    this.serviceRecordStep.getServiceRecordStep(+recordId).subscribe({
+      next: (record) => {
+        this.records = record
       }
     })
 

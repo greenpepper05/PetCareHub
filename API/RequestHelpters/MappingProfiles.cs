@@ -43,5 +43,7 @@ public class MappingProfiles : Profile
             .ForMember(p => p.Name, o => o.MapFrom(r => r.Name))
             .ForMember(p => p.Description, o => o.MapFrom(r => r.Description))
             .ForMember(p => p.Order, o => o.MapFrom(r => r.Order));
+
+        CreateMap<ServiceRecordStep, ServiceRecordStepDto>();
     }
 }

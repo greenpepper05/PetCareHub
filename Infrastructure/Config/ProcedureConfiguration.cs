@@ -11,6 +11,7 @@ public class ProcedureConfiguration : IEntityTypeConfiguration<Procedure>
         builder.Property(p => p.Name).IsRequired().HasMaxLength(150);
         builder.Property(p => p.Description).HasMaxLength(500);
         builder.Property(p => p.Order).IsRequired();
+        builder.HasIndex(p => new { p.ServiceId, p.Order }).IsUnique();
         builder.HasOne(p => p.Service).WithMany(s => s.Procedures).HasForeignKey(p => p.ServiceId).OnDelete(DeleteBehavior.Cascade);
     }
 }

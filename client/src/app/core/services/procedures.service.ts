@@ -11,6 +11,6 @@ export class ProceduresService {
   private baseUrl = environment.apiUrl;
 
   getProcedures(serviceId: number) {
-    return this.http.get<Procedures>(`${this.baseUrl}clinic/services/${serviceId}/procedures`);
+    return this.http.get<Procedures[]>(`${this.baseUrl}clinic/services/${serviceId}/procedures`);
   }
 }
