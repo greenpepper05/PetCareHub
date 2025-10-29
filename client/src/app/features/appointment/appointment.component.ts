@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { AppointmentService } from '../../core/services/appointment.service';
 import { Router, RouterLink } from '@angular/router';
@@ -43,6 +43,11 @@ export class AppointmentComponent implements OnInit{
   private router = inject(Router);
   services: any[] = [];
   pets: Pet[] = [];
+
+  availableTimeSlots: string[] = [
+    '09:00', '10:00', '11:00', '12:00', '13:00', 
+    '14:00', '15:00', '16:00', '17:00'
+  ];
   
   ngOnInit(): void {
     this.servicesService.getServices().subscribe({
@@ -57,19 +62,42 @@ export class AppointmentComponent implements OnInit{
   }
 
   appointmentForm = this.fb.group({
-    appointmentDate: [''],
-    petid: [''],
-    ownerid: [''],
-    serviceid: [''],
-    notes: [''],
-    clinicid: [''],
+    appointmentDate: [null, Validators.required],
+    appointmentTime: ['', Validators.required],
+    petid: ['', Validators.required],
+    ownerid: ['', Validators.required],
+    serviceid: ['', Validators.required],
+    notes: ['', Validators.required],
+    clinicid: ['', Validators.required],
   });
+
+  formatTime(time: string): string {
+    const [startHours, startMinutes] = time.split(':').map(Number);
+
+    const startDate = new Date();
+    startDate.setHours(startHours, startMinutes, 0,0);
+
+    const endDate = new Date(startDate.getTime());
+    endDate.setHours(startDate.getHours() + 1);
+
+    const timeFormatOptions: Intl.DateTimeFormatOptions = {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    }
+    
+    const startDisplay = startDate.toLocaleTimeString('en-US', timeFormatOptions);
+    const endDisplay = endDate.toLocaleTimeString('en-US', timeFormatOptions);
+
+    return `${startDisplay} - ${endDisplay}`;
+  }
 
   servicesForm = this.fb.group({
     serviceId: ['']
   });
 
   async onSubmit() {
+    
     const currentUser = this.accountSerive.currentUser();
 
     if (!currentUser) {
@@ -77,21 +105,41 @@ export class AppointmentComponent implements OnInit{
       return;
     }
 
-    const ownerid = currentUser.id;
+
+    const datePart: Date = this.appointmentForm.value.appointmentDate!;
+    const timePart: string = this.appointmentForm.value.appointmentTime!;
+
+    const pad = (num: number) => num < 10 ? '0' + num : num.toString();
+
+    const year = datePart.getFullYear();
+    const month = pad(datePart.getMonth() + 1);
+    const day = pad(datePart.getDate());
+    
+    
+    const [hours, minutes] = timePart.split(':');
+    
+    const appointmentDateLocalString = `${year}-${month}-${day}T${hours}:${minutes}:00`;
+
+
+    const ownerId = currentUser.id;
+
     const selectedPetId = this.appointmentForm.get('petid')?.value;
+
     const selectedService = Number(this.servicesForm.get('serviceId')?.value);
-    const clinicId = 6;
-    const date = this.appointmentForm.value.appointmentDate;
-    const formattedDate = date ? new Date(date).toLocaleDateString('en-CA').split('T')[0] : '';
+
+
+    const clinicId = 1; 
+    
     const data = {
-          serviceId: selectedService,
-          ownerId: ownerid,
-          petId: selectedPetId,
-          appointmentDate : formattedDate,
-          clinicid: clinicId
+      serviceId: selectedService,
+      ownerId: ownerId,
+      petId: selectedPetId,
+      appointmentDate : appointmentDateLocalString,
+      clinicId: clinicId
     };
 
-    console.log(data);
+    console.log('Final Payload (Local Time String):', data);
+
     this.appointmentService.createAppointment(data).subscribe({
       next: (response : Appointment) => {
         this.appointmentService.appointmentComplete = true;

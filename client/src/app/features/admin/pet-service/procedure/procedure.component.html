@@ -1,0 +1,150 @@
+<div class="min-h-full">
+
+    <div class="bg-[var(--secondary)] text-white p-6 rounded-xl shadow-lg mb-6">
+        <div class="flex items-center text-sm mb-2 opacity-80">
+            <mat-icon class="mr-1 text-base">list_alt</mat-icon>
+            <span>Service Procedure Tracking</span>
+        </div>
+        
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold">
+                Procedure for Service #{{ services()?.id }}
+            </h1>
+            
+            <button 
+                routerLink="/admin/service-record/{{services()?.id}}" 
+                class="flex items-center border-white text-white hover:bg-white hover:text-[var(--primary)] transition-colors py-2 px-4 rounded-lg"
+            >
+                <mat-icon class="mr-1 text-base">arrow_back</mat-icon> Back to Details
+            </button>
+        </div>
+    </div>
+
+    <div class="space-y-6"> 
+        
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-6">
+            
+            <div class="space-y-6">
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 flex items-center">
+                        <mat-icon class="text-2xl mr-2 text-indigo-600">pets</mat-icon> Pet Summary
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <p class="flex justify-between border-b pb-1"><span class="font-medium text-gray-500">Name:</span><strong class="text-gray-900">{{ pet()?.name }}</strong></p>
+                        <p class="flex justify-between border-b pb-1"><span class="font-medium text-gray-500">ID:</span><strong class="text-gray-900">{{ pet()?.id }}</strong></p>
+                        <p class="flex justify-between border-b pb-1"><span class="font-medium text-gray-500">Species:</span><strong class="text-gray-900">{{ pet()?.species }}</strong></p>
+                        <p class="flex justify-between border-b pb-1"><span class="font-medium text-gray-500">Service:</span><strong class="text-gray-900">{{ services()?.serviceName }}</strong></p>
+                        <p class="flex justify-between"><span class="font-medium text-gray-500">Date:</span><strong class="text-gray-900">{{ services()?.dateOfService | date:'mediumDate' }}</strong></p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 flex items-center">
+                        <mat-icon class="text-2xl mr-2 text-amber-600">info</mat-icon> Status
+                    </h3>
+                    
+                    <p class="flex justify-between">
+                        <span class="font-medium text-gray-500">Overall Status:</span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+                            [ngClass]="{
+                                'bg-green-100 text-green-800': services()?.status === 'Completed', 
+                                'bg-yellow-100 text-yellow-800': services()?.status !== 'Completed',
+                            }">
+                            {{ services()?.status}}
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 flex flex-col">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 flex items-center">
+                    <mat-icon class="text-2xl mr-2 text-red-600">checklist</mat-icon> Procedure Steps ({{ (currentRecord().order || 0) + 1}} / {{ filteredRecords().length }})
+                </h3>
+                
+                <div class="overflow-x-auto flex-grow mb-4">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50 uppercase text-xs">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 tracking-wider w-1/12">
+                                    #
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 tracking-wider w-8/12">
+                                    Description
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 tracking-wider w-3/12">
+                                    Remarks
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @for(record of filteredRecords(); track record.id) {
+                                <tr [ngClass]="{'bg-blue-50 border-l-4 border-blue-600': record.id === currentRecord().id, 'hover:bg-gray-50': record.id !== currentRecord().id}">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ record.order + 1 }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal text-sm font-semibold" [ngClass]="{'text-blue-700': record.id === currentRecord().id}">
+                                        {{ record.name }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                        
+                                        @if(services()?.status === 'Completed') {
+                                            <div class="flex flex-col items-center justify-center text-green-600">
+                                                <mat-icon class="text-lg">check_circle</mat-icon>
+                                                <span class="text-xs mt-1">{{ record.completedAt | date:'shortTime' }}</span>
+                                            </div>
+                                        } @else {
+                                            @if(record.id === currentRecord().id) {
+                                                <div class="flex items-center justify-center text-blue-500">
+                                                    <mat-icon class="animate-spin text-lg">autorenew</mat-icon>
+                                                    <span class="ml-1 text-xs font-semibold">Current</span>
+                                                </div>
+                                            } @else if (record.isCompleted) {
+                                                <div class="flex items-center justify-center text-green-500">
+                                                    <mat-icon class="text-lg">done_all</mat-icon>
+                                                    <span class="ml-1 text-xs">Done</span>
+                                                </div>
+                                            } @else {
+                                                <span class="text-gray-500 text-xs">Pending</span>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-4 flex justify-between pt-4 border-t border-gray-100">
+                    <button 
+                        (click)="previousRecord()" 
+                        [disabled]="isFirstRecord()" 
+                        mat-stroked-button 
+                        class="text-gray-800 border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <mat-icon>arrow_back</mat-icon> Previous
+                    </button>
+                    
+                    @if (services()?.status === 'Completed') {
+                        <button 
+                            mat-flat-button 
+                            disabled
+                            class="bg-green-500 text-white font-bold py-2 px-4 rounded-lg disabled:opacity-70">
+                            <mat-icon>check_circle</mat-icon> Completed
+                        </button>
+                    } @else {
+                        <button 
+                            (click)="nextRecord()" 
+                            mat-flat-button
+                            [ngClass]="isLastRecord() ? 'bg-green-600 hover:bg-green-700' : 'bg-[var(--primary)] hover:bg-[var(--secondary)]'"
+                            class="text-white font-bold py-2 px-4 rounded-lg"
+                        >
+                            <mat-icon>{{ isLastRecord() ? 'check' : 'navigate_next' }}</mat-icon>
+                            {{ isLastRecord() ? 'Complete Service' : 'Next Step' }}
+                        </button>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

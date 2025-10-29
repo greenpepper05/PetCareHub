@@ -1,0 +1,10 @@
+export type Clinic = {
+    id: number;
+    ownerId: string;
+    clinicName: string;
+    address: string;
+    phoneNumber: string;
+    email: string;
+    pictureUrl: string;
+    createAt: string;
+}

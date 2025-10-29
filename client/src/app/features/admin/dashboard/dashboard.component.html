@@ -1,23 +1,106 @@
-<div class="h-screen p-4">
-    <div class="mb-4">
-        <h1 class="text-2xl font-bold">Dashoard</h1>
+<div class="min-h-full bg-gray-50">
+
+    <div class="bg-[var(--secondary)] text-white p-6 rounded-xl shadow-lg mb-6">
+        <div class="flex items-center text-sm mb-2 opacity-80">
+            <mat-icon class="mr-1 text-base">dashboard</mat-icon>
+            <span>Clinic Overview</span>
+        </div>
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold">
+                Dashboard
+            </h1>
+            <button class="flex items-center border-white text-white hover:bg-white hover:text-[var(--primary)] transition-colors py-2 px-4 rounded-lg">
+                <mat-icon class="mr-1 text-base">calendar_month</mat-icon> Monthly Report
+            </button>
+        </div>
     </div>
-    <div class="card flex gap-8">
-        <mat-card class="w-1/4 p-4">
-            <p class="text-xl font-semibold mb-2">Total Patient</p>
-            <h1 class="text-3xl font-bold">222</h1>
-        </mat-card>
-        <mat-card class="w-1/4 p-4">
-            <p class="text-xl font-semibold mb-2">New Appointments</p>
-            <h1 class="text-3xl font-bold">42</h1>
-        </mat-card>
-        <mat-card class="w-1/4 p-4">
-            <p class="text-xl font-semibold mb-2">No-show</p>
-            <h1 class="text-3xl font-bold">4</h1>
-        </mat-card>
-        <mat-card class="w-1/4 p-4">
-            <p class="text-xl font-semibold mb-2">Total Appointments</p>
-            <h1 class="text-3xl font-bold">743</h1>
-        </mat-card>
+
+    <div class="space-y-6">
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 flex items-start justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 mb-1">Total Patients</p>
+                    <h1 class="text-3xl font-extrabold text-indigo-700">
+                        {{ totalPatients() | number }}
+                    </h1>
+                </div>
+                <mat-icon class="text-5xl text-indigo-200">group</mat-icon>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 flex items-start justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 mb-1">Monthly Revenue</p>
+                    <h1 class="text-3xl font-extrabold text-green-700">
+                        {{ totalRevue() | currency:'PHP' }}
+                    </h1>
+                </div>
+                <mat-icon class="text-5xl text-green-200">payments</mat-icon>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 flex items-start justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 mb-1">Total Appointments</p>
+                    <h1 class="text-3xl font-extrabold text-red-600">
+                        {{ totalAppointments() | number }}
+                    </h1>
+                </div>
+                <mat-icon class="text-5xl text-red-200">person_off</mat-icon>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
+
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 flex flex-col">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 flex items-center">
+                    <mat-icon class="text-2xl mr-2 text-blue-600">bar_chart</mat-icon> Monthly Activity Report
+                </h3>
+                <div class="flex-grow min-h-[300px] flex items-center justify-center">
+                    <div class="text-gray-400 p-8 border-2 border-dashed border-gray-200 w-full text-center">
+                        [Monthly Appointment & Service Count Bar Chart Component]
+                        <p class="text-xs mt-2">Data visualization showing appointments and services over the last 6 months.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 flex flex-col">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 flex items-center">
+                    <mat-icon class="text-2xl mr-2 text-amber-600">event</mat-icon> Upcoming Appointments
+                </h3>
+                
+                <div class="space-y-4 flex-grow">
+                    <div class="border-l-4 border-l-blue-500 p-3 bg-blue-50 rounded-md">
+                        <p class="font-semibold text-sm text-gray-800">Maximus the Dog</p>
+                        <p class="text-xs text-gray-600">Today, 2:00 PM - Routine Checkup</p>
+                    </div>
+
+                    <div class="border-l-4 border-l-amber-500 p-3 bg-amber-50 rounded-md">
+                        <p class="font-semibold text-sm text-gray-800">Luna the Cat</p>
+                        <p class="text-xs text-gray-600">Tomorrow, 10:30 AM - Vaccination</p>
+                    </div>
+
+                    <div class="border-l-4 border-l-gray-300 p-3 bg-gray-50 rounded-md opacity-70">
+                        <p class="font-semibold text-sm text-gray-800">Charlie the Hamster</p>
+                        <p class="text-xs text-gray-600">05/20/2025, 4:00 PM - Nail Trim</p>
+                    </div>
+                    
+                    @if (upcomingAppointments().length === 0) {
+                    <div class="text-center p-4 text-gray-500">
+                        <mat-icon class="text-4xl mb-2">check</mat-icon>
+                        <p class="text-sm">No upcoming appointments this week.</p>
+                    </div>
+                    }
+                    
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-gray-100">
+                    <button mat-flat-button class="w-full bg-blue-500 text-white hover:bg-blue-600">
+                        View All Appointments
+                    </button>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>

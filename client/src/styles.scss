@@ -45,3 +45,33 @@ h1, h2, h3 {
     supporting-text-color: white
   ));
 }
+
+.active-link {
+    /* Background color for the active link */
+    background-color: var(--white) !important; 
+    color: var(--primary) !important; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+/* Overrides default MatList padding/height */
+mat-list-item {
+    height: auto !important;
+    padding: 0 !important;
+}
+/* Fix for MatList item ripple/focus state color */
+.mat-mdc-list-item:not(.active-link) .mdc-list-item__primary-text {
+    color: var(--white) !important;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 9999px; /* rounded-full */
+  transition: background-color 0.15s;
+}
+
+.menu-button:hover {
+  background-color: #f3f4f6; /* gray-100 */
+}

@@ -1,159 +1,192 @@
-<div class="h-screen mx-auto p-6">
-  <div class="grid grid-cols-1 xl:grid-cols-[3fr_1fr] gap-6 h-full">
-    <!-- Left Section: Form + Table -->
-    <div class="h-fit">
-      <!-- Page Title -->
-      <p class="text-3xl font-bold mb-6">Service Record</p>
+<div class="min-h-full">
 
-      <!-- Toggle Button -->
-      <div class="mb-4">
-        <button
-          class="bg-[var(--primary)] text-white px-4 py-2 rounded-lg hover:bg-[var(--secondary)] transition"
-          (click)="toggleForm()"
-        >
-          {{ showForm ? 'Hide & Reset Form' : 'Show Service Form' }}
-        </button>
-      </div>
-
-      <!-- Service Form -->
-      @if (showForm) {
-        <form
-          [formGroup]="form"
-          (ngSubmit)="onSubmit()"
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-white p-6 rounded-xl shadow-md mb-8"
-        >
-          <!-- Pet ID -->
-      <div>
-        <label for="petId" class="block font-semibold mb-2">Pet ID</label>
-        <input
-          type="text"
-          id="petId"
-          formControlName="petId"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      <!-- Owner ID -->
-      <div>
-        <label for="ownerId" class="block font-semibold mb-2">Owner ID</label>
-        <input
-          type="text"
-          id="ownerId"
-          formControlName="ownerId"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      <!-- Service Dropdown -->
-      <div>
-        <label for="service" class="block font-semibold mb-2">Service</label>
-        <select
-          id="service"
-          formControlName="serviceId"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option>Select Service</option>
-          @for (service of serviceList; track service.id) {
-            <option [value]="service.id">{{ service.name }}</option>
-          }
-        </select>
-        <a class="items-end">Create service</a>
-      </div>
-
-      <!-- Date Picker -->
-      <div>
-        <label for="date" class="block font-semibold mb-2">Date of Service</label>
-        <input
-          type="date"
-          id="date"
-          formControlName="dateOfService"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      <!-- Notes -->
-      <div class="md:col-span-2 lg:col-span-3">
-        <label for="notes" class="block font-semibold mb-2">Notes</label>
-        <textarea
-          id="notes"
-          formControlName="notes"
-          rows="3"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        ></textarea>
-      </div>
-
-      <!-- Visit Type -->
-      <div>
-        <label for="visitType" class="block font-semibold mb-2">Visit Type</label>
-        <select
-          id="visitType"
-          formControlName="visitType"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="0">Appointment</option>
-          <option value="1">Walk-in</option>
-        </select>
-      </div>
-
-      <!-- Appointment ID -->
-      <div>
-        <label for="appointmentId" class="block font-semibold mb-2">Appointment ID (Optional)</label>
-        <input
-          type="text"
-          id="appointmentId"
-          formControlName="appointmentId"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      <!-- Submit Button -->
-      <div class="content-end">
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-          [disabled]="form.invalid"
-        >
-          Record Service
-        </button>
-      </div>
-        </form>
-      }
-
-      <!-- Service Table -->
-      <div class="bg-white p-6 rounded-xl shadow-md overflow-x-auto">
-        <table class="min-w-full table-auto">
-          <thead>
-            <tr class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
-              <th class="px-4 py-3">ID</th>
-              <th class="px-4 py-3">Pet Name</th>
-              <th class="px-4 py-3">Service</th>
-              <th class="px-4 py-3">Appointment Date</th>
-              <th class="px-4 py-3">Status</th>
-            </tr>
-          </thead>
-          <tbody class="text-sm text-gray-600">
-            @for (record of records; track record.id) {
-              <tr
-                routerLink="/admin/pet-service/{{ record.id }}"
-                class="border-b hover:bg-[var(--primary)] hover:text-[var(--white)]"
-              >
-                <td class="px-4 py-3">{{ record.id }}</td>
-                <td class="px-4 py-3">{{ record.petName }}</td>
-                <td class="px-4 py-3">{{ record.serviceName }}</td>
-                <td class="px-4 py-3">{{ record.dateOfService | date }}</td>
-                <td class="px-4 py-3">{{ record.status }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+    <div class="bg-[var(--secondary)] text-white p-6 rounded-xl shadow-lg mb-6">
+        <div class="flex items-center text-sm mb-2 opacity-80">
+            <mat-icon class="mr-1 text-base">receipt_long</mat-icon>
+            <span>Service Records</span>
+        </div>
+        
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold">
+                Veterinary Service Records
+            </h1>
+        </div>
     </div>
 
-    <!-- Right Section: Calendar -->
-    <div class="bg-white rounded-xl shadow-md p-6 h-fit">
-      <h3 class="text-xl font-semibold mb-4 text-center">📅 Calendar</h3>
-      <mat-calendar [(selected)]="selectedDate" (selectedChange)="onDateChange($event)"></mat-calendar>
+    <div class="grid grid-cols-1 xl:grid-cols-[3fr_1fr] gap-6">
+
+        <div class="h-fit">
+            
+            <div class="mb-6 flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-800">
+                    Service Entry
+                </h2>
+                <button
+                    mat-flat-button
+                    class="bg-[var(--primary)] text-white font-semibold rounded-lg py-2 px-4 shadow-md transition-colors"
+                    (click)="toggleForm()"
+                >
+                    <mat-icon class="mr-1 text-base">{{ showForm ? 'close' : 'add' }}</mat-icon> 
+                    {{ showForm ? 'Hide Form' : 'New Service Record' }}
+                </button>
+            </div>
+
+                @if (showForm) {
+                    <form
+                        [formGroup]="form"
+                        (ngSubmit)="onSubmit()"
+                        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-8"
+                    >
+                        <div>
+                            <mat-form-field appearance="outline" class="w-full">
+                                <mat-label>Pet ID</mat-label>
+                                <input matInput id="petId" formControlName="petId">
+                            </mat-form-field>
+                        </div>
+
+                        <div>
+                            <mat-form-field appearance="outline" class="w-full">
+                                <mat-label>Owner ID</mat-label>
+                                <input matInput id="ownerId" formControlName="ownerId" [readonly]="true">
+                            </mat-form-field>
+                        </div>
+
+                        <div>
+                            <mat-form-field appearance="outline" class="w-full">
+                                <mat-label>Service</mat-label>
+                                <mat-select formControlName="serviceId">
+                                    <mat-option>Select Service</mat-option>
+                                    @for (service of serviceList; track service.id) {
+                                        <mat-option [value]="service.id">{{ service.name }}</mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                            <a routerLink="/admin/manage-services" class="text-xs text-purple-600 hover:text-purple-800">Create new service</a>
+                        </div>
+
+                        <div>
+                            <mat-form-field appearance="outline" class="w-full">
+                                <mat-label>Date of Service</mat-label>
+                                <input matInput [matDatepicker]="picker" formControlName="dateOfService">
+                                <mat-hint>MM/DD/YYYY</mat-hint>
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+
+                        <div>
+                            <mat-form-field appearance="outline" class="w-full">
+                                <mat-label>Price</mat-label>
+                                <input matInput type="number" formControlName="price">
+                                <mat-icon matSuffix>attach_money</mat-icon>
+                                @if (form.get('price')?.invalid && form.get('price')?.touched) {
+                                    <mat-error>
+                                        Please enter a valid price.
+                                    </mat-error>
+                                }
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field appearance="outline" class="w-full">
+                                <mat-label>Visit Type</mat-label>
+                                <mat-select formControlName="visitType">
+                                    <mat-option [value]="0">Appointment</mat-option>
+                                    <mat-option [value]="1">Walk-in</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div>
+                            <mat-form-field appearance="outline" class="w-full">
+                                <mat-label>Appointment ID (Optional)</mat-label>
+                                <input matInput formControlName="appointmentId">
+                            </mat-form-field>
+                        </div>
+                        
+                        <div class="lg:col-span-3 md:col-span-2">
+                            <mat-form-field appearance="outline" class="w-full">
+                                <mat-label>Notes</mat-label>
+                                <textarea matInput formControlName="notes" rows="3"></textarea>
+                            </mat-form-field>
+                        </div>
+                        
+                        <div class="lg:col-start-3 md:col-start-2 flex justify-end">
+                            <button
+                                mat-flat-button
+                                type="submit"
+                                class="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg py-2 px-6 shadow-md transition-colors w-full sm:w-auto"
+                                [disabled]="form.invalid"
+                            >
+                                <mat-icon class="mr-1 text-base">save</mat-icon> Record Service
+                            </button>
+                        </div>
+                    </form>
+                }
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <h2 class="text-xl font-semibold mb-4 border-b pb-2 text-gray-800">
+                    Service History
+                </h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50 border-y border-gray-200 uppercase text-xs">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 tracking-wider">
+                                    ID
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 tracking-wider">
+                                    Pet Name
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 tracking-wider">
+                                    Service
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 tracking-wider">
+                                    Date
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 tracking-wider">
+                                    Status
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-right"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @for (record of records; track record.id) {
+                                <tr 
+                                    routerLink="/admin/service-record/{{ record.id }}"
+                                    class="h-[40px] cursor-pointer hover:bg-gray-50 transition-colors"
+                                >
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ record.id }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        {{ record.petName }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        {{ record.serviceName }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        {{ record.dateOfService | date: 'mediumDate' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        {{ record.status }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <span class="text-purple-600 hover:text-purple-800 font-semibold">View</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 h-fit">
+            <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
+                📅 Service Calendar
+            </h3>
+            <mat-calendar [(selected)]="selectedDate" (selectedChange)="onDateChange($event)"></mat-calendar>
+        </div>
     </div>
-  </div>
 </div>

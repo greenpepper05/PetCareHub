@@ -8,6 +8,7 @@ public class Clinic : BaseEntity
     public string Address { get; set; } = null!;
     public string? PhoneNumber { get; set; }
     public string? Email { get; set; }
+    public string? PictureUrl { get; set; }
     public DateTime CreateAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public ICollection<Service> Services { get; set; } = [];

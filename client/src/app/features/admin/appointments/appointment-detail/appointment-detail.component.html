@@ -1,71 +1,101 @@
-@if (appointment){   
-    <div class="h-screen p-4 w-full">
-        <h1 class="text-2xl font-bold mb-8">Appointment Detail</h1>
-        <div class="flex justify-between">
-            <div class="bg-white p-8 shadow-md rounded-md w-1/2">
-                <div class="flex justify-between items-center mb-8">
-                    <h1 class="text-xl font-bold">#{{appointment.id}}</h1>
-                    <button routerLink="/admin/appointments" mat-stroked-button>Back</button>
-                </div>
-                <div class="">
-                    <div class="flex justify-between mb-4">
-                        <div class="w-1/2">
-                            <h1 class="text-lg font-semibold"> Appointment Date</h1>
-                            <p class="text-lg font-bold uppercase">{{ appointment.appointmentDate | date}}</p>
-                        </div>
-                        <div class="w-1/2">
-                            <h1 class="text-lg font-semibold">Service</h1>
-                            <p class="text-lg font-bold uppercase">{{ appointment.serviceName}}</p>
-                        </div>
-                    </div>
-                    <div class="flex justify-between mb-4">
-                        <div class="w-1/2">
-                            <h1 class="text-lg font-semibold">Pet name</h1>
-                            <p class="text-lg font-bold uppercase">{{ appointment.petName }}</p>
-                        </div>
-                        <div class="w-1/2">
-                            <h1 class="text-lg font-semibold">Birthdate</h1>
-                            <p class="text-lg font-bold uppercase">{{ appointment.petBirthdate | date}}</p>
-                        </div>
-                    </div>
-                    <div class="flex justify-between mb-4">
-                        <div class="w-1/2">
-                            <h1 class="text-lg font-semibold">Breed</h1>
-                            <p class="text-lg font-bold uppercase">{{ appointment.petBreed }}</p>
-                        </div>
-                        <div class="w-1/2">
-                            <h1 class="text-lg font-semibold">Species</h1>
-                            <p class="text-lg font-bold uppercase">{{ appointment.petSpecies}}</p>
-                        </div>
-                    </div>
-                    <div class="">
-                        <form [formGroup]="statusForm">
-                            <mat-form-field appearance="fill" class="">
-                                <mat-label>Status</mat-label>
-                                <mat-select formControlName="status">
-                                    <mat-option value="Pending">Pending</mat-option>
-                                    <mat-option value="Confirmed">Confirm</mat-option>
-                                    <mat-option value="Cancelled">Cancel</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </form>
-                    </div>
-                </div>
-                <div class="flex justify-end">
-                    <button mat-flat-button class="" (click)="saveStatus()">Save</button>
-                </div>
+@if (appointment){ 
+    <div class="min-h-full">
+
+        <div class="bg-[var(--secondary)] text-white p-6 rounded-xl shadow-lg mb-6">
+            <div class="flex items-center text-sm mb-2 opacity-80">
+                <mat-icon class="mr-1 text-base">event_note</mat-icon>
+                <span>Appointment Details</span>
             </div>
-            @if(appointment.serviceName== "Pet Grooming") {
-            <div class="w-1/4 h-fit stepper">
-                @for(step of groomingSteps; track step) {
-                <div  (click)="getToNextStep(step)" 
-                    [class.active]="step === currentStep" 
-                    class="step">
-                        {{step}}
-                    </div>
-                }
+            
+            <div class="flex justify-between items-center">
+                <h1 class="text-3xl font-bold">
+                    Appointment #{{ appointment.id }}
+                </h1>
+                
+                <button 
+                routerLink="/admin/appointments" 
+                class="text-[var(--white)] hover:text-black font-semibold rounded-lg py-2 px-4 transition-colors cursor-pointer"
+            >
+                ← Back to Appointments
+            </button>
             </div>
-            }
         </div>
+
+        <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+            
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h2 class="text-2xl font-semibold text-gray-800">
+                    Service and Pet Information
+                </h2>
+                </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 mb-8">
+                
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Appointment Date</h3>
+                    <p class="text-lg font-bold text-gray-900">{{ appointment.appointmentDate | date: 'fullDate' }}</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Service</h3>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-indigo-100 text-indigo-800">
+                        {{ appointment.serviceName }}
+                    </span>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Pet Name</h3>
+                    <a routerLink="/admin/pets/{{ appointment.petId }}" class="text-lg font-bold text-purple-600 hover:text-purple-800 transition-colors">
+                        <mat-icon class="text-xl align-middle mr-1">pets</mat-icon>
+                        {{ appointment.petName }}
+                    </a>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Birthdate</h3>
+                    <p class="text-lg font-bold text-gray-900">{{ appointment.petBirthdate | date: 'mediumDate' }}</p>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Breed</h3>
+                    <p class="text-lg text-gray-700">{{ appointment.petBreed }}</p>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Species</h3>
+                    <p class="text-lg text-gray-700">{{ appointment.petSpecies }}</p>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-4 border-t border-gray-200">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800">Update Appointment Status</h3>
+                
+                <form [formGroup]="statusForm" class="flex flex-col justify-between sm:flex-row items-end gap-4">
+                    <mat-form-field appearance="outline" class="w-full sm:w-1/3">
+                        <mat-label>Status</mat-label>
+                        <mat-select formControlName="status">
+                            <mat-option value="Pending">Pending</mat-option>
+                            <mat-option value="Confirmed">Confirmed</mat-option>
+                            <mat-option value="Cancelled">Cancelled</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <button 
+                        mat-flat-button 
+                        (click)="saveStatus()"
+                        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-colors w-full sm:w-auto"
+                        [disabled]="statusForm.invalid"
+                    >
+                        Save Status
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@if (!appointment) {
+    <div class="min-h-full flex items-center justify-center p-10">
+        <p class="text-gray-500 text-xl">Loading appointment details...</p>
     </div>
 }

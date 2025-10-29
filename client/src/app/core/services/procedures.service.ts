@@ -10,7 +10,7 @@ export class ProceduresService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
-  getProcedures(serviceId: number) {
-    return this.http.get<Procedures[]>(`${this.baseUrl}clinic/services/${serviceId}/procedures`);
+  getProcedures(procedureId: number) {
+    return this.http.get<Procedures[]>(`${this.baseUrl}servicerecord/records/${procedureId}/steps`);
   }
 }

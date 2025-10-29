@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { AccountService } from '../../core/services/account.service';
 import { Router, RouterLink } from '@angular/router';
+import { MatIcon } from '@angular/material/icon';
+import { catchError, concatMap, finalize, flatMap, map, Observable, of } from 'rxjs';
 
 
 @Component({
@@ -24,7 +26,8 @@ import { Router, RouterLink } from '@angular/router';
     ReactiveFormsModule,
     MatInputModule,
     MatButton,
-    RouterLink
+    RouterLink,
+    MatIcon
 ],
   templateUrl: './create-pet.component.html',
   styleUrl: './create-pet.component.scss'
@@ -35,24 +38,113 @@ export class CreatePetComponent {
   private accountService = inject(AccountService);
   private router = inject(Router);
 
+  selectedFile: File | null = null;
+  imageUrl: string | ArrayBuffer | null = null;
+  isUploading = false;
+
   currentUser = this.accountService.currentUser()?.id;
 
   petProfileForm = this.fb.group({
-    id: ['', Validators.required],
     name: ['', Validators.required],
     breed: ['', Validators.required],
     species: ['', Validators.required],
     birthdate: ['', Validators.required],
     gender: ['', Validators.required],
-    ownerId: [this.currentUser]
+    ownerId: [this.currentUser],
+    pictureUrl: ['']
   });
 
 
-  async createPet() {
-    this.petService.createPetProfile(this.petProfileForm.value).subscribe({
-      next: () => {
-        this.router.navigateByUrl('/');
-      }
-    });
+  createPet() {
+    if (this.petProfileForm.invalid) {
+            this.petProfileForm.markAllAsTouched();
+            return;
+        }
+
+        this.isUploading = true;
+
+        let upload: Observable<{ url: string }>;
+
+        if (this.selectedFile) {
+            const formData = new FormData();
+            formData.append('File', this.selectedFile, this.selectedFile.name);
+
+            upload = this.petService.uploadImage(formData).pipe(
+                map(response => ({ url: response.url })),
+                catchError(err => {
+                    console.error('Image upload failed. Proceeding without picture.', err);
+                    return of({ url: '' }); 
+                })
+            );
+        } else {
+            upload = of({ url: '' });
+        }
+        upload.pipe(
+            concatMap(uploadResult => {
+                const finalPayload = {
+                    ...this.petProfileForm.value,
+            
+                    pictureUrl: uploadResult.url
+                };
+
+                return this.petService.createPetProfile(finalPayload);
+            }),
+            finalize(() => this.isUploading = false)
+        ).subscribe({
+            next: () => {
+                console.log("Pet created successfully and navigated.");
+                this.router.navigateByUrl('/pets'); 
+            },
+            error: (err) => {
+                console.error('Pet creation failed:', err);
+            }
+        });
+  }
+
+  onFileSelected(event: any): void {
+    const file: File = event.target.files[0];
+
+    if (file) {
+      this.selectedFile = file;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imageUrl = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  uploadImage() : void {
+    if (!this.selectedFile) {
+      console.log("No Image");
+      return;
+    };
+
+    this.isUploading = true;
+    const formData = new FormData();
+
+    formData.append('File', this.selectedFile, this.selectedFile.name);
+
+    this.petService.uploadImage(formData)
+      .pipe(
+        finalize(() => this.isUploading = false)
+      )
+      .subscribe({
+        next: (response) => {
+          const pictureUrl = response.url;
+
+          this.petProfileForm.patchValue({
+            pictureUrl: pictureUrl
+          })
+        },
+        error: (err) => {
+          console.error('Image upload failed: ', err);
+
+          this.selectedFile = null;
+          this.imageUrl = null;
+          this.petProfileForm.get('pictureUrl')?.setValue('');
+        }
+      })
   }
 }

@@ -9,12 +9,9 @@ public class CreateServiceRecordDto
     public int PetId { get; set; }
     public int ServiceId { get; set; }
     public int ClinicId { get; set; }
-
+    public decimal? Price { get; set; }
     public DateTime DateOfService { get; set; }
-
     public string? Notes { get; set; }
-
     public VisitType VisitType { get; set; }
-
     public int? AppointmentId { get; set; }
 }

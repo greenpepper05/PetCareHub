@@ -1,12 +1,14 @@
 using System.Security.Claims;
 using API.DTOs;
 using API.Extensions;
+using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
@@ -103,8 +105,8 @@ public class AccountController(SignInManager<AppUser> signInManager,
         return Ok(pets);
     }
 
-    [Authorize(Roles = "Admin")]
-    [HttpGet("user/{id}")]
+    [Authorize(Roles = "Admin, SuperAdmin")]
+    [HttpGet("users/{id}")]
     public async Task<ActionResult<UserDto>> GetUserById(string id)
     {
         var user = await userManager.FindByIdAsync(id);
@@ -144,6 +146,136 @@ public class AccountController(SignInManager<AppUser> signInManager,
         }
 
         return Ok(new { message = $"User {user.Email} successfully assigned to clinic {clinic.ClinicName}" });
+    }
+
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpGet("admin-users")]
+    public async Task<ActionResult<IReadOnlyList<UserDto>>> GetAllAdminUsers()
+    {
+        var appUsers = await userManager.Users
+            .Include(u => u.Clinic)
+            .ToListAsync();
+
+        if (appUsers == null || appUsers.Count == 0) return NotFound("No users found");
+
+        var userDtos = new List<UserDto>();
+
+        foreach (var user in appUsers)
+        {
+            var roles = await userManager.GetRolesAsync(user);
+
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email!,
+                FirstName = user.FirstName!,
+                LastName = user.LastName!,
+                Contact = user.Contact!,
+                Role = roles.FirstOrDefault()!,
+
+                ClinicId = user.Clinic?.Id,
+                ClinicName = user.Clinic?.ClinicName
+            };
+
+            if (userDto.Role == "Admin")
+            {
+                userDtos.Add(userDto);
+            }
+        }
+
+        return Ok(userDtos);
+
+    }
+
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpGet("users")]
+    public async Task<ActionResult<IReadOnlyList<UserDto>>> GetAllUsers()
+    {
+        var appUsers = await userManager.Users
+            .Include(u => u.Clinic)
+            .ToListAsync();
+
+        if (appUsers == null || appUsers.Count == 0) return NotFound("No users found");
+
+        var userDtos = new List<UserDto>();
+
+        foreach (var user in appUsers)
+        {
+            var roles = await userManager.GetRolesAsync(user);
+
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email!,
+                FirstName = user.FirstName!,
+                LastName = user.LastName!,
+                Contact = user.Contact!,
+                Role = roles.FirstOrDefault()!,
+
+                ClinicId = user.Clinic?.Id,
+                ClinicName = user.Clinic?.ClinicName
+            };
+
+            userDtos.Add(userDto);
+        }
+
+        return Ok(userDtos);
+
+    }
+
+    // Register AdminUser
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpPost("register/admin")]
+    public async Task<ActionResult> RegisterAdmin([FromBody] RegisterDto registerDto)
+    {
+        var user = new AppUser
+        {
+            FirstName = registerDto.FirstName,
+            LastName = registerDto.LastName,
+            Email = registerDto.Email,
+            Contact = registerDto.Contact,
+            UserName = registerDto.Email,
+            ClinicId = registerDto.ClinicId
+        };
+
+        var result = await signInManager.UserManager.CreateAsync(user, registerDto.Password);
+
+        if (!result.Succeeded)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+
+            return ValidationProblem();
+        }
+
+        await userManager.AddToRoleAsync(user, "Admin");
+
+        return Ok();
+    }
+    
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpGet("user/{id}")]
+    public async Task<ActionResult<UserDto>> GetUserWithClinicById(string id)
+    {
+        var user = await userManager.Users.Include(u => u.Clinic).Where(u => u.Id == id).FirstOrDefaultAsync();
+
+        if (user == null) return NotFound();
+
+        var roles = await userManager.GetRolesAsync(user);
+
+        return Ok(new UserDto
+        {
+            Id = user.Id,
+            Email = user.Email!,
+            FirstName = user.FirstName!,
+            LastName = user.LastName!,
+            Contact = user.Contact!,
+            ClinicId = user.Clinic?.Id,
+            ClinicName = user.Clinic?.ClinicName,
+            Role = roles.FirstOrDefault()
+        });
     }
 
 }

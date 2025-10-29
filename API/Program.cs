@@ -42,6 +42,7 @@ builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<AppointmentReminderJob>();
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
@@ -57,12 +58,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseDefaultFiles();
-// app.UseStaticFiles();
+app.UseStaticFiles();
 app.UseHangfireDashboard("/hangfire");
 RecurringJob.AddOrUpdate<AppointmentReminderJob>(
-    "daily-appointment-reminder",
+    "hourly-appointment-reminder",
     job => job.SendReminderAsync(),
-    Cron.Daily()
+    Cron.Hourly()
 );
 // BackgroundJob.Enqueue<AppointmentReminderJob>(job => job.SendReminderAsync());
 

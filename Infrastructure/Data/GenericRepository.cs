@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Expressions;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,13 @@ public class GenericRepository<T>(PetHubContext context) : IGenericRepository<T>
     public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
     {
         return await ApplySpecification(spec).ToListAsync();
+    }
+
+    public IQueryable<TResult> GetQueryableWithProjection<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selectExpression)
+    {
+        var query = ApplySpecification(spec);
+
+        return query.Select(selectExpression);
     }
 
     private IQueryable<T> ApplySpecification(ISpecification<T> spec)

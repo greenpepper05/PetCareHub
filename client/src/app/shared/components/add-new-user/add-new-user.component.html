@@ -1,0 +1,77 @@
+<div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all" (click)="$event.stopPropagation()">
+            
+    <!-- Modal Header -->
+    <div class="bg-[var(--primary)] text-white p-6 flex justify-between items-center">
+        <h3 class="text-xl font-bold">Register New Admin User</h3>
+        <button (click)="onCancel()" aria-label="Close modal" class="hover:text-gray-200 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+    
+    <!-- Modal Body (Form) -->
+    <form [formGroup]="registerForm" class="p-6 space-y-4">
+
+        <div>
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>First Name</mat-label>
+                <input matInput id="firstName" formControlName="firstName">
+            </mat-form-field>
+            @if (registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched) {
+                <mat-error>
+                    Please enter a first name.
+                </mat-error>
+            }
+        </div>
+
+        <div>
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Last Name</mat-label>
+                <input matInput id="lastName" formControlName="lastName">
+            </mat-form-field>
+            @if (registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched) {
+                <mat-error>
+                    Please enter a last name.
+                </mat-error>
+            }
+        </div>
+
+        <div>
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Phone number</mat-label>
+                <input matInput id="contact" type="tel" formControlName="contact">
+            </mat-form-field>
+            @if (registerForm.get('contact')?.invalid && registerForm.get('contact')?.touched) {
+                <mat-error>
+                    Please enter a phone number.
+                </mat-error>
+            }
+        </div>
+
+        <div>
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" id="email" formControlName="email">
+            </mat-form-field>
+            @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+                <!-- Note: The original template checked 'phoneNumber' here, but I fixed it to check 'email' -->
+                <mat-error>
+                    Please enter a valid email.
+                </mat-error>
+            }
+        </div>
+
+        <!-- Modal Footer (Buttons) -->
+        <div class="pt-4 flex justify-end space-x-3">
+            <button type="button" (click)="onCancel()" 
+                    class="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
+                Cancel
+            </button>
+            <button type="submit"
+                    (click)="onSubmit()"
+                    [disabled]="registerForm.invalid"
+                    class="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                Register
+            </button>
+        </div>
+    </form>
+</div>

@@ -9,4 +9,5 @@ public class PetDto
     public DateTime Birthdate { get; set; }
     public string Gender { get; set; } = string.Empty;
     public string OwnerId { get; set; } = string.Empty;
+    public string PictureUrl { get; set; } = string.Empty;
 }

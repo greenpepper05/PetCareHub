@@ -25,6 +25,7 @@ import { MatIcon } from '@angular/material/icon';
     DatePipe,
     RouterLink,
     MatPaginator,
+    MatIcon
 ],
   templateUrl: './appointments.component.html',
   styleUrl: './appointments.component.scss'
@@ -73,6 +74,10 @@ export class AppointmentsComponent implements OnInit{
   onDateChange(date: Date) {
     this.selectedDate = date;
     this.fetchHistoriesByDate(date);
+  }
+
+  onSearchChange() {
+    
   }
 
 

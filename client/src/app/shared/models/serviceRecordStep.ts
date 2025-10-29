@@ -4,7 +4,7 @@ export interface ServiceRecordStep {
     name: string;
     description: string;
     order: number;
-    isCompleted: string;
-    isSkipped: string;
+    isCompleted: boolean;
+    isSkipped: boolean;
     completedAt: string;
 }

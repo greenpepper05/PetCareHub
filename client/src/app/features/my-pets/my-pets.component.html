@@ -6,7 +6,7 @@
         @for (pet of pets; track pet.id) {
             <div class="flex flex-wrap bg-[var(--primary)] text-[var(--white)] rounded-2xl p-8 shadow-md shadow-gray-400 text-left w-[45%]">
                 <div class="w-1/2">
-                    <img src="" alt="" class="bg-[var(--white)] w-full h-full rounded-xl">
+                    <img src="{{ pet.pictureUrl }}" alt="" class="bg-[var(--white)] w-full h-full rounded-xl">
                 </div>
                 <div class="w-1/2 pl-4">
                     <p>ID</p>

@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { PetService } from '../../core/services/pet.service';
 import { Pet } from '../../shared/models/pet';
 import { DatePipe } from '@angular/common';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-my-pets',
@@ -14,6 +15,7 @@ import { DatePipe } from '@angular/common';
 export class MyPetsComponent implements OnInit{
   private petService = inject(PetService);
   pets: Pet[] = [];
+  baseUrl = environment.apiUrl;
 
   ngOnInit(): void {
     this.petService.getPetsByOwner().subscribe({

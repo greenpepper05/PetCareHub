@@ -1,0 +1,36 @@
+<div class="relative flex items-center justify-center" [style.width.px]="2 * RADIUS" [style.height.px]="2 * RADIUS">
+      <svg 
+        [attr.width]="2 * RADIUS" 
+        [attr.height]="2 * RADIUS" 
+        class="transform -rotate-90 shadow-lg rounded-full"
+      >
+        <!-- Background Circle (Gray track) -->
+        <circle
+          [attr.cx]="RADIUS"
+          [attr.cy]="RADIUS"
+          [attr.r]="RADIUS - STROKE_WIDTH / 2"
+          [attr.stroke-width]="STROKE_WIDTH"
+          class="stroke-gray-200"
+          fill="transparent"
+        ></circle>
+
+        <!-- Progress Circle (Green fill) -->
+        <circle
+          [attr.cx]="RADIUS"
+          [attr.cy]="RADIUS"
+          [attr.r]="RADIUS - STROKE_WIDTH / 2"
+          [attr.stroke-width]="STROKE_WIDTH"
+          class="stroke-green-500 transition-all duration-1000 ease-out"
+          fill="transparent"
+          [attr.stroke-dasharray]="CIRCUMFERENCE"
+          [attr.stroke-dashoffset]="strokeDashoffset()"
+          stroke-linecap="round"
+        ></circle>
+      </svg>
+      
+      <!-- Center Text -->
+      <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <p class="text-3xl font-extrabold text-green-700">{{ percentage() }}%</p>
+        <p class="text-xs text-gray-500">Completed</p>
+      </div>
+</div>

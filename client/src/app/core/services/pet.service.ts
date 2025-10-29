@@ -1,8 +1,11 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { User } from '../../shared/models/user';
 import { Pet } from '../../shared/models/pet';
+import { Pagination } from '../../shared/models/pagination';
+import { PetParams } from '../../shared/models/petParams';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,19 +15,43 @@ export class PetService {
   private http = inject(HttpClient);
   currentUser = signal<User | null>(null);
 
-  createPetProfile(values: any) {
-    return this.http.post<Pet>(this.baseUrl + 'pets', values);
+  createPetProfile(payload: any) {
+    return this.http.post<Pet>(this.baseUrl + 'pets', payload);
   }
 
   getPetsByOwner() {
     return this.http.get<Pet[]>(this.baseUrl + 'pets');
   }
 
-  getPetByClinic() {
-    return this.http.get<Pet[]>(this.baseUrl + 'pets/all');
+  getPetByClinic(clinicId: number) {
+    return this.http.get<Pet[]>(`${this.baseUrl}pets/${clinicId}/all`);
+  }
+
+  getAllPetByClinic(petParams: PetParams, clinicId: number) {
+    let params = new HttpParams();
+
+    params.append('pageSize', petParams.pageSize);
+    params.append('pageIndex', petParams.pageNumber);
+
+    if (petParams.search) {
+      params.append('search', petParams.search);
+    }
+    return this.http.get<Pagination<Pet>>(`${this.baseUrl}pets/${clinicId}/paginated`, {params});
   }
 
   getPetById(id: number) {
+    
     return this.http.get<Pet>(`${this.baseUrl}pets/${id}`);
   }
+
+  uploadImage(formData: FormData): Observable<{ url: string}> {
+    return this.http.post<any>(`${this.baseUrl}pets/upload/pet`, formData);
+  }
+
+  // SuperAdmin
+  getAllPets() {
+    return this.http.get<Pet[]>(`${this.baseUrl}pets/all`);
+  }
+
+
 }

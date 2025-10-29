@@ -11,6 +11,6 @@ public class StepConfiguration : IEntityTypeConfiguration<ServiceRecordStep>
         builder.Property(s => s.IsCompleted).IsRequired();
         builder.Property(s => s.CompletedAt).IsRequired(false);
         builder.HasOne(s => s.ServiceRecord).WithMany(r => r.Steps).HasForeignKey(s => s.ServiceRecordId).OnDelete(DeleteBehavior.Cascade);
-        builder.HasOne(s => s.Procedure).WithMany().HasForeignKey(s => s.ProcedureId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(s => s.Procedure).WithMany().HasForeignKey(s => s.ProcedureId).OnDelete(DeleteBehavior.SetNull);
     }
 }

@@ -4,11 +4,11 @@ using Core.Entities;
 
 namespace Core.Specifications;
 
-public class PetByClinicIdSpecification : BaseSpecification<Pet>
+public class PetByClinicIdSpecification : BaseSpecification<ServiceRecord>
 {
-    // public PetByClinicIdSpecification(int clinicId) : base(p => p.ClinicId == clinicId)
-    // {
-    //     AddInclude(x => x.Clinic!);
-    // }
+    public PetByClinicIdSpecification(int clinicId) : base(p => p.ClinicId == clinicId)
+    {
+        AddInclude(sr => sr.Pet!);
+    }
     
 }

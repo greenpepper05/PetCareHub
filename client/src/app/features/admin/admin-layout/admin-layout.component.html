@@ -1,51 +1,208 @@
-@if (busyService.loading) {
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-}
-<mat-sidenav-container>
-    <mat-sidenav mode="side" opened class="p-2">
-        <div class="flex flex-col justify-between h-full p-4 bg-[var(--primary)] text-[var(--white)] rounded-2xl">
-            <mat-list>
-                <div class="flex flex-col w-full justify-center items-center">
-                    <img src="/assets/images/logo/pawsionatehands.jpg" alt="" class="w-1/2 rounded-full mb-4">
-                    <h1 class="text-2xl font-bold mb-10 text-center">Pawsionate Hands Veterinary Clinic</h1>
-                </div>
-                    <mat-list-item>
-                    <a routerLink="/admin/dashboard" class="flex align-middle gap-4 text-[var(--white)]">
-                        <mat-icon>dashboard</mat-icon>
-                        <h1>Dashboard</h1>
-                    </a>
-                </mat-list-item>
-                <mat-list-item>
-                    <a routerLink="/admin/appointments" class="flex align-middle gap-4 text-[var(--white)]">
-                        <mat-icon>description</mat-icon>
-                        <h1>Appointments</h1>
-                    </a>
-                </mat-list-item>
-                <mat-list-item>
-                    <a routerLink="/admin/pet-service" class="flex align-middle gap-4 text-[var(--white)]">
-                        <mat-icon>assignment</mat-icon>
-                        <h1>Service Record</h1>
-                    </a>
-                </mat-list-item>
-                <mat-list-item>
-                    <a routerLink="/admin/manage-services" class="flex align-middle gap-4 text-[var(--white)]">
-                        <mat-icon>settings</mat-icon>
-                        <h1>Manage Services</h1>
-                    </a>
-                </mat-list-item>
-                <mat-list-item>
-                    <a routerLink="/admin/pets" class="flex align-middle gap-4 text-[var(--white)]">
-                        <mat-icon>pets</mat-icon>
-                        <h1>Pets</h1>
-                    </a>
-                </mat-list-item>
-            </mat-list>
-            <button class="" mat-flat-button (click)="logout()">Logout</button>
+<!-- Global Wrapper for 100% Height -->
+<div class="flex flex-col h-screen overflow-hidden">
+    
+    <!-- Progress Bar -->
+    @if (busyService.loading) {
+        <mat-progress-bar mode="indeterminate" class="absolute top-0 left-0 w-full z-50"></mat-progress-bar>
+    }
+
+    <!-- 1. TOP HEADER BAR -->
+    <header class="h-16 bg-[var(--white)] shadow-sm flex items-center justify-between px-4 fixed top-0 left-0 w-full z-10">
+        <div class="flex items-center">
+            <!-- Mobile Menu Toggle Button (Visible only on mobile) -->
+            <!-- NOTE: Using toggleSidebarCollapse here, assuming it also handles desktop collapse state -->
+            <button mat-icon-button (click)="toggleSidebarCollapse()" class=" mr-2"> 
+                <mat-icon>menu</mat-icon>
+            </button>
+
+            <h1 class="text-xl font-bold text-[var(--primary)]">{{ clinic?.clinicName }}</h1>
         </div>
         
-    </mat-sidenav>
-    <mat-sidenav-content>
-        <router-outlet></router-outlet>
-    </mat-sidenav-content>
-    
-</mat-sidenav-container>
+        <div class="relative">
+            <div class="flex items-center gap-2 cursor-pointer p-2 rounded-xl hover:bg-gray-100 transition-colors" (click)="toggleDropdown()">
+                
+                <!-- Profile Picture (Mock Data) -->
+                <img [src]="clinic?.pictureUrl" alt="clinic logo" class="rounded-full w-10 h-10 object-cover border-2 border-gray-200">
+                
+                <!-- User Info (Mock Data) -->
+                <div class="hidden sm:block text-right">
+                    <p class="font-semibold text-sm">{{ admin?.firstName }} {{ admin?.lastName }}</p>
+                    <p class="text-xs text-gray-500">{{ admin?.role }}</p>
+                </div>
+                
+                <!-- Dropdown Icon -->
+                <mat-icon class="text-gray-500 text-base transition-transform duration-300" 
+                          [class.rotate-180]="isDropdownOpen()">keyboard_arrow_down</mat-icon>
+            </div>
+            
+            <!-- Dropdown Menu -->
+            <div *ngIf="isDropdownOpen()" 
+                 (click)="$event.stopPropagation()"
+                 class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 z-30 border border-gray-200 animate-fadeInUp">
+                
+                <!-- User Details in Menu (Optional) -->
+                <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-100 mb-1">
+                    <p class="font-medium">{{ admin?.firstName }} {{ admin?.lastName }}</p>
+                    <p class="text-xs text-gray-500">{{ admin?.role }}</p>
+                </div>
+
+                <!-- Divider -->
+                <hr class="my-1 border-gray-100">
+
+                <!-- Logout Option -->
+                <button (click)="logout()"
+                        class="w-full text-left flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors">
+                    <mat-icon class="!w-5 !h-5 mr-3 text-red-500">logout</mat-icon>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. MAIN CONTENT AREA (Sidebar + Content) -->
+    <div class="flex flex-1 mt-16 overflow-hidden">
+        
+        <!-- SIDEBAR (Desktop Fixed, Mobile Overlaid) -->
+        
+        <!-- Mobile Sidebar (Uses mat-sidenav for overlay) -->
+        @if (isMobile) {
+            <mat-sidenav-container class="absolute top-0 left-0 h-full w-full bg-transparent z-20">
+                <mat-sidenav #sidenav [mode]="'over'" [opened]="isSidenavOpen" (closedStart)="isSidenavOpen = false"
+                    class="bg-[var(--primary)] p-0 border-r-0"
+                >
+                    <div class="flex flex-col justify-between h-full text-[var(--white)] w-64 p-2">
+                        <mat-list role="list" class="bg-transparent space-y-2">
+                            <div class="flex justify-between items-center mb-6">
+                                <h1 class="text-xl font-bold">Pawsionate Hands</h1>
+                                <button mat-icon-button (click)="toggleMobileSidenav(sidenav)" class="text-[var(--white)]">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </div>
+                            
+                            <!-- Mobile Navigation Links -->
+                            <mat-list-item role="listitem" class="p-0 h-auto" (click)="toggleMobileSidenav(sidenav)">
+                                <a routerLink="/admin/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+                                    class="flex align-middle gap-4 p-3 rounded-xl transition-colors duration-200 w-full hover:bg-[var(--accent)]"
+                                >
+                                    <mat-icon>dashboard</mat-icon>
+                                    <h1 class="text-lg">Dashboard</h1>
+                                </a>
+                            </mat-list-item>
+                            <!-- ... rest of your mobile links ... -->
+                        </mat-list>
+                        <button class="w-full mt-auto py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl" mat-flat-button (click)="logout()">
+                            <mat-icon class="mr-2">exit_to_app</mat-icon> Logout
+                        </button>
+                    </div>
+                </mat-sidenav>
+            </mat-sidenav-container>
+        } 
+        
+        <!-- Desktop Sidebar (Fixed and Collapsible) -->
+        @if (!isMobile) {
+            <!-- Sidebar Container (The blue bar) -->
+            <aside 
+                [ngClass]="isSidebarCollapsed ? collapsedWidth : expandedWidth" 
+                class="flex flex-col justify-between bg-[var(--primary)] text-[var(--white)] shadow-xl transition-all duration-300 ease-in-out h-full flex-shrink-0 relative z-10"
+            >
+                <div class="p-2"> <!-- Added padding here to contain content -->
+                    <div>
+                        <!-- Logo/Clinic Name - Only show text when expanded -->
+                        @if (!isSidebarCollapsed) {
+                            <div class="py-2 px-3 mb-4">
+                                <h1 class="text-xl font-bold">Pawsionate Hands</h1>
+                            </div>
+                        }
+
+                        <!-- Navigation Links -->
+                        <mat-list role="list" class="bg-transparent space-y-2">
+                            <!-- Dashboard Link -->
+                            <mat-list-item role="listitem" class="p-0 h-auto">
+                                <a routerLink="/admin/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+                                    class="flex items-center p-3 rounded-xl transition-colors duration-200 w-full hover:bg-[var(--secondary)]"
+                                    [class.justify-center]="isSidebarCollapsed"  
+                                    [class.gap-4]="!isSidebarCollapsed"
+                                    [matTooltip]="isSidebarCollapsed ? 'Dashboard' : ''" matTooltipPosition="right"
+                                >
+                                    <mat-icon>dashboard</mat-icon>
+                                    @if (!isSidebarCollapsed) {
+                                        <h1 class="text-lg whitespace-nowrap">Dashboard</h1>
+                                    }
+                                </a>
+                            </mat-list-item>
+                            
+                            <!-- Appointments Link -->
+                            <mat-list-item role="listitem" class="p-0 h-auto">
+                                <a routerLink="/admin/appointments" routerLinkActive="active-link"
+                                    class="flex items-center p-3 rounded-xl transition-colors duration-200 w-full hover:bg-[var(--secondary)]"
+                                    [class.justify-center]="isSidebarCollapsed"
+                                    [class.gap-4]="!isSidebarCollapsed"
+                                    [matTooltip]="isSidebarCollapsed ? 'Appointments' : ''" matTooltipPosition="right"
+                                >
+                                    <mat-icon>description</mat-icon>
+                                    @if (!isSidebarCollapsed) {
+                                        <h1 class="text-lg whitespace-nowrap">Appointments</h1>
+                                    }
+                                </a>
+                            </mat-list-item>
+                            
+                            <!-- Service Record Link -->
+                            <mat-list-item role="listitem" class="p-0 h-auto">
+                                <a routerLink="/admin/service-record" routerLinkActive="active-link"
+                                    class="flex items-center p-3 rounded-xl transition-colors duration-200 w-full hover:bg-[var(--secondary)]"
+                                    [class.justify-center]="isSidebarCollapsed"
+                                    [class.gap-4]="!isSidebarCollapsed"
+                                    [matTooltip]="isSidebarCollapsed ? 'Service Record' : ''" matTooltipPosition="right"
+                                >
+                                    <mat-icon>assignment</mat-icon>
+                                    @if (!isSidebarCollapsed) {
+                                        <h1 class="text-lg whitespace-nowrap">Service Record</h1>
+                                    }
+                                </a>
+                            </mat-list-item>
+                            
+                            <!-- Manage Services Link -->
+                            <mat-list-item role="listitem" class="p-0 h-auto">
+                                <a routerLink="/admin/manage-services" routerLinkActive="active-link"
+                                    class="flex items-center p-3 rounded-xl transition-colors duration-200 w-full hover:bg-[var(--secondary)]"
+                                    [class.justify-center]="isSidebarCollapsed"
+                                    [class.gap-4]="!isSidebarCollapsed"
+                                    [matTooltip]="isSidebarCollapsed ? 'Manage Services' : ''" matTooltipPosition="right"
+                                >
+                                    <mat-icon>settings</mat-icon>
+                                    @if (!isSidebarCollapsed) {
+                                        <h1 class="text-lg whitespace-nowrap">Manage Services</h1>
+                                    }
+                                </a>
+                            </mat-list-item>
+                            
+                            <!-- Pets Link -->
+                            <mat-list-item role="listitem" class="p-0 h-auto">
+                                <a routerLink="/admin/pets" routerLinkActive="active-link"
+                                    class="flex items-center p-3 rounded-xl transition-colors duration-200 w-full hover:bg-[var(--secondary)]"
+                                    [class.justify-center]="isSidebarCollapsed"
+                                    [class.gap-4]="!isSidebarCollapsed"
+                                    [matTooltip]="isSidebarCollapsed ? 'Pets' : ''" matTooltipPosition="right"
+                                >
+                                    <mat-icon>pets</mat-icon>
+                                    @if (!isSidebarCollapsed) {
+                                        <h1 class="text-lg whitespace-nowrap">Pets</h1>
+                                    }
+                                </a>
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
+                    
+                </div>
+            </aside>
+        }
+
+        <!-- MAIN CONTENT AREA -->
+        <main 
+            class="flex-1 overflow-y-auto p-6 transition-all duration-300 ease-in-out"
+            [ngClass]="isMobile ? 'w-full' : ''"
+        >
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+</div>

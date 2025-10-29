@@ -9,6 +9,7 @@ import { Services } from '../../../../shared/models/services';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment.development';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-appointment-detail',
@@ -20,7 +21,8 @@ import { environment } from '../../../../../environments/environment.development
     MatSelect,
     MatOption,
     MatLabel,
-    MatFormField
+    MatFormField,
+    MatIcon
 ],
   templateUrl: './appointment-detail.component.html',
   styleUrl: './appointment-detail.component.scss'
@@ -49,12 +51,16 @@ export class AppointmentDetailComponent implements OnInit {
       next: appointment => {
         this.appointment = appointment;
         // this.services = appointment;
+
       } 
     })
   }
 
   saveStatus() {
     const selectedStatus = this.statusForm.get('status')?.value;
+    
+    const id = this.appointment?.id;
+    console.log(id);
 
     if (!selectedStatus) return;
 
@@ -63,6 +69,7 @@ export class AppointmentDetailComponent implements OnInit {
         alert('Status updated successfully!');
       },
       error: err => {
+
         console.error(err);
         alert("Failed to update status.");
       }
@@ -70,29 +77,4 @@ export class AppointmentDetailComponent implements OnInit {
   }
 
   
-  groomingSteps = [
-    'Brushing',
-    'Bathing',
-    'Drying',
-    'Ear Cleaning',
-    'Nail Trimming',
-    'Coat Trimming',
-    'Completed'
-  ]
-  currentStep: string = '';
-
-  currentStepIndex = 0;
-
-  getToNextStep(step: string) {
-    const clickedIndex = this.groomingSteps.indexOf(step);
-    if (clickedIndex !== this.currentStepIndex) return;
-
-      this.http.post(this.baseUrl + `appointments/${this.appointment?.id}/step`, { step })
-        .subscribe({
-          next: () => {
-            this.currentStep = step;
-            this.currentStepIndex++;
-          }
-        });
-  }
 }

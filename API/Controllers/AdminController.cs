@@ -11,8 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 // [Authorize(Roles = "Admin")]
-public class AdminController(IUnitOfWork unit,
-    UserManager<AppUser> userManager) : BaseApiController
+public class AdminController(IUnitOfWork unit) : BaseApiController
 {
 
     // GET LIST OF ALL PETS

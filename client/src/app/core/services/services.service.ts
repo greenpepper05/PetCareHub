@@ -17,4 +17,12 @@ export class ServicesService {
   getService(id: number) {
     return this.http.get<any>(this.baseUrl + 'services/' + id);
   }
+
+  getServiceByClinicId() {
+    return this.http.get<Services[]>(`${this.baseUrl}services/clinic`);
+  }
+
+  createService(payload: any) {
+    return this.http.post<Services>(`${this.baseUrl}services`, payload);
+  }
 }

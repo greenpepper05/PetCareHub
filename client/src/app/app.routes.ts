@@ -25,6 +25,18 @@ import { PetServiceComponent } from './features/admin/pet-service/pet-service.co
 import { PetServiceDetailComponent } from './features/admin/pet-service/pet-service-detail/pet-service-detail.component';
 import { ServicesDetailComponent } from './features/services/services-detail/services-detail.component';
 import { ManageServicesComponent } from './features/admin/manage-services/manage-services.component';
+import { ProcedureComponent } from './features/admin/pet-service/procedure/procedure.component';
+import { ServiceDetailComponent } from './features/admin/manage-services/service-detail/service-detail.component';
+import { PetDetailsComponent } from './features/admin/pets/pet-details/pet-details.component';
+import { SuperadminLoginComponent } from './features/superadmin/superadmin-login/superadmin-login.component';
+import { LayoutComponent } from './features/superadmin/layout/layout.component';
+import { superadminAuthGuard } from './core/guards/superadmin-auth-guard';
+import { SuperadminDashboardComponent } from './features/superadmin/superadmin-dashboard/superadmin-dashboard.component';
+import { SuperadminClinicComponent } from './features/superadmin/superadmin-clinic/superadmin-clinic.component';
+import { SuperadminUsersComponent } from './features/superadmin/superadmin-users/superadmin-users.component';
+import { SuperadminSettingsComponent } from './features/superadmin/superadmin-settings/superadmin-settings.component';
+import { UserUpdateComponent } from './features/superadmin/superadmin-users/user-update/user-update.component';
+import { ClinicDetailComponent } from './features/superadmin/superadmin-clinic/clinic-detail/clinic-detail.component';
 
 export const routes: Routes = [
     {
@@ -32,17 +44,35 @@ export const routes: Routes = [
         component: AdminLayoutComponent,
         canActivate: [adminAuthGuard],
         children: [
+            { path: '', component: DashboardComponent},
             { path: 'dashboard', component: DashboardComponent},
             { path: 'appointments', component: AppointmentsComponent},
             { path: 'appointment/:id', component: AppointmentDetailComponent},
             { path: 'pets', component: PetsComponent},
-            { path: 'pet-service', component: PetServiceComponent},
-            { path: 'pet-service/:id', component: PetServiceDetailComponent},
+            { path: 'pets/:id', component: PetDetailsComponent},
+            { path: 'service-record', component: PetServiceComponent},
+            { path: 'service-record/:id', component: PetServiceDetailComponent},
+            { path: 'service-record/:id/procedure', component: ProcedureComponent},
             { path: 'manage-services', component: ManageServicesComponent},
-
+            { path: 'manage-services/:id', component: ServiceDetailComponent},
         ]
     },
     { path: 'admin/login', component: AdminLoginComponent },
+    {
+        path: 'superadmin',
+        component: LayoutComponent,
+        canActivate: [superadminAuthGuard],
+        children: [
+            { path: '', component: SuperadminDashboardComponent},
+            { path: 'dashboard', component: SuperadminDashboardComponent},
+            { path: 'clinics', component: SuperadminClinicComponent},
+            { path: 'clinics/:id', component: ClinicDetailComponent},
+            { path: 'users', component: SuperadminUsersComponent},
+            { path: 'users/:id', component: UserUpdateComponent},
+            { path: 'settings', component: SuperadminSettingsComponent},
+        ]
+    },
+    { path: 'superadmin/login', component: SuperadminLoginComponent},
     {
         path: '',
         component: MainLayoutComponent,

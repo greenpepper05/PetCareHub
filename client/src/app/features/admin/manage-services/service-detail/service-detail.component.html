@@ -1,0 +1,110 @@
+<div class="min-h-full">
+    <div class="bg-[var(--secondary)] text-white p-6 rounded-xl shadow-lg mb-6">
+        <div class="flex items-center text-sm mb-2 opacity-80">
+            <mat-icon class="mr-1 text-base">settings</mat-icon>
+            <a routerLink="/admin/manage-services" class="hover:underline">Manage Service</a>
+            <mat-icon class="mx-1 text-base">chevron_right</mat-icon>
+            <span>Service Detail</span>
+        </div>
+        
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold">
+                Service Detail
+            </h1>
+            <button 
+                mat-stroked-button 
+                routerLink="/admin/manage-services" 
+                class="text-[var(--white)] hover:text-black font-semibold rounded-lg py-2 px-4 transition-colors cursor-pointer"
+            >
+                ← Back to Services
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+        @if(service()) {
+
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h1 class="text-2xl font-semibold">
+                        Service name : {{ service()?.name || 'Loading...' }}
+                    </h1>
+                </div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex space-x-2">
+                      <button (click)="openAddProcedureModal()" class="bg-[var(--primary)] hover:bg-[var(--secondary)] text-white font-bold py-2 px-4 rounded-full shadow-md transition-transform transform hover:scale-105">
+                        Add Procedure
+                      </button>
+                      @if (procedures().length > 0) {
+                        <button mat-stroked-button color="primary" (click)="toggleEditing()">
+                          @if (editingMode()) {
+                              Done
+                          } @else {
+                              Reorder/Edit
+                          }
+                        </button>
+                      }
+                    </div>
+                </div>
+            </div>
+
+            @if (editingMode()) {
+                    <p class="text-center text-gray-500 mb-4">Drag and drop to reorder.</p>
+                }
+                <p class="text-xl mb-2">
+                    Order | Procedure name
+                </p>
+                <div cdkDropList (cdkDropListDropped)="onDrop($event)">
+                    @for (procedure of procedures(); track procedure.id) {
+                        <div class="bg-gray-50 rounded-lg p-4 mb-3 shadow-sm transition-transform duration-200"
+                            cdkDrag [cdkDragDisabled]="!editingMode()">
+                            <div class="flex items-center">
+                                @if (editingMode()) {
+                                    <svg class="w-5 h-5 mr-3 text-gray-400 cursor-grab" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" cdkDragHandle>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                    </svg>
+                                }
+                                <div class="flex-grow">
+                                    @if (editingProcedureId() !== procedure.id) {
+                                        <h4 class="text-lg font-medium text-gray-900">
+                                            {{ procedure.order + 1 }}. {{ procedure.name }}
+                                        </h4>
+                                        <p class="text-sm text-gray-600">{{ procedure.description }}</p>
+                                    } @else {
+                                        <div>
+                                            <input type="text"
+                                                   [value]="procedure.name"
+                                                   (input)="updateProcedure(procedure.id, 'name', $event)"
+                                                   class="w-full text-lg font-medium text-gray-900 mb-1 rounded-md px-2 py-1 border border-gray-300 focus:outline-none focus:ring focus:border-blue-300"
+                                                   placeholder="Procedure Name">
+                                            <textarea [value]="procedure.description"
+                                                      (input)="updateProcedure(procedure.id, 'description', $event)"
+                                                      class="w-full text-sm text-gray-600 resize-none rounded-md px-2 py-1 border border-gray-300 focus:outline-none focus:ring focus:border-blue-300"
+                                                      placeholder="Procedure Description"
+                                                      rows="2"></textarea>
+                                        </div>
+                                    }
+                                </div>
+                                @if (editingMode() && editingProcedureId() !== procedure.id) {
+                                    <div class="flex gap-2 ml-4">
+                                      <button mat-stroked-button color="accent" (click)="startEditing(procedure.id)">Edit</button>
+                                      <button mat-stroked-button color="warn" (click)="deleteProcedure(procedure.id)">Delete</button>
+                                    </div>
+                                }
+                                @if (editingProcedureId() === procedure.id) {
+                                  <div class="flex gap-2 ml-4">
+                                    <button mat-flat-button color="primary" (click)="saveEdit()">Save</button>
+                                    <button mat-stroked-button color="primary" (click)="cancelEdit()">Cancel</button>
+                                  </div>
+                                }
+                            </div>
+                        </div>
+                    } @empty {
+                        <p class="text-center text-gray-500">No procedures found for this service. Click 'Add Procedure' to create one.</p>
+                    }
+                </div>
+        }  @else {
+            <p class="text-center text-gray-500 text-lg">Loading service details...</p>
+        }
+    </div>
+</div>

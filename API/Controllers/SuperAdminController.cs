@@ -10,9 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [Authorize(Roles = "SuperAdmin")]
-public class SuperAdminController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager,
-    IUnitOfWork unit) : BaseApiController
+public class SuperAdminController(SignInManager<AppUser> signInManager,
+    UserManager<AppUser> userManager, IUnitOfWork unit, IWebHostEnvironment env) 
+    : BaseApiController
 {
+    
     [HttpGet("user-info")]
     public async Task<ActionResult> GetUserInfo()
     {
@@ -81,7 +83,12 @@ public class SuperAdminController(SignInManager<AppUser> signInManager, UserMana
         var clinic = new Clinic
         {
             OwnerId = clinicDto.OwnerId,
-            ClinicName = clinicDto.ClinicName
+            ClinicName = clinicDto.ClinicName,
+            PhoneNumber = clinicDto.PhoneNumber,
+            Address = clinicDto.Address,
+            Email = clinicDto.Email,
+            PictureUrl = clinicDto.PictureUrl
+
         };
 
         unit.Repository<Clinic>().Add(clinic);
@@ -106,5 +113,48 @@ public class SuperAdminController(SignInManager<AppUser> signInManager, UserMana
         if (result.Succeeded) return NoContent();
 
         return BadRequest("Error Updating Admin User");
+    }
+
+    [HttpPost("upload")]
+    public async Task<ActionResult<ImageUploadResponseDto>> Upload([FromForm] IFormFile file)
+    {
+        if (file == null || file.Length == 0) return BadRequest("File not found");
+        
+        try
+        {
+            string uploadPath = Path.Combine(
+                env.ContentRootPath,
+                "..",
+                "client",
+                "public",
+                "assets",
+                "images",
+                "clinic-logo"
+            );
+
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            var fileExtension = Path.GetExtension(file.FileName);
+
+            var uniqueFileName = $"{Guid.NewGuid().ToString()}{fileExtension}";
+            var filePath = Path.Combine(uploadPath, uniqueFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var publicUrl = $"/assets/images/clinic-logo/{uniqueFileName}";
+
+            return Ok(new ImageUploadResponseDto { Url = publicUrl });
+
+        }
+        catch (System.Exception)
+        {
+            throw;
+        }
     }
 }

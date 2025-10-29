@@ -111,13 +111,29 @@ public class AppointmentsController(IUnitOfWork unit,
         var appointments = await unit.Repository<Appointment>().ListAsync(spec);
 
         var data = mapper.Map<IReadOnlyList<AppointmentDto>>(appointments);
-        
+
         return Ok(new Pagination<AppointmentDto>(
             specParams.PageIndex,
             specParams.PageSize,
             totalItems,
             data
         ));
+    }
+    
+    [Authorize(Roles = "Admin")]
+    [HttpGet("{id:int}/all")]
+    public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> GetAllAppointmentsByClinicId(int id)
+    {
+        var user = await userManager.GetUserByEmail(User);
+        if (user == null) return Unauthorized();
+
+        var spec = new AppointmentByClinicIdSpec(id);
+
+        var appointments = await unit.Repository<Appointment>().ListAsync(spec);
+
+        var appDto = mapper.Map<IReadOnlyList<AppointmentDto>>(appointments);
+
+        return Ok(appDto);
     }
 
     [HttpPatch("{id}/status")]
@@ -264,4 +280,80 @@ public class AppointmentsController(IUnitOfWork unit,
 
     //     return NoContent();
     // }
+
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpGet("all-confirmed")]
+    public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> GetAllConfirmedAppointments()
+    {
+        var user = await userManager.GetUserByEmail(User);
+
+        if (user == null) return Unauthorized();
+
+        var appointmentRemark = "Confirmed";
+
+        var spec = new CompletedAppointmentSpecification(appointmentRemark);
+
+        var appointmentDtos = new List<AppointmentDto>();
+
+        var appoiuntments = await unit.Repository<Appointment>().ListAsync(spec);
+
+        foreach (var appointment in appoiuntments)
+        {
+            var appointmentDto = new AppointmentDto
+            {
+                Status = appointment.Status
+            };
+
+            if (appointmentDto.Status == "Confirmed")
+            {
+                appointmentDtos.Add(appointmentDto);
+            }
+        }
+
+        return Ok(appointmentDtos);
+    }
+
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpGet("all")]
+    public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> GetAllAppointments()
+    {
+        var user = await userManager.GetUserByEmail(User);
+
+        if (user == null) return Unauthorized();
+
+        var appoiuntments = await unit.Repository<Appointment>().ListAllAsync();
+
+        var app = mapper.Map<IReadOnlyList<AppointmentDto>>(appoiuntments);
+
+        return Ok(app);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("upcoming")]
+    public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> GetUpcomingAppointments([FromQuery] AppointmentSpecParams specParams, int clinicId)
+    {
+        var user = await userManager.GetUserByEmail(User);
+        if (user == null) return Unauthorized();
+
+        if (user.ClinicId == null)
+        {
+            return BadRequest("This admin is not assigned to a clinic.");
+        }
+
+        var spec = new AppointmentPaginatedSpecification(specParams, clinicId);
+
+        var totalItems = await unit.Repository<Appointment>().CountAsync(spec);
+
+        var appointments = await unit.Repository<Appointment>().ListAsync(spec);
+
+        var data = mapper.Map<IReadOnlyList<AppointmentDto>>(appointments);
+
+        return Ok(new Pagination<AppointmentDto>(
+            specParams.PageIndex,
+            specParams.PageSize,
+            totalItems,
+            data
+        ));
+    }
+
 }

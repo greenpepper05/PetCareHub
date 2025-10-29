@@ -17,7 +17,7 @@
                                 }
                             </mat-select>
                         </mat-form-field>
-                        <button mat-flat-button class="bg-[var(--primary)] mb-4" routerLink="/create-pet">Create Pet</button>
+                        <button mat-flat-button class="bg-[var(--primary)] mb-4" routerLink="/create-pet">Add Pet</button>
                     </div>
                 </form>
                 <!-- Form goes here -->
@@ -55,7 +55,31 @@
                             <input formControlName="appointmentDate" matInput [matDatepicker]="picker2"/>
                             <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
                             <mat-datepicker #picker2></mat-datepicker>
+                            @if (appointmentForm.get('appointmentDate')?.touched && appointmentForm.get('appointmentDate')?.invalid) {
+                                <mat-error>Date is required</mat-error>
+                            }
                         </mat-form-field>
+                    
+                        <div class="col-span-1">
+                            <mat-label class="text-base font-semibold text-indigo-700 block mb-3">Select Time Slot</mat-label>
+                            <mat-radio-group 
+                                formControlName="appointmentTime" 
+                                class="grid grid-cols-3 gap-2 p-2 border border-gray-200 rounded-xl bg-gray-50"
+                            >
+                                @for (time of availableTimeSlots; track time) {
+                                    <mat-radio-button 
+                                        [value]="time"
+                                        class="p-2 text-sm text-center transition-colors rounded-lg hover:bg-white"
+                                        color="primary"
+                                    >
+                                        {{ formatTime(time) }}
+                                    </mat-radio-button>
+                                }
+                            </mat-radio-group>
+                            @if (appointmentForm.get('appointmentTime')?.touched && appointmentForm.get('appointmentTime')?.invalid) {
+                                <mat-error class="text-xs mt-1 block">A time slot must be selected.</mat-error>
+                            }
+                        </div>
                     </form>
                     <div class="flex justify-between mt-6">
                         <button class="z-0" matStepperPrevious mat-stroked-button>Back</button>

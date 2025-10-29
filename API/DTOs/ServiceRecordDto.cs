@@ -9,6 +9,7 @@ public class ServiceRecordDto
     public string ServiceName { get; set; } = string.Empty;
     public int ServiceId { get; set; }
     public string ClinicName { get; set; } = string.Empty;
+    public decimal? Price { get; set; }
     public DateTime DateOfService { get; set; }
     public string? Notes { get; set; } = string.Empty;
     public string VisitType { get; set; } = string.Empty;

@@ -6,4 +6,5 @@ export type Pet = {
     birthdate: string;
     gender: string;
     ownerId: string;
+    pictureUrl: string;
 }

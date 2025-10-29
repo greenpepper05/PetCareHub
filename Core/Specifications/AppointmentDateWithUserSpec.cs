@@ -5,7 +5,8 @@ namespace Core.Specifications;
 
 public class AppointmentDateWithUserSpec : BaseSpecification<Appointment>
 {
-    public AppointmentDateWithUserSpec(DateTime fromDate, DateTime toDate) : base(a => a.AppointmentDate >= fromDate && a.AppointmentDate < toDate)
+    public AppointmentDateWithUserSpec(DateTime startTime, DateTime endTime) 
+        : base(a => a.AppointmentDate >= startTime && a.AppointmentDate < endTime)
     {
         AddInclude(u => u.Owner!);
         AddInclude(p => p.Pet!);

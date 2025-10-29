@@ -1,7 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { PetServiceHistory } from '../../../shared/models/petServiceHistory';
+import { Component, inject, OnInit, Optional } from '@angular/core';
 import { PetServiceHistoryService } from '../../../core/services/pet-service-history.service';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PetService } from '../../../core/services/pet.service';
 import { Pet } from '../../../shared/models/pet';
 import { DatePipe } from '@angular/common';
@@ -9,11 +8,15 @@ import { MatButton } from '@angular/material/button';
 import { ServicesService } from '../../../core/services/services.service';
 import { Services } from '../../../shared/models/services';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { MatCalendar, MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
-import { provideNativeDateAdapter } from '@angular/material/core';
-import { environment } from '../../../../environments/environment.development';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule, MatOption, provideNativeDateAdapter } from '@angular/material/core';
 import { ServiceRecordService } from '../../../core/services/service-record.service';
 import { ServiceRecord } from '../../../shared/models/serviceRecord';
+import { AccountService } from '../../../core/services/account.service';
+import { MatIcon } from '@angular/material/icon';
+import { MatFormFieldModule, MatHint, MatLabel } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
@@ -26,7 +29,15 @@ import { ServiceRecord } from '../../../shared/models/serviceRecord';
     MatButton,
     ReactiveFormsModule,
     RouterLink,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatIcon,
+    MatLabel,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatSelectModule,
+    MatInputModule,
+    MatOption,
+    MatHint
   ],
   templateUrl: './pet-service.component.html',
   styleUrl: './pet-service.component.scss',
@@ -39,6 +50,7 @@ export class PetServiceComponent implements OnInit {
   private historyService = inject(PetServiceHistoryService);
   private serviceRecord = inject(ServiceRecordService);
   private petService = inject(PetService);
+  private accountService = inject(AccountService);
   records: ServiceRecord[] = [];
 
   pets: Pet[] = [];
@@ -50,12 +62,14 @@ export class PetServiceComponent implements OnInit {
     ownerId: [''],
     petId: [''],
     serviceId: [''],
-    clinicId: 1,
+    clinicId: [''],
+    price: [''],
     dateOfService: [''],
     notes: [''],
     visitType: [''],
     appointmentId: ['']
   });
+
   
   ngOnInit(): void {
     // this.loadHistory();
@@ -66,16 +80,23 @@ export class PetServiceComponent implements OnInit {
       const selectedPet = this.pets.find(p => p.id == petId);
       if (selectedPet) {
         this.form.patchValue({ownerId: selectedPet.ownerId});
-      } else {
+      } else if (petId === null || petId === '') {
         this.form.patchValue({ ownerId: '' });
       }
     })
   }
 
   loadPets() {
-  this.petService.getPetByClinic().subscribe({
-    next: pets => this.pets = pets
-    });
+
+    const currentUser = this.accountService.currentUser();
+
+    if (!currentUser) return;
+
+    const clinicId = currentUser.clinicId;
+
+    this.petService.getPetByClinic(clinicId).subscribe({
+      next: pets => this.pets = pets
+      });
   }
 
   loadHistory() {
@@ -106,13 +127,28 @@ export class PetServiceComponent implements OnInit {
   onSubmit() {
     if (this.form.valid) {
 
+      const currentUser = this.accountService.currentUser();
+
+      if (!currentUser) return;
+      
+      const clinicId = currentUser.clinicId;
+
+      const rawValue = this.form.value;
+      const finalAppointmentId = rawValue.appointmentId === '' ? null : rawValue.appointmentId;
+      
+      const date = this.form.value.dateOfService;
+      const formattedDate = date ? new Date(date).toLocaleDateString('en-CA').split('T')[0] : '';
+
       const payload = {
         petId: this.form.value.petId,
         ownerId: this.form.value.ownerId,
-        clinicId: 1,
         serviceId: this.form.value.serviceId,
-        dateOfService: this.form.value.dateOfService,
-        notes:this.form.value.notes
+        clinicId: clinicId,
+        price: this.form.value.price,
+        dateOfService: formattedDate,
+        notes:this.form.value.notes,
+        visitType: this.form.value.visitType,
+        appointmentId: finalAppointmentId
       };
       
       this.serviceRecord.createServiceRecord(payload).subscribe({
@@ -140,4 +176,5 @@ export class PetServiceComponent implements OnInit {
     this.fetchHistoriesByDate(date);
   }
 
+  
 }

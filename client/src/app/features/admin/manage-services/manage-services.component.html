@@ -1,1 +1,64 @@
-<p>manage-services works!</p>
+<div class="min-h-full">
+    <div class="bg-[var(--secondary)] text-white p-6 rounded-xl shadow-lg mb-6">
+        <div class="flex items-center text-sm mb-2 opacity-80">
+            <mat-icon class="mr-1 text-base">settings</mat-icon>
+            <span>Manage Service</span>
+        </div>
+        
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold">
+                Manage Service
+            </h1>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <h1 class="text-xl font-semibold">
+                Services
+            </h1>
+            <button 
+                (click)="openAddServiceModal()"
+                mat-flat-button class="bg-[var(--primary)] hover:bg-[var(--secondary)] text-white font-semibold rounded-lg py-2 px-4 shadow-md transition-colors w-full sm:w-auto">
+                Add New Service
+            </button>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-blue-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 tracking-wider">
+                            Name
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 tracking-wider">
+                            Description
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left font-medium text-gray-500 tracking-wider">
+                            Price
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @for (service of services; track service.id) {
+                        <tr routerLink="/admin/manage-services/{{service.id}}" class="hover:bg-gray-50 transition-colors duration-150">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {{ service.name }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                {{ service.description }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                {{ service.price }}
+                            </td>
+                        </tr>
+                    } @empty {
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 text-center text-gray-500">
+                                No services found.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

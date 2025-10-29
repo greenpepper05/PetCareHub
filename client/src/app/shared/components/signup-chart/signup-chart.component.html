@@ -1,0 +1,41 @@
+<div class="p-2">
+      <svg [attr.viewBox]="'0 0 ' + (width + padding * 2) + ' ' + (height + padding * 2)" 
+           [attr.width]="width + padding * 2" 
+           [attr.height]="height + padding * 2" 
+           class="w-full h-full">
+
+        <!-- X-Axis Line -->
+        <line [attr.x1]="padding" [attr.y1]="height + padding" 
+              [attr.x2]="width + padding" [attr.y2]="height + padding" 
+              stroke="#e5e7eb" stroke-width="2"/>
+
+        @for (bar of calculatedBars(); track bar.month) {
+          <!-- Bar -->
+          <rect [attr.x]="bar.barX" [attr.y]="bar.barY" 
+                [attr.width]="bar.barWidth" [attr.height]="bar.barHeight" 
+                rx="4" ry="4" 
+                fill="#4f46e5" 
+                class="hover:fill-indigo-400 transition-colors duration-200"
+                style="animation: bar-load 0.5s ease-out forwards; transform-origin: bottom;"/>
+
+          <!-- Label (Month) -->
+          <text [attr.x]="bar.barX + bar.barWidth / 2" [attr.y]="height + padding + 15" 
+                text-anchor="middle" font-size="10" fill="#6b7280">
+                {{ bar.month }}
+          </text>
+
+          <!-- Label (User Count) -->
+          <text [attr.x]="bar.barX + bar.barWidth / 2" [attr.y]="bar.barY - 5" 
+                text-anchor="middle" font-size="10" font-weight="bold" fill="#1f2937">
+                {{ bar.users }}
+          </text>
+        }
+      </svg>
+</div>
+<!-- CSS Animation definition for a nice load effect -->
+<style>
+    @keyframes bar-load {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+    }
+</style>

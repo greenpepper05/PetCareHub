@@ -10,10 +10,10 @@ public class AppointmentReminderJob(IUnitOfWork unit, IEmailService emailService
 {
     public async Task SendReminderAsync()
     {
-        var today = DateTime.Today;
-        var tomorrow = today.AddDays(1);
+        var startTime = DateTime.Today;
+        var endTime = startTime.AddHours(24);
 
-        var spec = new AppointmentDateWithUserSpec(today, tomorrow);
+        var spec = new AppointmentDateWithUserSpec(startTime, endTime);
 
         var appointments = await unit.Repository<Appointment>().ListAsync(spec);
 
@@ -21,10 +21,14 @@ public class AppointmentReminderJob(IUnitOfWork unit, IEmailService emailService
         {
             if (appointment.Owner?.Email == null) continue;
 
-            var message = $"Hello <strong>{appointment.Owner.FirstName} {appointment.Owner.LastName}</strong>, \n\nThis is a reminder that your pet <strong>{appointment.Pet?.Name}</strong> appointment scheduled on {appointment.AppointmentDate:MMMM dd, yyyy}.";
+            var message = $"Hello <strong>{appointment.Owner.FirstName} {appointment.Owner.LastName}</strong>, \n\n" +
+                          $"This is a reminder that your pet <strong>{appointment.Pet?.Name}</strong> " +
+                          $"appointment is scheduled on {appointment.AppointmentDate:MMMM dd, yyyy} " +
+                          $"at **{appointment.AppointmentDate:hh:mm tt}**.";
+
             await emailService.SendEmailAsync(appointment.Owner.Email, "PetCareHub Appointment Reminder", message);
         }
 
-        Console.WriteLine($"[Hangfire] Found {appointments.Count} appointment(s) for today/tomorrow.");
+        Console.WriteLine($"[Hangfire] Found {appointments.Count} appointment(s) scheduled between {startTime:hh:mm tt} and {endTime:hh:mm tt}.");
     }
 }

@@ -16,5 +16,6 @@ public class CreatePetDto
     public string Gender { get; set; } = string.Empty;
     [Required]
     public string OwnerId { get; set; } = string.Empty;
+    public string? PictureUrl { get; set; }
 
 }

@@ -217,6 +217,9 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("PictureUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
@@ -264,6 +267,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("OwnerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PictureUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Species")
                         .IsRequired()
@@ -466,7 +472,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProcedureId")
+                    b.Property<int?>("ProcedureId")
                         .HasColumnType("int");
 
                     b.Property<int>("ServiceRecordId")
@@ -837,8 +843,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.Procedure", "Procedure")
                         .WithMany()
                         .HasForeignKey("ProcedureId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Core.Entities.ServiceRecord", "ServiceRecord")
                         .WithMany("Steps")

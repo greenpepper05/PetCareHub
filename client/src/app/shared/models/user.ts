@@ -3,7 +3,8 @@ export type User = {
     lastName: string;
     email: string;
     contact: string;
-    clinic: number;
+    clinicId: number;
+    clinicName: string;
     id: string;
     role: string;
 }

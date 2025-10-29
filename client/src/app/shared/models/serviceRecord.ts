@@ -1,10 +1,11 @@
-export interface ServiceRecord {
+export type  ServiceRecord = {
     id: number;
     petId: number;
     petName: string;
     serviceName: string;
     serviceId: number;
     clinicName: string;
+    price?: number;
     dateOfService: string;
     notes?: string;
     appointmentId?: number;

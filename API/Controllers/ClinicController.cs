@@ -10,21 +10,108 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Authorize(Roles = "Admin")]
+
 public class ClinicController(IUnitOfWork unit,
     UserManager<AppUser> userManager, IMapper mapper) : BaseApiController
 {
 
+    [Authorize(Roles = "SuperAdmin")]
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<Clinic>>> GetClinic()
+    public async Task<ActionResult<IReadOnlyList<ClinicDto>>> GetClinic()
     {
-        var clinic = await unit.Repository<Clinic>().ListAllAsync();
+        var spec = new ClinicWithOwnerSpecification();
 
-        return Ok(clinic);
+        var clinic = await unit.Repository<Clinic>().ListAsync(spec);
+
+        var data = mapper.Map<IReadOnlyList<ClinicDto>>(clinic);
+        
+        return Ok(data);
+    }
+
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpPost("register")]
+    public async Task<ActionResult> RegisterClinic([FromBody] ClinicDto dto)
+    {
+
+        var clinic = new Clinic
+        {
+            OwnerId = dto.OwnerId,
+            ClinicName = dto.ClinicName,
+            Address = dto.Address,
+            PhoneNumber = dto.PhoneNumber,
+            Email = dto.Email,
+            PictureUrl = dto.PictureUrl
+        };
+
+        unit.Repository<Clinic>().Add(clinic);
+
+        if (await unit.Complete())
+        {
+
+            return Ok(new ClinicDto
+            {
+                Id = clinic.Id,
+                OwnerId = clinic.OwnerId,
+                Address = dto.Address,
+                PhoneNumber = dto.PhoneNumber,
+                Email = dto.Email,
+                PictureUrl = dto.PictureUrl
+            });
+        }
+
+        return NoContent();
+    }
+
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<Clinic>> GetClinicById(int id)
+    {
+        var spec = new ClinicWithOwnerSpecification(id);
+
+        var clinic = await unit.Repository<Clinic>().GetEntityWithSpec(spec);
+
+        if (clinic == null) return NotFound();
+
+        var clinicDto = mapper.Map<ClinicDto>(clinic);
+
+        return Ok(clinicDto);
+    }
+    
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> DeleteClinic(int id)
+    {
+        var user = await userManager.GetUserByEmail(User);
+
+        if (user == null) return Unauthorized();
+
+        var clinic = await unit.Repository<Clinic>().GetByIdAsync(id);
+
+        if (clinic == null) return NotFound();
+
+        unit.Repository<Clinic>().Remove(clinic);
+
+        if (await unit.Complete()) return NoContent();
+
+        return BadRequest("Failed to delete the clinic!");
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("admin")]
+    public async Task<ActionResult> GetClinicAdmin()
+    {
+        var user = await userManager.GetUserByEmail(User);
+        if (user?.ClinicId == null) return Unauthorized("User not assigned to a clinic");
+
+        var clinicId = user.ClinicId.Value;
+
+        var clinic = await unit.Repository<Clinic>().GetByIdAsync(clinicId);
+
+        return Ok(mapper.Map<ClinicDto>(clinic));
     }
 
     // GET ALL SERVICES BY CLINIC
-
+    [Authorize(Roles = "Admin")]
     [HttpGet("services")]
     public async Task<ActionResult<IReadOnlyList<ServiceDto>>> GetServicesForClinic()
     {
@@ -41,7 +128,7 @@ public class ClinicController(IUnitOfWork unit,
     }
 
     // GET SERVICE BY ID
-
+    [Authorize(Roles = "Admin")]
     [HttpGet("services/{id:int}")]
     public async Task<ActionResult<ServiceDto>> GetServiceWithProcedures(int id)
     {
@@ -74,21 +161,26 @@ public class ClinicController(IUnitOfWork unit,
         });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("services/{serviceId}/procedures")]
     public async Task<ActionResult> AddProcedure(int serviceId, [FromBody] ProcedureDto dto)
     {
         var user = await userManager.GetUserByEmail(User);
         if (user?.ClinicId == null) return Unauthorized("User not assigned to a clinic");
 
-        var service = await unit.Repository<Service>().GetByIdAsync(serviceId);
+        var spec = new ServiceWithProceduresSpecification(serviceId, user.ClinicId.Value);
+        var service = await unit.Repository<Service>().GetEntityWithSpec(spec);
         if (service == null || service.ClinicId != user.ClinicId) return NotFound();
+
+        var lastOrder = service.Procedures.Count != 0 ? service.Procedures.Max(p => p.Order) : -1;
+        var nextOrder = lastOrder + 1;
 
         var procedure = new Procedure
         {
             ServiceId = serviceId,
             Name = dto.Name,
             Description = dto.Description,
-            Order = dto.Order
+            Order = nextOrder
         };
 
         unit.Repository<Procedure>().Add(procedure);
@@ -104,7 +196,7 @@ public class ClinicController(IUnitOfWork unit,
         });
     }
 
-
+    [Authorize(Roles = "Admin")]
     [HttpGet("services/{serviceId}/procedures")]
     public async Task<ActionResult<IReadOnlyList<ProcedureDto>>> GetProcedure(int serviceId)
     {
@@ -117,7 +209,7 @@ public class ClinicController(IUnitOfWork unit,
         var spec = new ProceduresByServiceIdSpecification(serviceId);
         var procedures = await unit.Repository<Procedure>().ListAsync(spec);
 
-        if (procedures == null || !procedures.Any()) return NotFound("No procedures found for this service");
+        // if (procedures == null || !procedures.Any()) return NotFound("No procedures found for this service");
 
         var data = mapper.Map<IReadOnlyList<ProcedureDto>>(procedures);
 
@@ -125,8 +217,9 @@ public class ClinicController(IUnitOfWork unit,
 
     }
 
-    [HttpPut("services/{serviceId}/procedures/reorder")]
-    public async Task<ActionResult> ReorderProcedures(int serviceId, [FromBody] List<ProcedureDto> dtos)
+    [Authorize(Roles = "Admin")]
+    [HttpPut("services/{serviceId}/procedures/update")]
+    public async Task<ActionResult> UpdateProcedures(int serviceId, [FromBody] List<ProcedureDto> dtos)
     {
         var user = await userManager.GetUserByEmail(User);
         if (user?.ClinicId == null) return Unauthorized("User not assigned to a clinic");
@@ -139,7 +232,10 @@ public class ClinicController(IUnitOfWork unit,
             var proc = await unit.Repository<Procedure>().GetByIdAsync(dto.Id);
             if (proc == null || proc.ServiceId != serviceId) continue;
 
+            proc.Name = dto.Name;
+            proc.Description = dto.Description;
             proc.Order = dto.Order;
+            proc.ServiceId = dto.ServiceId;
 
         }
 
@@ -147,6 +243,45 @@ public class ClinicController(IUnitOfWork unit,
         return Ok("Updated");
     }
 
+    [Authorize(Roles = "Admin")]
+    [HttpPatch("services/{serviceId}/procedures/reorder")]
+    public async Task<ActionResult> ReOrderProcedure(int serviceId, [FromBody] List<ReOrderProcedureDto> dtos)
+    {
+        var user = await userManager.GetUserByEmail(User);
+        if (user?.ClinicId == null) return Unauthorized("User not assigned to a clinic");
+
+        var service = await unit.Repository<Service>().GetByIdAsync(serviceId);
+
+        if (service == null || service.ClinicId != user.ClinicId) return NotFound();
+
+        var procedureIds = dtos.Select(d => d.Id).ToList();
+        var spec = new ProceduresByServiceAndIdSpecification(serviceId, procedureIds);
+        var procedures = await unit.Repository<Procedure>().ListAsync(spec);
+
+        if (procedures.Count != procedureIds.Count)
+            return NotFound("One or more procedures not found for the given service.");
+
+        foreach (var proc in procedures)
+        {
+            proc.Order = -proc.Id;
+        }
+        await unit.Complete();
+
+        foreach (var dto in dtos)
+        {
+            var procToUpdate = procedures.FirstOrDefault(p => p.Id == dto.Id);
+            if (procToUpdate != null)
+            {
+                procToUpdate.Order = dto.Order;
+            }
+
+        }
+        await unit.Complete();
+        return Ok("Reordering Complete");
+    }
+
+
+    [Authorize(Roles = "Admin")]
     [HttpDelete("procedures/{id:int}")]
     public async Task<ActionResult> DeleteProcedure(int id)
     {
@@ -162,6 +297,27 @@ public class ClinicController(IUnitOfWork unit,
         if (await unit.Complete()) return NoContent();
 
         return BadRequest("Failed to remove procedure");
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPatch("procedures/{id:int}")]
+    public async Task<ActionResult> UpdateProcedure(int id, [FromBody] UpdateProcedureDto dto)
+    {
+        var user = await userManager.GetUserByEmail(User);
+
+        if (user == null) return Unauthorized();
+
+        var procedure = await unit.Repository<Procedure>().GetByIdAsync(id);
+        if (procedure == null) return NotFound();
+
+        procedure.Name = dto.Name;
+        procedure.Description = dto.Description;
+
+        unit.Repository<Procedure>().Update(procedure);
+
+        await unit.Complete();
+
+        return Ok("Procedure updated successfuly!");
     }
 
 }

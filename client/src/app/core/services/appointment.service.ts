@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { Appointment } from '../../shared/models/appointment';
 import { Pagination } from '../../shared/models/pagination';
 import { AppointmentParams } from '../../shared/models/appointmentParams';
+import { UpcomingAppointmentsParams } from '../../shared/models/upcomingAppointmentParams';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,18 @@ export class AppointmentService {
     return this.http.patch<Appointment>(`${this.baseUrl}appointments/${id}/status/`, {status});
   }
 
+  getAllAppointmentByClinicId(id: number) {
+    return this.http.get<Appointment[]>(`${this.baseUrl}appointments/${id}/all`);
+  }
+
+  getUpcomingAppointment(upcomingParams: UpcomingAppointmentsParams, clinicId: number) {
+    let params = new HttpParams();
+
+    params = params.append('pageSize', upcomingParams.pageSize);  
+    params = params.append('pageIndex', upcomingParams.pageNumber);
+    
+    return this.http.get<Pagination<Appointment>>(`${this.baseUrl}appointments/upcoming`, { params });
+  }
 
   getAppointmentByClinic(appointmentParams: AppointmentParams, date: Date) {
     let params = new HttpParams();
@@ -57,5 +70,13 @@ export class AppointmentService {
     params = params.append('pageIndex', appointmentParams.pageNumber);
     const formattedDate = date.toLocaleDateString('en-CA').split('T')[0];
     return this.http.get<Pagination<Appointment>>(this.baseUrl + 'appointments/clinic/by-date?date=' + formattedDate, { params });
+  }
+
+  // SuperAdmin
+  getAllAppointment() {
+    return this.http.get<Appointment[]>(`${this.baseUrl}appointments/all`);
+  }
+  getAllConfirmedAppointment() {
+    return this.http.get<Appointment[]>(`${this.baseUrl}appointments/all-confirmed`);
   }
 }

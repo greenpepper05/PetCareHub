@@ -1,0 +1,136 @@
+@if (user) {
+        <div class="flex flex-col h-screen overflow-hidden custom-font">
+            <div class="min-h-full">
+        
+                <div class="bg-[var(--secondary)] text-white p-6 rounded-xl shadow-lg mb-6">
+                    <div class="flex items-center text-sm mb-2 opacity-80">
+                        <mat-icon class="mr-1 text-base">people</mat-icon>
+                        <span>User Detail</span>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        
+                        <!-- CLICKABLE ID BLOCK with Copy Functionality -->
+                        <div 
+                            class="flex items-center cursor-pointer mb-4 sm:mb-0" 
+                            (click)="copyToClipboard(user.id)"
+                        >
+                            <h1 class="text-3xl font-bold mr-3 hover:underline">
+                                User ID: #{{ user.id }}
+                            </h1>
+                            <div class="flex flex-col justify-center items-start">
+                                <!-- Copy Icon/Indicator -->
+                                <mat-icon *ngIf="copyStatus() === 'idle'" class="text-xl text-white opacity-75 hover:opacity-100 transition-opacity">content_copy</mat-icon>
+                                @if (copyStatus() === 'copied') {
+                                    <div class="flex items-center text-sm font-semibold text-green-300">
+                                        <mat-icon class="text-lg mr-1">check_circle</mat-icon> Copied!
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        
+                        <button 
+                            routerLink="/superadmin/users"
+                            class="flex items-center border border-white text-white hover:bg-white hover:text-indigo-600 transition-colors py-2 px-4 rounded-lg text-sm"
+                        >
+                            <mat-icon class="mr-1 text-base">arrow_back</mat-icon> Back to List
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-6"> 
+        
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+                        <div class="lg:col-span-1 bg-white rounded-xl shadow-lg border border-gray-100 p-6 flex flex-col items-center">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 w-full text-center flex items-center justify-center">
+                                <mat-icon class="text-2xl mr-2 text-indigo-600">account_circle</mat-icon> User Role
+                            </h3>
+                            
+                            <div 
+                                class="w-36 h-36 rounded-full flex items-center justify-center text-5xl font-extrabold shadow-md mb-4"
+                                [ngClass]="{
+                                    'bg-purple-100 text-purple-800 border-4 border-purple-200': user.role === 'SuperAdmin',
+                                    'bg-green-100 text-green-800 border-4 border-green-200': user.role === 'Admin',
+                                    'bg-blue-100 text-blue-800 border-4 border-blue-200': user.role === 'Client',
+                                    'bg-gray-100 text-gray-800 border-4 border-gray-200': !user.role
+                                }"
+                            >
+                                {{ user.role ? user.role.charAt(0) : '?' }}
+                            </div>
+        
+                            <p class="text-center text-sm text-gray-500">
+                                System Role: 
+                                <strong 
+                                    class="text-gray-900 uppercase"
+                                    [ngClass]="{
+                                        'text-purple-800': user.role === 'SuperAdmin',
+                                        'text-green-800': user.role === 'Admin',
+                                        'text-blue-800': user.role === 'Client'
+                                    }"
+                                >
+                                    {{ user.role || 'Unassigned' }}
+                                </strong>
+                            </p>
+                        </div>
+        
+                        <div class="lg:col-span-2 bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 flex items-center">
+                                <mat-icon class="text-2xl mr-2 text-indigo-600">info</mat-icon> Primary Information
+                            </h3>
+                            <div class="space-y-3 text-sm">
+                                <p class="flex justify-between border-b pb-2"><span class="font-medium text-gray-500">Full Name:</span><strong class="text-gray-900">{{ user.firstName }} {{ user.lastName }}</strong></p>
+                                <p class="flex justify-between border-b pb-2"><span class="font-medium text-gray-500">Email:</span><strong class="text-gray-900 text-right max-w-[70%] break-words">{{ user.email }}</strong></p>
+                                <p class="flex justify-between pb-1"><span class="font-medium text-gray-500">Contact Number:</span><strong class="text-gray-900">{{ user.contact || 'N/A' }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 flex items-center">
+                            <mat-icon class="text-2xl mr-2 text-green-600">hospital</mat-icon> Clinic Affiliation
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3 text-sm">
+                            <p class="flex justify-between border-b pb-1"><span class="font-medium text-gray-500">Assigned Clinic Name:</span>
+                                <strong class="text-right" [ngClass]="{'text-green-600': user.clinicName, 'text-red-500': !user.clinicName}">
+                                    {{ user.clinicName || 'Not Assigned' }}
+                                </strong>
+                            </p>
+                            <p class="flex justify-between border-b pb-1"><span class="font-medium text-gray-500">Clinic ID:</span><strong class="text-gray-900">{{ user.clinicId || 'N/A' }}</strong></p>
+                        </div>
+        
+                        @if (user.clinicName) {
+                            <div class="pt-4 mt-4 border-t border-gray-100 flex justify-end">
+                                <button 
+                                    class="flex items-center text-blue-600 hover:text-blue-800 font-medium transition duration-300"
+                                    routerLink="/superadmin/clinics/{{ user.clinicId }}"
+                                >
+                                    <mat-icon class="text-base mr-1">open_in_new</mat-icon> View Assigned Clinic Details
+                                </button>
+                            </div>
+                        } @else {
+                            <div class="pt-4 mt-4 border-t border-gray-100">
+                                <p class="text-gray-600 italic">This user is not currently assigned to a clinic.</p>
+                            </div>
+                        }
+                    </div>
+        
+                    <div class="flex justify-end pt-4 gap-3">
+                        <button 
+                            routerLink="/superadmin/user-update/{{ user.id }}"
+                            class="flex items-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        >
+                            <mat-icon class="mr-1">edit</mat-icon> Edit User
+                        </button>
+                        <button 
+                            (click)="onDelete()"
+                            class="flex items-center px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        >
+                            <mat-icon class="mr-1">delete</mat-icon> Delete User
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
