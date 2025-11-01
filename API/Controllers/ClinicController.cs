@@ -7,6 +7,7 @@ using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
@@ -45,21 +46,31 @@ public class ClinicController(IUnitOfWork unit,
 
         unit.Repository<Clinic>().Add(clinic);
 
-        if (await unit.Complete())
+        if (!await unit.Complete())
         {
-
-            return Ok(new ClinicDto
-            {
-                Id = clinic.Id,
-                OwnerId = clinic.OwnerId,
-                Address = dto.Address,
-                PhoneNumber = dto.PhoneNumber,
-                Email = dto.Email,
-                PictureUrl = dto.PictureUrl
-            });
+            return BadRequest("Failed to create clinic.");
         }
+        
+        var user = await userManager.Users.FirstOrDefaultAsync(u => u.Id == clinic.OwnerId);
 
-        return NoContent();
+        if (user == null) return NotFound("Clinic created, but the specified Owner user was not found.");
+
+        user.ClinicId = clinic.Id;
+
+        var userUpdateResult = await userManager.UpdateAsync(user);
+
+        if (!userUpdateResult.Succeeded) return BadRequest("Clinic created, but failed to assign ClinicId to the Owner user.");
+
+        return Ok(new ClinicDto
+        {
+            Id = clinic.Id,
+            OwnerId = clinic.OwnerId,
+            Address = dto.Address,
+            PhoneNumber = dto.PhoneNumber,
+            Email = dto.Email,
+            PictureUrl = dto.PictureUrl
+        });
+
     }
 
     [Authorize(Roles = "SuperAdmin")]
@@ -81,13 +92,18 @@ public class ClinicController(IUnitOfWork unit,
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteClinic(int id)
     {
-        var user = await userManager.GetUserByEmail(User);
-
-        if (user == null) return Unauthorized();
-
+       
         var clinic = await unit.Repository<Clinic>().GetByIdAsync(id);
 
         if (clinic == null) return NotFound();
+
+        var ownerId = clinic.OwnerId;
+
+        var user = await userManager.Users.FirstOrDefaultAsync(a => a.Id == ownerId);
+
+        if (user == null) return NotFound();
+
+        user.ClinicId = null;
 
         unit.Repository<Clinic>().Remove(clinic);
 

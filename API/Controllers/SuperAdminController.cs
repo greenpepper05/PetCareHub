@@ -122,6 +122,7 @@ public class SuperAdminController(SignInManager<AppUser> signInManager,
         
         try
         {
+            // Path logic remains the same (saving to client/public/assets/images/clinic-logo)
             string uploadPath = Path.Combine(
                 env.ContentRootPath,
                 "..",
@@ -147,9 +148,11 @@ public class SuperAdminController(SignInManager<AppUser> signInManager,
                 await file.CopyToAsync(stream);
             }
 
-            var publicUrl = $"/assets/images/clinic-logo/{uniqueFileName}";
+            // --- FIX: Append a cache-buster query string parameter (v={timestamp}) ---
+            var publicUrl = $"/assets/images/clinic-logo/{uniqueFileName}?v={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
+            // -------------------------------------------------------------------------
 
-            return Ok(new ImageUploadResponseDto { Url = publicUrl });
+        return Ok(new ImageUploadResponseDto { Url = publicUrl });
 
         }
         catch (System.Exception)

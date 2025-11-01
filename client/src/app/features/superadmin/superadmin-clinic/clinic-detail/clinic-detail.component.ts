@@ -7,6 +7,7 @@ import { User } from '../../../../shared/models/user';
 import { MatIcon } from '@angular/material/icon';
 import { DatePipe } from '@angular/common';
 import { SnackbarService } from '../../../../core/services/snackbar.service';
+import { environment } from '../../../../../environments/environment.development';
 
 @Component({
   selector: 'app-clinic-detail',
@@ -26,6 +27,8 @@ export class ClinicDetailComponent implements OnInit {
   private snackbarService = inject(SnackbarService);
   clinic?: Clinic;
   user?: User;
+
+  baseUrl = "https://localhost:4200";
 
   ngOnInit(): void {
     this.loadClinic();

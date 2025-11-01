@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Services } from '../../shared/models/services';
+import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServicesService {
-  baseUrl = 'https://localhost:5001/api/';
+  baseUrl = environment.apiUrl
   private http = inject(HttpClient);
 
   getServices(): Observable<Services[]> {

@@ -20,7 +20,9 @@
                             </h1>
                             <div class="flex flex-col justify-center items-start">
                                 <!-- Copy Icon/Indicator -->
-                                <mat-icon *ngIf="copyStatus() === 'idle'" class="text-xl text-white opacity-75 hover:opacity-100 transition-opacity">content_copy</mat-icon>
+                                @if (copyStatus() === 'idle') {
+                                    <mat-icon class="text-xl text-white opacity-75 hover:opacity-100 transition-opacity">content_copy</mat-icon>
+                                }
                                 @if (copyStatus() === 'copied') {
                                     <div class="flex items-center text-sm font-semibold text-green-300">
                                         <mat-icon class="text-lg mr-1">check_circle</mat-icon> Copied!

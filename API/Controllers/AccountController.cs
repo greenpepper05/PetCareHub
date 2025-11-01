@@ -254,7 +254,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
 
         return Ok();
     }
-    
+
     [Authorize(Roles = "SuperAdmin")]
     [HttpGet("user/{id}")]
     public async Task<ActionResult<UserDto>> GetUserWithClinicById(string id)
@@ -276,6 +276,13 @@ public class AccountController(SignInManager<AppUser> signInManager,
             ClinicName = user.Clinic?.ClinicName,
             Role = roles.FirstOrDefault()
         });
+    }
+
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpDelete("delete/{id:string}")]
+    public async Task<ActionResult> RemoveUser(string id)
+    {
+        
     }
 
 }
