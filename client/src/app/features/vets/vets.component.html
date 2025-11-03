@@ -1,0 +1,68 @@
+<div class="p-6 md:p-10 lg:p-12 bg-gray-50 min-h-screen font-sans">
+      
+      <div class="max-w-7xl mx-auto space-y-8">
+
+
+        <!-- Clinics Grid -->
+        <section>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            @for (clinic of clinics; track clinic.id) {
+              <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden 
+                          transition-all duration-300 hover:shadow-2xl hover:border-indigo-300">
+                
+                <!-- Clinic Header (Name & Status) -->
+                <div class="p-5 border-b flex justify-between items-start">
+                  <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-1">{{ clinic.clinicName }}</h3>
+                    <!-- <div [ngClass]="getStatusClasses(clinic.status)" class="text-xs font-semibold py-1 px-3 rounded-full inline-block">
+                      {{ clinic.status }}
+                    </div> -->
+                  </div>
+                  <mat-icon class="text-indigo-400 text-3xl">local_hospital</mat-icon>
+                </div>
+                
+                <!-- Clinic Details -->
+                <div class="p-5 space-y-3 text-sm">
+                  
+                  <div class="flex items-center text-gray-600">
+                    <mat-icon class="text-base mr-2 text-indigo-500">location_on</mat-icon>
+                    <span class="truncate">{{ clinic.address }}</span>
+                  </div>
+
+                  <div class="flex items-center text-gray-600">
+                    <mat-icon class="text-base mr-2 text-indigo-500">star</mat-icon>
+                    <span>Rating: <strong class="text-gray-800">{{ 4 | number:'.1-1' }}</strong> / 5.0</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-2 pt-2 border-t mt-3">
+                    <p class="flex flex-col items-start">
+                      <span class="text-xs text-gray-500 font-medium">Vet Id</span>
+                      <strong class="text-xl text-gray-800">{{ clinic.id }}</strong>
+                    </p>
+                    <p class="flex flex-col items-start">
+                      <span class="text-xs text-gray-500 font-medium">Patients</span>
+                      <strong class="text-xl text-gray-800">2</strong>
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Footer Action -->
+                <div routerLink="/appointment" class="p-4 bg-gray-50 flex justify-end">
+                  <button class="flex items-center text-indigo-600 hover:text-indigo-800 font-medium text-sm transition-colors">
+                    <mat-icon  class="text-base mr-1">open_in_new</mat-icon> Book an Appointment
+                  </button>
+                </div>
+
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- Footer for padding -->
+        <footer class="text-center pt-8 text-sm text-gray-400">
+          End of Clinic List
+        </footer>
+
+      </div>
+    </div>

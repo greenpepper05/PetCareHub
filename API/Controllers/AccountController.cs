@@ -278,11 +278,11 @@ public class AccountController(SignInManager<AppUser> signInManager,
         });
     }
 
-    [Authorize(Roles = "SuperAdmin")]
-    [HttpDelete("delete/{id:string}")]
-    public async Task<ActionResult> RemoveUser(string id)
-    {
+    // [Authorize(Roles = "SuperAdmin")]
+    // [HttpDelete("delete/{id:string}")]
+    // public async Task<ActionResult> RemoveUser(string id)
+    // {
         
-    }
+    // }
 
 }

@@ -215,7 +215,7 @@ public class ServiceRecordController(IUnitOfWork unit,
         await unit.Complete();
 
         return Ok("Record succesfully removed!");
-    } 
+    }
 
     [Authorize(Roles = "Admin")]
     [HttpGet("all")]
@@ -233,4 +233,19 @@ public class ServiceRecordController(IUnitOfWork unit,
 
         return Ok(srDto);
     }
+    
+    [Authorize]
+    [HttpGet("pet-detail/{id:int}")]
+    public async Task<ActionResult<IReadOnlyList<ServiceRecordDto>>> GetPetDetail(int id)
+    {
+        var spec = new ServiceRecordByPetIdSpecification(id);
+
+        var records = await unit.Repository<ServiceRecord>().ListAsync(spec);
+
+        var mapped = mapper.Map<IReadOnlyList<ServiceRecordDto>>(records);
+        if (records == null) return NotFound();
+
+        return Ok(mapped);
+    }
+    
 }

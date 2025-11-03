@@ -1,0 +1,84 @@
+<div class="p-6 md:p-10 lg:p-12 bg-gray-50 min-h-screen font-sans">
+      
+      <div class="max-w-6xl mx-auto space-y-12">
+
+        <!-- Header: Mission & Vision -->
+        <header class="text-center py-10 bg-white rounded-2xl shadow-xl border border-indigo-100">
+          <h1 class="text-5xl font-extrabold text-[var(--primary)] mb-2">About PetCareHub</h1>
+          <p class="text-xl text-gray-600 font-light max-w-3xl mx-auto">
+            Your digital partner for automating pet services, enhancing client engagement, and improving clinic efficiency.
+          </p>
+        </header>
+
+        <!-- Section 1: Core Value Proposition -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-8 rounded-2xl shadow-lg">
+          <div class="md:pr-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center">
+              <mat-icon class="text-[var(--primary)] text-3xl mr-2">timeline</mat-icon> Transforming Pet Care Operations
+            </h2>
+            <p class="text-gray-600 leading-relaxed mb-4">
+              PetCareHub was developed to address the inefficiencies of outdated, manual processes prevalent in many veterinary clinics, like Pawsionate Hands Veterinary Clinic. We provide a seamless, integrated web and mobile platform for managing appointments, tracking service records, and communicating with pet owners.
+            </p>
+            <p class="text-gray-600 leading-relaxed italic">
+              Our goal is to shift focus from paperwork to patient care.
+            </p>
+          </div>
+          <div class="flex justify-center items-center">
+             <!-- Placeholder for an image or graphic -->
+            <div class="w-full h-64 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-400 font-semibold border-4 border-dashed border-indigo-200">
+              
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: Key Features Grid -->
+        <section>
+          <h2 class="text-3xl font-bold text-center text-gray-800 mb-8 flex items-center justify-center">
+            <mat-icon class="text-[var(--primary)] text-3xl mr-2">auto_awesome</mat-icon> Core System Capabilities
+          </h2>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            @for (feature of features; track feature.title) {
+              <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-[var(--secondary)] transition-transform duration-300 hover:shadow-xl hover:scale-[1.02]">
+                <div class="flex items-center mb-3">
+                  <mat-icon class="text-4xl text-[var(--primary)] mr-3">{{ feature.icon }}</mat-icon>
+                  <h3 class="text-xl font-semibold text-gray-800">{{ feature.title }}</h3>
+                </div>
+                <p class="text-gray-500 text-sm">{{ feature.description }}</p>
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- Section 3: Future Roadmap (Based on Recommendations) -->
+        <section class="bg-[var(--secondary)] text-white p-8 rounded-2xl shadow-xl">
+          <h2 class="text-3xl font-bold mb-4 flex items-center">
+            <mat-icon class="text-white text-3xl mr-2">flight_takeoff</mat-icon> Our Future Roadmap
+          </h2>
+          <p class="text-white mb-6">
+            We are committed to continuous improvement based on user feedback. Future enhancements include:
+          </p>
+          <ul class="list-disc list-inside space-y-3 text-lg font-light text-white pl-4">
+            <li class="flex items-start">
+                <mat-icon class="text-white text-xl mr-2 mt-[2px]">monitor</mat-icon>
+                <span class="flex-1 "> **Advanced Analytics:** Smart dashboards for sophisticated analytics to improve appointment and service management.</span>
+            </li>
+            <li class="flex items-start">
+                <mat-icon class="text-white text-xl mr-2 mt-[2px]">smartphone</mat-icon>
+                <span class="flex-1"> **Mobile Synergy:** Full mobile responsiveness and a dedicated mobile app for easier accessibility.</span>
+            </li>
+            <li class="flex items-start">
+                <mat-icon class="text-white text-xl mr-2 mt-[2px]">notifications</mat-icon>
+                <span class="flex-1"> **Real-Time Engagement:** Implementing real-time notifications and in-app chat features for veterinarians and pet owners.</span>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Footer Contact Info -->
+        <footer class="text-center pt-8 border-t border-gray-200">
+          <p class="text-sm text-gray-500">PetCareHub | Developed for Modern Pet Clinics</p>
+          <p class="text-sm text-gray-500">Contact: support@petcarehub.com</p>
+        </footer>
+
+      </div>
+    </div>

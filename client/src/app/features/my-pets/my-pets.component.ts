@@ -3,11 +3,13 @@ import { PetService } from '../../core/services/pet.service';
 import { Pet } from '../../shared/models/pet';
 import { DatePipe } from '@angular/common';
 import { environment } from '../../../environments/environment.development';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-my-pets',
   imports: [
-    DatePipe
+    DatePipe,
+    RouterLink
   ],
   templateUrl: './my-pets.component.html',
   styleUrl: './my-pets.component.scss'

@@ -62,4 +62,8 @@ export class ServiceRecordService {
   getAllServiceRecord() {
     return this.http.get<ServiceRecord[]>(`${this.baseUrl}servicerecord/all`);
   }
+
+  getRecordByPetId(id: string) {
+    return this.http.get<ServiceRecord[]>(`${this.baseUrl}servicerecord/pet-detail/${id}`);
+  }
 }

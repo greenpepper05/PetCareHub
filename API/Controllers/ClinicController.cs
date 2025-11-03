@@ -16,7 +16,7 @@ public class ClinicController(IUnitOfWork unit,
     UserManager<AppUser> userManager, IMapper mapper) : BaseApiController
 {
 
-    [Authorize(Roles = "SuperAdmin")]
+    // [Authorize(Roles = "SuperAdmin")]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<ClinicDto>>> GetClinic()
     {

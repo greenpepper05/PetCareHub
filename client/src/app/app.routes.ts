@@ -37,6 +37,9 @@ import { SuperadminUsersComponent } from './features/superadmin/superadmin-users
 import { SuperadminSettingsComponent } from './features/superadmin/superadmin-settings/superadmin-settings.component';
 import { UserUpdateComponent } from './features/superadmin/superadmin-users/user-update/user-update.component';
 import { ClinicDetailComponent } from './features/superadmin/superadmin-clinic/clinic-detail/clinic-detail.component';
+import { AboutComponent } from './features/about/about.component';
+import { VetsComponent } from './features/vets/vets.component';
+import { PetDetailComponent } from './features/my-pets/pet-detail/pet-detail.component';
 
 export const routes: Routes = [
     {
@@ -80,6 +83,9 @@ export const routes: Routes = [
             {path: '', component: HomeComponent,},
             {path: 'services', component: ServicesComponent},
             {path: 'services-detail/:id', component: ServicesDetailComponent},
+            {path: 'about', component: AboutComponent},
+            {path: 'vets', component: VetsComponent},
+            {path: 'pet-detail/:id', component: PetDetailComponent},
             {path: 'appointment', component: AppointmentComponent, canActivate: [authGuard]},
             {path: 'appointment-success', component: AppointmentSuccessComponent, canActivate: [authGuard]},
             {path: 'appointment-success/:id', component: AppointmentSuccessComponent, canActivate: [authGuard]},

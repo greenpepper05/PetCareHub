@@ -15,6 +15,7 @@ import { Pet } from '../../shared/models/pet';
 import { AccountService } from '../../core/services/account.service';
 import { Appointment } from '../../shared/models/appointment';
 import { MatButton } from '@angular/material/button';
+import { ClinicService } from '../../core/services/clinic.service';
 
 @Component({
   selector: 'app-appointment',
@@ -40,6 +41,7 @@ export class AppointmentComponent implements OnInit{
   private petService = inject(PetService);
   private servicesService = inject(ServicesService);
   private accountSerive = inject(AccountService);
+  private clinicService = inject(ClinicService);
   private router = inject(Router);
   services: any[] = [];
   pets: Pet[] = [];
@@ -120,15 +122,13 @@ export class AppointmentComponent implements OnInit{
     
     const appointmentDateLocalString = `${year}-${month}-${day}T${hours}:${minutes}:00`;
 
-
     const ownerId = currentUser.id;
 
     const selectedPetId = this.appointmentForm.get('petid')?.value;
 
     const selectedService = Number(this.servicesForm.get('serviceId')?.value);
 
-
-    const clinicId = 1; 
+    const clinicId = 1;
     
     const data = {
       serviceId: selectedService,
