@@ -19,7 +19,7 @@ public class AppointmentsController(IUnitOfWork unit,
 
     // CREATE APPOINTMENTS
 
-    [HttpPost("clinic-id")]
+    [HttpPost()]
     public async Task<ActionResult> CreateAppointment([FromBody] CreateAppointmentDto appointmentDto)
     {
         var user = await userManager.GetUserByEmail(User);
