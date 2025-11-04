@@ -19,8 +19,8 @@ public class AppointmentsController(IUnitOfWork unit,
 
     // CREATE APPOINTMENTS
 
-    [HttpPost]
-    public async Task<ActionResult> CreateAppointment([FromBody] CreateAppointmentDto appointmentDto)
+    [HttpPost("clinic-id/{id}")]
+    public async Task<ActionResult> CreateAppointment([FromBody] CreateAppointmentDto appointmentDto, int id)
     {
         var user = await userManager.GetUserByEmail(User);
 
@@ -33,7 +33,7 @@ public class AppointmentsController(IUnitOfWork unit,
             PetId = appointmentDto.PetId,
             OwnerId = user.Id,
             Notes = appointmentDto.Notes,
-            ClinicId = appointmentDto.ClinicId,
+            ClinicId = id,
 
         };
 

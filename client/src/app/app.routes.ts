@@ -86,7 +86,7 @@ export const routes: Routes = [
             {path: 'about', component: AboutComponent},
             {path: 'vets', component: VetsComponent},
             {path: 'pet-detail/:id', component: PetDetailComponent},
-            {path: 'appointment', component: AppointmentComponent, canActivate: [authGuard]},
+            {path: 'appointment/:id', component: AppointmentComponent, canActivate: [authGuard]},
             {path: 'appointment-success', component: AppointmentSuccessComponent, canActivate: [authGuard]},
             {path: 'appointment-success/:id', component: AppointmentSuccessComponent, canActivate: [authGuard]},
             {path: 'myappointments', component: MyappointmentsComponent, canActivate: [authGuard]},

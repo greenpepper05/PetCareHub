@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { AppointmentService } from '../../core/services/appointment.service';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter} from '@angular/material/core';
@@ -43,6 +43,7 @@ export class AppointmentComponent implements OnInit{
   private accountSerive = inject(AccountService);
   private clinicService = inject(ClinicService);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
   services: any[] = [];
   pets: Pet[] = [];
 
@@ -128,7 +129,9 @@ export class AppointmentComponent implements OnInit{
 
     const selectedService = Number(this.servicesForm.get('serviceId')?.value);
 
-    const clinicId = 1;
+    const id = this.activatedRoute.snapshot.paramMap.get("id");
+
+    const clinicId = id;
     
     const data = {
       serviceId: selectedService,
