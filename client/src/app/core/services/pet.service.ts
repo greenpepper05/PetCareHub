@@ -24,7 +24,7 @@ export class PetService {
   }
 
   getPetByClinic(clinicId: number) {
-    return this.http.get<Pet[]>(`${this.baseUrl}pets/${clinicId}/all`);
+    return this.http.get<Pet[]>(`${this.baseUrl}pets/${clinicId}/all-pets`);
   }
 
   getAllPetByClinic(petParams: PetParams, clinicId: number) {

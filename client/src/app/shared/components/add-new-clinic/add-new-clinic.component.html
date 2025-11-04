@@ -1,5 +1,4 @@
-<div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all" (click)="$event.stopPropagation()">
-    <!-- Modal Header -->
+<div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden transform transition-all" (click)="$event.stopPropagation()">
     <div class="bg-[var(--primary)] text-white p-6 flex justify-between items-center">
         <h3 class="text-xl font-bold">Register New Clinic</h3>
         <button (click)="onCancel()" aria-label="Close modal" class="hover:text-gray-200 transition-colors">
@@ -7,27 +6,25 @@
         </button>
     </div>
     
-    <!-- Modal Body (Form) -->
-    <form [formGroup]="form" class="p-6 space-y-4">
-        <!-- Clinic Name -->
-        <div class="md:col-span-1 flex flex-col items-center pt-2">
+    <form [formGroup]="form" class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+        
+        <div class="sm:col-span-1 flex flex-col items-center pt-2">
             <label for="pet-picture-upload" class="cursor-pointer">
                 <div class="w-48 h-48 rounded-full border-4 border-dashed border-indigo-300 flex items-center justify-center overflow-hidden bg-gray-100 hover:border-indigo-500 transition-colors shadow-inner">
                     @if (imageUrl) {
                         <img 
                         [src]="imageUrl" 
-                        alt="Pet Profile Picture" 
+                        alt="Clinic Profile Picture" 
                         class="w-full h-full object-cover"
                         />
-                    } @else if (!imageUrl) {   
+                    } @else if (!imageUrl) { 
                         <div class="text-center text-indigo-400">
-                            <mat-icon class="text-6xl">Profile</mat-icon>
+                            <mat-icon class="text-6xl">storefront</mat-icon>
                             <p class="text-xs mt-1 font-medium">Click to upload picture</p>
                         </div>
                     }
                 </div>
             </label>
-
             <input 
                 type="file" 
                 id="pet-picture-upload" 
@@ -35,82 +32,49 @@
                 style="display: none;" 
                 accept="image/*"
             />
-
             <p class="mt-4 text-sm text-gray-500">Max size 5MB (Recommended: Square)</p>
         </div>
 
-        <div>
+        <div class="sm:col-span-1 flex flex-col justify-start space-y-4">
+            
             <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Owner</mat-label>
+                <mat-label>Owner ID</mat-label>
                 <input matInput id="ownerId" formControlName="ownerId">
-            </mat-form-field>
-            @if (form.get('ownerId')?.invalid && form.get('ownerId')?.touched) {
-                <mat-error>
-                    Please enter a clinic name.
-                </mat-error>
-            }
-        </div>
-
-        <div>
+                </mat-form-field>
+            
             <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Clinic name</mat-label>
                 <input matInput id="clinicName" formControlName="clinicName">
-            </mat-form-field>
-            @if (form.get('clinicName')?.invalid && form.get('clinicName')?.touched) {
-                <mat-error>
-                    Please enter a clinic name.
-                </mat-error>
-            }
-        </div>
+                </mat-form-field>
 
-        <!-- Address -->
-        <div>
-            <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Address</mat-label>
-                <input matInput id="address" formControlName="address">
-            </mat-form-field>
-            @if (form.get('address')?.invalid && form.get('address')?.touched) {
-                <mat-error>
-                    Please enter an address.
-                </mat-error>
-            }
-        </div>
-
-        <!-- Phone Number -->
-        <div>
             <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Phone number</mat-label>
                 <input matInput id="phoneNumber" type="tel" formControlName="phoneNumber">
-            </mat-form-field>
-            @if (form.get('phoneNumber')?.invalid && form.get('phoneNumber')?.touched) {
-                <mat-error>
-                    Please enter a phone number.
-                </mat-error>
-            }
-        </div>
+                </mat-form-field>
 
-        <!-- Contact Email -->
-        <div>
             <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Email</mat-label>
                 <input matInput type="email" id="email" formControlName="email">
-            </mat-form-field>
-            @if (form.get('email')?.invalid && form.get('phoneNumber')?.touched) {
-                <mat-error>
-                    Please enter a valid email.
-                </mat-error>
-            }
+                </mat-form-field>
+
         </div>
 
-        <!-- Modal Footer (Buttons) -->
-        <div class="pt-4 flex justify-end space-x-3">
+        <div class="sm:col-span-2">
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Address</mat-label>
+                <textarea matInput id="address" formControlName="address" rows="3"></textarea>
+                </mat-form-field>
+        </div>
+
+        <div class="sm:col-span-2 pt-4 flex justify-end space-x-3">
             <button type="button" (click)="onCancel()" 
                     class="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
                 Cancel
             </button>
             <button type="submit"
                     (click)="onSubmit()"
-                    class="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+                    [disabled]="form.invalid"
+                    class="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg disabled:opacity-50 hover:bg-green-700 transition-colors">
                 Register
             </button>
         </div>

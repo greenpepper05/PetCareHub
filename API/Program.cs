@@ -70,6 +70,7 @@ RecurringJob.AddOrUpdate<AppointmentReminderJob>(
 
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<AppUser>();
+app.MapFallbackToController("Index", "Fallback");
 
 try
 {

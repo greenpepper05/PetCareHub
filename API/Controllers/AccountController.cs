@@ -129,15 +129,15 @@ public class AccountController(SignInManager<AppUser> signInManager,
 
     [Authorize]
     [HttpPut("assign-clinic/{userId}")]
-    public async Task<ActionResult> AssignClinicToAdmin(string userId, [FromQuery] int clinicId)
+    public async Task<ActionResult> AssignClinicToAdmin(string userId, [FromBody] AssignClinicDto clinicId)
     {
         var user = await userManager.FindByIdAsync(userId);
         if (user == null) return NotFound("User not found");
 
-        var clinic = await unit.Repository<Clinic>().GetByIdAsync(clinicId);
-        if (clinic == null) return NotFound("Clinic not found");
+        // var clinic = await unit.Repository<Clinic>().GetByIdAsync(clinicId);
+        // if (clinic == null) return NotFound("Clinic not found");
 
-        user.ClinicId = clinicId;
+        user.ClinicId = clinicId.ClinicId;
 
         var result = await userManager.UpdateAsync(user);
         if (!result.Succeeded)
@@ -145,7 +145,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
             return BadRequest("Failed to update user.");
         }
 
-        return Ok(new { message = $"User {user.Email} successfully assigned to clinic {clinic.ClinicName}" });
+        return Ok(new { message = $"User {user.Email} successfully assigned to clinic" });
     }
 
     [Authorize(Roles = "SuperAdmin")]
@@ -278,11 +278,28 @@ public class AccountController(SignInManager<AppUser> signInManager,
         });
     }
 
-    // [Authorize(Roles = "SuperAdmin")]
-    // [HttpDelete("delete/{id:string}")]
-    // public async Task<ActionResult> RemoveUser(string id)
-    // {
-        
-    // }
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpDelete("remove-user/{id}")]
+    public async Task<ActionResult> RemoveUser(string id)
+    {
+        var user = await userManager.FindByIdAsync(id);
+
+        if (user == null) return NotFound($"User with ID ${id} not found");
+
+        var roles = await userManager.GetRolesAsync(user);
+        if (roles.Contains("SuperAdmin"))
+        {
+            return BadRequest("Cannot delete SuperAdmin accounts through thi enpoint");
+        }
+
+        var result = await userManager.DeleteAsync(user);
+
+        if (!result.Succeeded)
+        {
+            var errors = result.Errors.Select(e => e.Description);
+            return BadRequest($"Failed to delete user: {string.Join(", ", errors)}");
+        }
+        return NoContent();
+    }
 
 }

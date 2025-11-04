@@ -150,12 +150,12 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit, 
 
     [Authorize(Roles = "Admin")]
     [HttpGet("{clinicId:int}/paginated")]
-    public async Task<ActionResult<Pagination<Pet>>> GetPaginatedPet([FromQuery] PetSpecParams specParams, int clinicId)
+    public async Task<ActionResult<Pagination<PetDto>>> GetPaginatedPet([FromQuery] PetSpecParams specParams, int clinicId)
     {
 
         var spec = new PetsByClinicIdSpecification(specParams, clinicId);
 
-        var serviceRecords = await unit.Repository<ServiceRecord>().ListAsync(spec);
+        var serviceRecords = await unit.Repository<Appointment>().ListAsync(spec);
 
         var pets = serviceRecords
             .Where(sr => sr.Pet != null)
@@ -176,11 +176,11 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit, 
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpGet("{clinicId:int}/all")]
+    [HttpGet("{clinicId:int}/all-pets")]
     public async Task<ActionResult<IReadOnlyList<PetDto>>> GetPets(int clinicId)
     {
         var spec = new PetByClinicIdSpecification(clinicId);
-        var serviceRecord = await unit.Repository<ServiceRecord>().ListAsync(spec);
+        var serviceRecord = await unit.Repository<Appointment>().ListAsync(spec);
 
         var pets = serviceRecord
             .Where(sr => sr.Pet != null)

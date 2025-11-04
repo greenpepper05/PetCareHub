@@ -69,5 +69,9 @@ export class AccountService {
   getUserWithClinic(id: string) {
     return this.http.get<User>(`${this.baseUrl}account/user/${id}`);
   }
+
+  deleteUser(id:string) {
+    return this.http.delete<User>(`${this.baseUrl}account/remove-user/${id}`);
+  }
   
 }

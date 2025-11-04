@@ -4,7 +4,7 @@ using Core.Entities;
 
 namespace Core.Specifications;
 
-public class PetByClinicIdSpecification : BaseSpecification<ServiceRecord>
+public class PetByClinicIdSpecification : BaseSpecification<Appointment>
 {
     public PetByClinicIdSpecification(int clinicId) : base(p => p.ClinicId == clinicId)
     {

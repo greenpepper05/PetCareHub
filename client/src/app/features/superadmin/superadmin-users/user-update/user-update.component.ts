@@ -1,9 +1,10 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { AccountService } from '../../../../core/services/account.service';
 import { User } from '../../../../shared/models/user';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
+import { SnackbarService } from '../../../../core/services/snackbar.service';
 
 @Component({
   selector: 'app-user-update',
@@ -18,6 +19,8 @@ import { MatIcon } from '@angular/material/icon';
 export class UserUpdateComponent implements OnInit{
   private accountService = inject(AccountService);
   private activatedRoute = inject(ActivatedRoute);
+  private router = inject(Router);
+  private snackbarService = inject(SnackbarService);
   user?: User;
 
   ngOnInit(): void {
@@ -37,7 +40,19 @@ export class UserUpdateComponent implements OnInit{
   }
 
   onDelete() {
-    
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
+
+    if (!id) return;
+
+    this.accountService.deleteUser(id).subscribe({
+      next: () => {
+        this.router.navigate(['superadmin/users']);
+        this.snackbarService.success("User Deleted!");
+      },
+      error: (err) => {
+        this.snackbarService.error("An error occured:" + err);
+      }
+    })
   }
 
   copyStatus = signal<'idle' | 'copied'>('idle');

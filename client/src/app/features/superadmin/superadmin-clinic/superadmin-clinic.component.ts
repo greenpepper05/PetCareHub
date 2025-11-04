@@ -31,7 +31,7 @@ export class SuperadminClinicComponent implements OnInit {
 
   openClinicRegistrationModal() {
     const dialogRef = this.dialog.open(AddNewClinicComponent, {
-          width: '450px',
+          width: '780px',
           panelClass: 'custom-dialog-container',
         });
     

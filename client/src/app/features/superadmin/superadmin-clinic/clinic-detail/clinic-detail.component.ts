@@ -28,8 +28,6 @@ export class ClinicDetailComponent implements OnInit {
   clinic?: Clinic;
   user?: User;
 
-  baseUrl = "https://localhost:4200";
-
   ngOnInit(): void {
     this.loadClinic();
   }
