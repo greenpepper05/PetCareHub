@@ -228,6 +228,8 @@ public class AccountController(SignInManager<AppUser> signInManager,
     [HttpPost("register/admin")]
     public async Task<ActionResult> RegisterAdmin([FromBody] RegisterDto registerDto)
     {
+        const string defaultPassword = "Pa$$w0rd";
+
         var user = new AppUser
         {
             FirstName = registerDto.FirstName,
@@ -235,10 +237,10 @@ public class AccountController(SignInManager<AppUser> signInManager,
             Email = registerDto.Email,
             Contact = registerDto.Contact,
             UserName = registerDto.Email,
-            ClinicId = registerDto.ClinicId
+            ClinicId = registerDto.ClinicId,
         };
 
-        var result = await signInManager.UserManager.CreateAsync(user, registerDto.Password);
+        var result = await signInManager.UserManager.CreateAsync(user, defaultPassword);
 
         if (!result.Succeeded)
         {
