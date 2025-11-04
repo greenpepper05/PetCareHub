@@ -7,7 +7,7 @@ import { User } from '../../../../shared/models/user';
 import { MatIcon } from '@angular/material/icon';
 import { DatePipe } from '@angular/common';
 import { SnackbarService } from '../../../../core/services/snackbar.service';
-import { environment } from '../../../../../environments/environment.development';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-clinic-detail',
