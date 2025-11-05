@@ -3,12 +3,14 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AppointmentService } from '../../core/services/appointment.service';
 import { Appointment } from '../../shared/models/appointment';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-myappointments',
   imports: [
     RouterLink,
-    DatePipe
+    DatePipe,
+    MatIcon
   ],
   templateUrl: './myappointments.component.html',
   styleUrl: './myappointments.component.scss'

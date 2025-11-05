@@ -1,15 +1,18 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Appointment } from '../../../shared/models/appointment';
 import { AppointmentService } from '../../../core/services/appointment.service';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-appointment-success',
   standalone: true,
   imports: [
     DatePipe,
-    CommonModule
+    CommonModule,
+    MatIcon,
+    RouterLink
   ],
   templateUrl: './appointment-success.component.html',
   styleUrl: './appointment-success.component.scss'

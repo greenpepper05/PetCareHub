@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { AppointmentService } from '../../../core/services/appointment.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Appointment } from '../../../shared/models/appointment';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { MatButton } from '@angular/material/button';
 
 @Component({
@@ -10,7 +10,8 @@ import { MatButton } from '@angular/material/button';
   imports: [
     DatePipe,
     MatButton,
-    RouterLink
+    RouterLink,
+    NgClass
   ],
   templateUrl: './myappointments-detail.component.html',
   styleUrl: './myappointments-detail.component.scss'
