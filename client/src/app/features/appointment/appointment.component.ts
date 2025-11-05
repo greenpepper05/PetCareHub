@@ -57,7 +57,11 @@ export class AppointmentComponent implements OnInit{
   ];
   
   ngOnInit(): void {
-    this.servicesService.getServices().subscribe({
+
+    var id = this.activatedRoute.snapshot.paramMap.get("id");
+    if (!id) return;
+
+    this.servicesService.getServiceByClinic(+id).subscribe({
       next: response => this.services = response,
       error: error => console.log(error)
     })
