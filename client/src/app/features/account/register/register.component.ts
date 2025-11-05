@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { passwordValidator } from '../../../shared/validators/password.validators';
 
 @Component({
   selector: 'app-register',
@@ -19,6 +20,7 @@ import { MatInput } from '@angular/material/input';
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
+
 export class RegisterComponent {
   private fb = inject(FormBuilder);
   private accountService = inject(AccountService);
@@ -29,7 +31,7 @@ export class RegisterComponent {
     lastName: ['', Validators.required],
     email: ['', Validators.required],
     contact: ['', Validators.required],
-    password: ['', Validators.required],
+    password: ['', Validators.required, passwordValidator()],
     clinicId: [null]
   });
 
