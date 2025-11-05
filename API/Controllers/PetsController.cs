@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit, IMapper mapper, IWebHostEnvironment hostEnvironment) : BaseApiController
+public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit, IMapper mapper, IWebHostEnvironment env) : BaseApiController
 {
 
     // CREATE PET PROFILE WITH OWNER ID
@@ -67,10 +67,7 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit, 
         }
 
         var uploadPath = Path.Combine(
-            hostEnvironment.ContentRootPath,
-            "..",
-            "client",
-            "public",
+            env.WebRootPath,
             "assets",
             "images",
             "pets"

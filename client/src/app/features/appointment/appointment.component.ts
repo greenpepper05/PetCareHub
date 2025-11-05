@@ -16,6 +16,8 @@ import { AccountService } from '../../core/services/account.service';
 import { Appointment } from '../../shared/models/appointment';
 import { MatButton } from '@angular/material/button';
 import { ClinicService } from '../../core/services/clinic.service';
+import { MatIcon } from '@angular/material/icon';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-appointment',
@@ -31,6 +33,8 @@ import { ClinicService } from '../../core/services/clinic.service';
     MatStepperModule,
     MatSelectModule,
     RouterLink,
+    MatIcon,
+    CurrencyPipe
 ],
   templateUrl: './appointment.component.html',
   styleUrl: './appointment.component.scss'

@@ -1,21 +1,30 @@
-<div class="bg-[var(--primary)] text-[var(--white)] p-16">
-    <div class="container flex justify-between mb-10">
-        <div class="logo">
-            <h1 class="text-2xl">PetCareHub</h1>
+<footer class="bg-[var(--primary)] text-[var(--white)] p-8 md:p-12 lg:p-16">
+    <div class="container mx-auto">
+        
+        <div class="flex flex-col md:flex-row justify-between items-center md:items-start mb-8 md:mb-10 lg:mb-12 gap-8">
+            
+            <div class="logo text-center md:text-left flex-shrink-0">
+                <h1 class="text-3xl font-bold">PetCareHub</h1>
+            </div>
+            
+            <div class="link flex flex-col items-center md:items-start md:flex-row gap-4 md:gap-8 text-lg font-medium">
+                <a routerLink="/" class="hover:text-[var(--yellow)] cursor-pointer transition-colors">Home</a>
+                <a routerLink="/about" class="hover:text-[var(--yellow)] cursor-pointer transition-colors">About Us</a>
+                <a routerLink="/vets" class="hover:text-[var(--yellow)] cursor-pointer transition-colors">Vets</a>
+                <a routerLink="/pets" class="hover:text-[var(--yellow)] cursor-pointer transition-colors">My Pets</a>
+            </div>
+            
+            <div class="socials flex gap-4 flex-shrink-0">
+                <img class="w-8 h-8" src="/assets/images/icons/fb.png" alt="Facebook logo">
+                <img class="w-8 h-8" src="/assets/images/icons/ig.png" alt="Instagram logo">
+                <img class="w-8 h-8" src="/assets/images/icons/x.png" alt="X (Twitter) logo">
+            </div>
         </div>
-        <div class="link flex gap-3 my-2 text-xl ml-6">
-            <a routerLink="/" class="hover:text-[var(--yellow)] cursor-pointer">Home</a>
-            <a routerLink="/about" class="hover:text-[var(--yellow)] cursor-pointer">About Us</a>
-            <a routerLink="/vets" class="hover:text-[var(--yellow)] cursor-pointer">Vets</a>
-            <a routerLink="/pets" class="hover:text-[var(--yellow)] cursor-pointer">Pets</a>
-        </div>
-        <div class="socials flex gap-6">
-            <img class="w-10" src="/assets/images/icons/fb.png" alt="Fb logo">
-            <img class="w-10" src="/assets/images/icons/ig.png" alt="IG logo">
-            <img class="w-10" src="/assets/images/icons/x.png" alt="X logo">
+        
+        <hr class="border-t border-[rgba(255,255,255,0.2)] mb-6">
+
+        <div class="text-center text-sm">
+            <p>Copyright &copy; 2025 **PetCareHub**. All Rights Reserved.</p>
         </div>
     </div>
-    <div class="text-center">
-        <p>Copyright &#169; 2025 PetCareHub. All Rights Reserved.</p>
-    </div>
-</div>
+</footer>

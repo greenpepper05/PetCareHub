@@ -1,4 +1,5 @@
 using API.DTOs;
+using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-public class ServicesController(IUnitOfWork unit, UserManager<AppUser> userManager) : BaseApiController
+public class ServicesController(IUnitOfWork unit, UserManager<AppUser> userManager, IMapper mapper) : BaseApiController
 {
 
     // GET ALL SERVICES
@@ -44,6 +45,18 @@ public class ServicesController(IUnitOfWork unit, UserManager<AppUser> userManag
         var services = await unit.Repository<Service>().ListAsync(spec);
 
         return Ok(services);
+    }
+
+    [HttpGet("clinic/{id:int}")]
+    public async Task<ActionResult<IReadOnlyList<ServiceDto>>> GetServicesByClinicId(int id)
+    {
+        var spec = new ServicesByClinicIdSpecification(id);
+
+        var services = await unit.Repository<Service>().ListAsync(spec);
+
+        var serviceDto = mapper.Map<IReadOnlyList<ServiceDto>>(services);
+
+        return Ok(serviceDto);
     }
 
     [Authorize(Roles = "Admin")]

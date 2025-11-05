@@ -1,27 +1,63 @@
-<div class="mx-auto my-32">
-    <div class="text-center">
-        <h1 class="inline-block content-center font-bold text-2xl mb-6 text-center bg-[var(--yellow)] px-8 py-2 rounded-md shadow-md">My Pets</h1>
+<div class="container mx-auto px-4 py-16 md:py-24 max-w-7xl">
+    
+    <div class="text-center mb-10 md:mb-16">
+        <h1 class="inline-block font-extrabold text-3xl md:text-4xl text-gray-800 
+                   bg-[var(--yellow)] px-8 py-2 rounded-lg shadow-xl uppercase tracking-wider">
+            My Pets
+        </h1>
     </div>
-    <div class="container flex flex-wrap gap-8 justify-evenly p-6 text-left">
+
+    <div class="flex flex-wrap gap-6 md:gap-8 justify-center">
+        
         @for (pet of pets; track pet.id) {
-            <div routerLink="/pet-detail/{{ pet.id }}" class="flex flex-wrap bg-[var(--primary)] text-[var(--white)] rounded-2xl p-8 shadow-md shadow-gray-400 text-left w-[45%]">
-                <div class="w-1/2">
-                    <img src="{{ pet.pictureUrl }}" alt="" class="bg-[var(--white)] w-full h-full rounded-xl">
+            <div routerLink="/pet-detail/{{ pet.id }}" 
+                 class="pet-card w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.33%-1.5rem)] 
+                        bg-white rounded-2xl overflow-hidden 
+                        shadow-xl border border-gray-100 cursor-pointer 
+                        transition transform hover:scale-[1.02] duration-300">
+                
+                <div class="bg-[var(--primary)] text-[var(--white)] p-5 flex justify-between items-center">
+                    <h2 class="text-2xl md:text-3xl font-bold">{{ pet.name }}</h2>
+                    <span class="text-lg font-semibold capitalize">{{ pet.species }}</span>
                 </div>
-                <div class="w-1/2 pl-4">
-                    <p>ID</p>
-                    <h1 class="text-2xl font-bold text-[var(--yellow)]">{{ pet.id }}</h1>
-                    <p>Name</p>
-                    <h1 class="text-2xl font-bold text-[var(--yellow)]">{{ pet.name }}</h1>
-                    <p>Birthday</p>
-                    <h1 class="text-2xl font-bold text-[var(--yellow)]">{{ pet.birthdate | date }}</h1>
-                    <p>Breed</p>
-                    <h1 class="text-2xl font-bold text-[var(--yellow)]">{{ pet.breed }}</h1>
-                    <p>Species</p>
-                    <h1 class="text-2xl font-bold text-[var(--yellow)]">{{ pet.species }}</h1>
+
+                <div class="p-4 md:p-6 flex flex-col sm:flex-row gap-4">
+                    
+                    <div class="w-full sm:w-1/3 flex-shrink-0">
+                        <img src="{{ pet.pictureUrl }}" alt="Picture of {{ pet.name }}" 
+                             class="w-full h-32 object-cover rounded-xl shadow-md border-2 border-gray-100">
+                    </div>
+                    
+                    <div class="w-full sm:w-2/3 text-gray-700 space-y-2">
+                        
+                        <div class="flex justify-between text-sm border-b pb-1">
+                            <p class="font-semibold text-gray-500">Pet ID:</p>
+                            <p class="font-medium text-gray-600">{{ pet.id }}</p>
+                        </div>
+
+                        <div class="flex justify-between border-b pb-1">
+                            <p class="font-semibold text-[var(--primary)]">Breed:</p>
+                            <p class="font-medium text-gray-800">{{ pet.breed }}</p>
+                        </div>
+                        
+                        <div class="flex justify-between border-b pb-1">
+                            <p class="font-semibold text-[var(--primary)]">Birthday:</p>
+                            <p class="font-medium text-gray-800">{{ pet.birthdate | date:'mediumDate' }}</p>
+                        </div>
+                        
+                        <div class="pt-2 text-right">
+                             <span class="text-sm font-bold text-[var(--primary)] hover:text-[#056b95] transition">View Profile &rarr;</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         }
     </div>
+    
+    <div class="text-center mt-12 md:mt-16">
+        <button routerLink="/add-pet" class="px-8 py-3 bg-[var(--yellow)] text-gray-800 font-bold 
+                                           rounded-lg shadow-md hover:bg-[#ffe34d] transition duration-300">
+            + Register New Pet
+        </button>
+    </div>
 </div>
-

@@ -125,8 +125,9 @@ public class SuperAdminController(SignInManager<AppUser> signInManager,
             // Path logic remains the same (saving to client/public/assets/images/clinic-logo)
             string uploadPath = Path.Combine(
                 env.WebRootPath,
-                "wwwroot",
-                "assets"
+                "assets",
+                "images",
+                "clinic-logo"
             );
 
             if (!Directory.Exists(uploadPath))

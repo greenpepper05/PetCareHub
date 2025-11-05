@@ -1,12 +1,6 @@
-.cta-content {
-    padding-left: 10%;
-    padding-top: 10%;
-    text-shadow:  2px 2px 4px rgba(0,0,0,0.5);
-}
-
 .feature-card {
     background-color: var(--white);
-    color: var(--primary);
+    color: var(--primary); /* Retain primary color from CSS variable */
     padding: 1rem 1.5rem;
     border-radius: 1rem;
     display: flex;
@@ -22,10 +16,11 @@
 }
 
 .feature-card h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 1.5rem; /* Base font size, responsive classes will override */
+    font-weight: 600; /* Tailwind font-semibold */
+    color: var(--primary); /* Retain primary color */
 }
 
 .feature-card p {
-    color: #000;
+    color: #4b5563; /* Tailwind gray-600 */
 }

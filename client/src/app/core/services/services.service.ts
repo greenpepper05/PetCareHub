@@ -23,6 +23,10 @@ export class ServicesService {
     return this.http.get<Services[]>(`${this.baseUrl}services/clinic`);
   }
 
+  getServiceByClinic(id: number) {
+    return this.http.get<Services[]>(`${this.baseUrl}services/clinic/${id}`);
+  }
+
   createService(payload: any) {
     return this.http.post<Services>(`${this.baseUrl}services`, payload);
   }

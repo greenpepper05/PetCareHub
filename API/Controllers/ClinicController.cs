@@ -87,6 +87,20 @@ public class ClinicController(IUnitOfWork unit,
 
         return Ok(clinicDto);
     }
+
+    [HttpGet("info/{id}")]
+    public async Task<ActionResult<ClinicDto>> GetClinicInfo(int id)
+    {
+        var spec = new ClinicWithOwnerSpecification(id);
+
+        var clinic = await unit.Repository<Clinic>().GetEntityWithSpec(spec);
+
+        if (clinic == null) return NotFound();
+
+        var clinicDto = mapper.Map<ClinicDto>(clinic);
+
+        return Ok(clinicDto);
+    }
     
     [Authorize(Roles = "SuperAdmin")]
     [HttpDelete("{id:int}")]
@@ -146,7 +160,7 @@ public class ClinicController(IUnitOfWork unit,
     // GET SERVICE BY ID
     [Authorize(Roles = "Admin")]
     [HttpGet("services/{id:int}")]
-    public async Task<ActionResult<ServiceDto>> GetServiceWithProcedures(int id)
+    public async Task<ActionResult<ServiceDtoWithProcedure>> GetServiceWithProcedures(int id)
     {
         var user = await userManager.GetUserByEmail(User);
         if (user?.ClinicId == null) return Unauthorized("User not assigned to a clinic");
@@ -158,7 +172,7 @@ public class ClinicController(IUnitOfWork unit,
 
         if (service == null) return NotFound();
 
-        return Ok(new ServiceDto
+        return Ok(new ServiceDtoWithProcedure
         {
             Id = service.Id,
             Name = service.Name,

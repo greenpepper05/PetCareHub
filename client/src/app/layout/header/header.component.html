@@ -1,42 +1,132 @@
 @if (busyService.loading) {
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 }
-<header class="shadow-md p-3 w-full">
-    <div class="flex align-middle items-center justify-between max-w-screen-2xl mx-auto py-6">
-        <div routerLink="/" class="flex align-middle items-center cursor-pointer">
-            <!-- <img src="/images/logo.png" alt="app.logo" class="max-h-16">     -->
-            <h1 class="text-2xl font-bold">PetCareHub</h1>
+<header class="shadow-lg p-3 w-full bg-white sticky top-0 z-50">
+    <div class="flex items-center justify-between max-w-screen-2xl mx-auto py-3">
+        
+        <!-- Logo/Title Section -->
+        <div routerLink="/" class="flex justify-between items-center cursor-pointer flex-shrink-0">
+            <!-- <img src="/images/logo.png" alt="app.logo" class="max-h-16"> -->
+            <mat-icon class="text-3xl text-[var(--primary)] mr-2">pets</mat-icon>
+            <h1 class="text-2xl font-extrabold text-gray-800">PetCareHub</h1>
         </div>
-        <nav class="flex gap-10 my-2 text-lg ml-6 font-bold">
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden md:flex gap-8 text-lg font-semibold items-center flex-grow justify-center">
             <a routerLink="/" 
                 routerLinkActive="active"
                 [routerLinkActiveOptions]="{exact: true}"
-                class="hover:text-[var(--primary)] cursor-pointer hover:underline">Home</a>
+                class="text-gray-600 hover:text-[var(--primary)] transition-colors">Home</a>
             <a routerLink="/about" 
                 routerLinkActive="active"
                 [routerLinkActiveOptions]="{exact: true}"
-                class="hover:text-[var(--primary)] cursor-pointer hover:underline">About us</a>
+                class="text-gray-600 hover:text-[var(--primary)] transition-colors">About us</a>
             <a routerLink="/vets" 
                 routerLinkActive="active" 
-                class="hover:text-[var(--primary)] cursor-pointer hover:underline">Vets</a>
+                class="text-gray-600 hover:text-[var(--primary)] transition-colors">Vets</a>
             <a routerLink="/mypets" 
                 routerLinkActive="active" 
-                class="hover:text-[var(--primary)] cursor-pointer hover:underline">My Pets</a>
+                class="text-gray-600 hover:text-[var(--primary)] transition-colors">My Pets</a>
         </nav>
-        <div class="flex gap-3 align-middle">
+        
+        <!-- Action Buttons (Login/Dropdown) -->
+        <!-- NOTE: The 'relative' class on this container is critical for dropdown positioning -->
+        <div class="hidden md:flex gap-3 items-center flex-shrink-0 relative">
             @if (accountService.currentUser()){
-                <button mat-flat-button routerLink="/myappointments">My Appointments</button>
-                <button mat-stroked-button (click)="logout()">
-                    Logout
+                <button mat-flat-button [routerLink]="['/myappointments']" color="primary">
+                    My Appointments
                 </button>
+                
+                <!-- User Profile Dropdown -->
+                <div class="relative">
+                    <!-- Dropdown Trigger Button (Shows First & Last Name) -->
+                    <button (click)="isDropdownOpen = !isDropdownOpen" 
+                            class="flex items-center space-x-1 p-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 transition 
+                                   focus:outline-none focus:ring-2 focus:ring-[var(--primary)]">
+                        <mat-icon class="text-xl">account_circle</mat-icon>
+                        <!-- Display First Name and Last Name -->
+                        <span class="font-semibold text-sm mr-1">
+                            {{ accountService.currentUser()?.firstName }} {{ accountService.currentUser()?.lastName }}
+                        </span>
+                        <mat-icon class="text-lg transition-transform" 
+                                  [ngClass]="{'rotate-180': isDropdownOpen}">keyboard_arrow_down</mat-icon>
+                    </button>
+
+                    <!-- Dropdown Content -->
+                    @if (isDropdownOpen) {
+                        <div class="absolute right-0 mt-2 w-52 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50">
+                            <!-- Manage Account Link -->
+                            <a routerLink="/account/manage" (click)="isDropdownOpen = false"
+                               class="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition font-medium">
+                                <mat-icon class="align-middle text-lg mr-2">settings</mat-icon>
+                                Manage Account
+                            </a>
+                            <hr class="border-gray-100">
+                            <!-- Logout Button -->
+                            <button (click)="logout(); isDropdownOpen = false"
+                                    class="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 transition font-medium">
+                                <mat-icon class="align-middle text-lg mr-2">logout</mat-icon>
+                                Logout
+                            </button>
+                        </div>
+                    }
+                </div>
+
             } @else {
-                <!-- <button routerLink="/account/register" mat-stroked-button class="">        
-                    Register
-                </button> -->
-                <button routerLink="/account/login" mat-flat-button class="custom-button">        
+                <button routerLink="/account/login" mat-flat-button color="primary">
                     Sign in
                 </button>
             }
         </div>
+
+        <!-- Mobile Menu Button (Hamburger) -->
+        <button mat-icon-button class="md:hidden" (click)="toggleMenu()">
+            <mat-icon>{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
+        </button>
     </div>
+
+    <!-- 💥 Mobile Menu Dropdown 💥 -->
+    @if (isMenuOpen) {
+        <div class="md:hidden bg-white border-t border-gray-100 py-4 px-4 shadow-inner">
+            <nav class="flex flex-col gap-4 text-base font-medium">
+                <a routerLink="/" 
+                    (click)="toggleMenu()"
+                    routerLinkActive="active-mobile"
+                    [routerLinkActiveOptions]="{exact: true}"
+                    class="block py-2 text-gray-700 hover:bg-gray-100 rounded-md px-3 transition-colors">Home</a>
+                <a routerLink="/about" 
+                    (click)="toggleMenu()"
+                    routerLinkActive="active-mobile"
+                    [routerLinkActiveOptions]="{exact: true}"
+                    class="block py-2 text-gray-700 hover:bg-gray-100 rounded-md px-3 transition-colors">About us</a>
+                <a routerLink="/vets" 
+                    (click)="toggleMenu()"
+                    routerLinkActive="active-mobile" 
+                    class="block py-2 text-gray-700 hover:bg-gray-100 rounded-md px-3 transition-colors">Vets</a>
+                <a routerLink="/mypets" 
+                    (click)="toggleMenu()"
+                    routerLinkActive="active-mobile" 
+                    class="block py-2 text-gray-700 hover:bg-gray-100 rounded-md px-3 transition-colors">My Pets</a>
+            </nav>
+
+            <!-- Mobile Action Buttons (Updated with Account Management) -->
+            <div class="flex flex-col gap-3 mt-5 pt-4 border-t border-gray-100">
+                @if (accountService.currentUser()){
+                    <button mat-flat-button [routerLink]="['/myappointments']" (click)="toggleMenu()" color="primary" class="w-full">
+                        My Appointments
+                    </button>
+                    <a routerLink="/account/manage-account" (click)="toggleMenu()" class="w-full text-center bg-gray-100 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-200 transition">
+                        Manage Account
+                    </a>
+                    <button mat-stroked-button (click)="logout(); toggleMenu()" class="w-full">
+                        Logout
+                    </button>
+                } @else {
+                    <button routerLink="/account/login" (click)="toggleMenu()" mat-flat-button color="primary" class="w-full">
+                        Sign in
+                    </button>
+                }
+            </div>
+        </div>
+    }
 </header>

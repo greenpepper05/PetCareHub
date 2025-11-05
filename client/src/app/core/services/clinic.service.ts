@@ -15,6 +15,10 @@ export class ClinicService {
     return this.http.get<Clinic>(`${this.baseUrl}clinic/admin`);
   }
 
+  getClinicDetail(id: number) {
+    return this.http.get<Clinic>(`${this.baseUrl}clinic/info/${id}`);
+  }
+
   // SUPER ADMIN
   getAllClinic() {
     return this.http.get<Clinic[]>(`${this.baseUrl}clinic`);

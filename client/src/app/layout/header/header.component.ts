@@ -4,6 +4,8 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AccountService } from '../../core/services/account.service';
 import { BusyService } from '../../core/services/busy.service';
 import { MatProgressBar } from "@angular/material/progress-bar";
+import { MatIcon } from '@angular/material/icon';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -11,7 +13,9 @@ import { MatProgressBar } from "@angular/material/progress-bar";
     MatButton,
     RouterLink,
     RouterLinkActive,
-    MatProgressBar
+    MatProgressBar,
+    MatIcon,
+    NgClass
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
@@ -21,6 +25,8 @@ export class HeaderComponent {
   private router = inject(Router);
   busyService = inject(BusyService);
 
+  isDropdownOpen: boolean = false;
+
   logout() {
     this.accountService.logout().subscribe({
       next: () => {
@@ -29,4 +35,12 @@ export class HeaderComponent {
       }
     })
   }
+
+  isMenuOpen: boolean = false; 
+
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+  
+
 }

@@ -1,71 +1,131 @@
-<div class="relative w-full h-[80vh]">
-    <div class="absolute inset-0 bg-[url('/assets/images/background/bg1.jpg')] bg-no-repeat bg-cover bg-[50%_40%] blur-xs z-0"></div>
+<div class="relative w-full h-[60vh] md:h-[70vh] lg:h-[80vh]">
+    
+    <div class="absolute inset-0 bg-[url('/assets/images/background/bg1.jpg')] bg-no-repeat bg-cover 
+                bg-center blur-sm md:blur-xs z-0"></div> 
+    
+    <div class="absolute inset-0 bg-black opacity-60 z-10"></div>
 
-    <div class="absolute inset-0 bg-black opacity-50 z-10"></div>
-
-    <div class="cta-content absolute z-20 flex flex-col justify-center items-start">
-        <p class="uppercase bg-[var(--white)] block px-4 py-2  mb-6 font-semibold rounded-lg">
+    <div class="cta-content absolute z-20 flex flex-col justify-start items-start text-left text-white
+                
+                /* Mobile: Centered at the top */
+                top-1/4 left-1/2 -translate-x-1/2 w-11/12 max-w-lg 
+                
+                /* Desktop: Centered vertically on the LEFT - SIMPLIFIED */
+                md:top-1/2 md:-translate-y-1/2 md:left-[40%] lg:left-[30%] md:right-auto 
+                md:transform-none 
+                px-4 md:px-0"> 
+        <p class="uppercase bg-[var(--white)] block px-4 py-2 text-sm md:text-base mb-4 md:mb-6 font-bold rounded-lg shadow-md text-gray-800">
             Welcome to {{title}}!
         </p>
-        <h1 class="text-7xl text-[var(--yellow)] max-w-3xl">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[var(--yellow)] font-extrabold"
+            style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">
             Where Innovation meets Pet Care
         </h1>
-        <button class="mt-8 px-12 py-3 bg-[var(--primary)] text-[var(--white)] text-lg font-bold rounded-lg shadow-lg hover:bg-[#056b95] transition duration-300 ease-in-out cursor-pointer">Learn more</button>
+        <button routerLink="/about" class="mt-6 md:mt-8 px-8 py-3 md:px-12 md:py-4 bg-[var(--primary)] text-[var(--white)] text-base md:text-lg font-bold 
+                       rounded-lg shadow-xl hover:bg-[#056b95] transition duration-300 ease-in-out cursor-pointer">
+            Learn more
+        </button>
     </div>
 
-    <!-- Card container -->
-    <div class="absolute left-1/2 transform -translate-x-1/2 container mx-auto px-4 sm:px-8 md:px16 flex sm:flex-row justify-around align-middle items-center bottom-[-8%] sm:bottom-[-5%] w-full z-30 gap-4">
-        <!-- Card -->
-        <div class="feature-card">
-            <img src="/assets/images/icons/automation.png" alt="">
-            <div class="">
-                <h1 class="text-2xl">Automation</h1>
-                <p class="text-sm">Send/Receive reminders autonomously</p>
+    <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 
+                container mx-auto px-4 w-11/12 max-w-7xl 
+                flex-row justify-center sm:justify-between items-center 
+                bottom-[-8%] lg:bottom-[-6%] xl:bottom-[-4%]
+                z-30 gap-4 md:gap-6 lg:gap-8">
+        <div class="feature-card w-full sm:w-[calc(33.33%-1rem)] max-w-xs md:max-w-sm">
+            <img src="/assets/images/icons/automation.png" alt="Automation icon">
+            <div>
+                <h1 class="text-xl md:text-2xl font-semibold">Automation</h1>
+                <p class="text-sm text-gray-600">Send/Receive reminders autonomously</p>
             </div>
         </div>
-        <div class="feature-card">
-            <img src="/assets/images/icons/timer.png" alt="">
-            <div class="">
-                <h1 class="text-2xl">Service Tracking</h1>
-                <p class="text-sm">Live status updates during pet services</p>
+        <div class="feature-card w-full sm:w-[calc(33.33%-1rem)] max-w-xs md:max-w-sm">
+            <img src="/assets/images/icons/timer.png" alt="Timer icon">
+            <div>
+                <h1 class="text-xl md:text-2xl font-semibold">Service Tracking</h1>
+                <p class="text-sm text-gray-600">Live status updates during pet services</p>
             </div>
         </div>
-        <div class="feature-card">
-            <img src="/assets/images/icons/pawprint.png" alt="">
-            <div class="">
-                <h1 class="text-2xl">Pet Profiles</h1>
-                <p class="text-sm">Centralized pet records for easy access</p>
+        <div class="feature-card w-full sm:w-[calc(33.33%-1rem)] max-w-xs md:max-w-sm">
+            <img src="/assets/images/icons/pawprint.png" alt="Pawprint icon">
+            <div>
+                <h1 class="text-xl md:text-2xl font-semibold">Pet Profiles</h1>
+                <p class="text-sm text-gray-600">Centralized pet records for easy access</p>
             </div>
         </div>
     </div>
 </div>
 
-<div class="services-content w-full py-12 bg-[var(--white)] mt-20 text-center">
-    <h2 class="inline-block bg-[var(--yellow)] text-black font-bold text-xl px-6 py-2 rounded-md -shadow-md mb-12">
-        Services
+<div class="md:hidden w-full px-4 pt-12 pb-8 bg-gray-50 flex flex-col items-center gap-4">
+    <div class="feature-card w-full max-w-sm">
+        <img src="/assets/images/icons/automation.png" alt="Automation icon">
+        <div>
+            <h1 class="text-xl font-semibold">Automation</h1>
+            <p class="text-sm text-gray-600">Send/Receive reminders autonomously</p>
+        </div>
+    </div>
+    <div class="feature-card w-full max-w-sm">
+        <img src="/assets/images/icons/timer.png" alt="Timer icon">
+        <div>
+            <h1 class="text-xl font-semibold">Service Tracking</h1>
+            <p class="text-sm text-gray-600">Live status updates during pet services</p>
+        </div>
+    </div>
+    <div class="feature-card w-full max-w-sm">
+        <img src="/assets/images/icons/pawprint.png" alt="Pawprint icon">
+        <div>
+            <h1 class="text-xl font-semibold">Pet Profiles</h1>
+            <p class="text-sm text-gray-600">Centralized pet records for easy access</p>
+        </div>
+    </div>
+</div>
+
+<div class="key-benefits w-full py-12 md:py-16 bg-[var(--white)] mt-8 md:mt-20 lg:mt-32 text-center z-0">
+    <h2 class="inline-block bg-[var(--yellow)] text-black font-bold text-lg md:text-xl px-5 py-2 rounded-md shadow-md mb-8 md:mb-12">
+        Key Benefits
     </h2>
     
-    <h1 class="text-6xl mb-8">What PetCareHub Offers</h1>
+    <h1 class="text-4xl md:text-5xl lg:text-6xl mb-10 font-bold">Manage Your Pet's Health, Effortlessly</h1>
 
-    <!-- Card Container -->
-    <div class="container flex flex-wrap gap-8 justify-evenly rounded-lg p-6 text-left">
-        <!-- Card -->
-        @for (service of services; track service.id)
-        {
-            <div class="bg-white rounded-lg p-8 shadow-md shadow-gray-400 text-left w-[30%]">
-            <div class="flex mb-2 items-center">
-                <img class="h-12 mb-3 mr-2" src="/assets/images/icons/{{service.id}}.png" alt="{{service.name}}">
-                <h2 class="font-semibold text-xl mb-2 ml-2">{{service.name}}</h2>
+    <div class="container mx-auto flex flex-wrap gap-6 md:gap-8 justify-center max-w-7xl p-4 md:p-6">
+        
+        <div class="bg-white rounded-xl p-8 shadow-lg shadow-gray-300 text-left w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(33.33%-1.5rem)] transition-transform hover:shadow-xl border-t-4 border-[var(--primary)]">
+            <div class="flex flex-col items-center text-center">
+                <mat-icon class="text-[var(--primary)] text-5xl w-16 h-16 mb-4">schedule</mat-icon>
+                <h2 class="font-bold text-2xl mb-2 text-[var(--primary)]">Scheduled Reminders</h2>
+                <p class="text-gray-600 text-lg">Never miss a vet appointment, vaccination, or medication dose again. We send timely alerts directly to you.</p>
             </div>
-            <ul class="list-disc ml-12 text-lg">
-                <li>{{service.description}}</li>
-            </ul>
         </div>
-        }
+
+        <div class="bg-white rounded-xl p-8 shadow-lg shadow-gray-300 text-left w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(33.33%-1.5rem)] transition-transform hover:shadow-xl border-t-4 border-[var(--primary)]">
+            <div class="flex flex-col items-center text-center">
+                <mat-icon class="text-[var(--primary)] text-5xl w-16 h-16 mb-4">description</mat-icon>
+                <h2 class="font-bold text-2xl mb-2 text-[var(--primary)]">Centralized Records</h2>
+                <p class="text-gray-600 text-lg">Keep all medical history, diet info, and contact details organized in one secure place, accessible anywhere.</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-8 shadow-lg shadow-gray-300 text-left w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(33.33%-1.5rem)] transition-transform hover:shadow-xl border-t-4 border-[var(--primary)]">
+            <div class="flex flex-col items-center text-center">
+                <mat-icon class="text-[var(--primary)] text-5xl w-16 h-16 mb-4">medical_services</mat-icon>
+                <h2 class="font-bold text-2xl mb-2 text-[var(--primary)]">Vet Collaboration</h2>
+                <p class="text-gray-600 text-lg">Easily share necessary pet information with your trusted vet clinic for seamless communication and care planning.</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-8 shadow-lg shadow-gray-300 text-left w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(33.33%-1.5rem)] transition-transform hover:shadow-xl border-t-4 border-[var(--primary)]">
+            <div class="flex flex-col items-center text-center">
+                <mat-icon class="text-[var(--primary)] text-5xl w-16 h-16 mb-4">location_on</mat-icon>
+                <h2 class="font-bold text-2xl mb-2 text-[var(--primary)]">Location Tracking</h2>
+                <p class="text-gray-600 text-lg">Monitor your pet's location during walks or while they're with a pet sitter for peace of mind (requires compatible hardware).</p>
+            </div>
+        </div>
     </div>
-    <div class="mt-12">
-        <button routerLink="/services" class="bg-[var(--primary)] text-[var(--white)] font-medium px-8 py-4 rounded-md shadow-md hover:bg-[#056b95] transition cursor-pointer">
-            View all Services
+    
+    <div class="mt-12 md:mt-16">
+        <button routerLink="/about" class="bg-[var(--primary)] text-[var(--white)] font-bold px-10 py-3 md:px-12 md:py-4 
+                                            rounded-lg shadow-lg hover:bg-[#056b95] transition cursor-pointer text-lg">
+            See All Features
         </button>
     </div>
 </div>

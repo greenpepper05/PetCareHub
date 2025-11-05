@@ -80,5 +80,7 @@ public class MappingProfiles : Profile
             .ForMember(u => u.Contact, o => o.MapFrom(a => a.Contact))
             .ForMember(u => u.ClinicId, o => o.MapFrom(a => a.ClinicId))
             .ForMember(u => u.ClinicName, o => o.MapFrom(a => a.Clinic!.ClinicName));
+
+        CreateMap<Service, ServiceDto>();
     }
 }

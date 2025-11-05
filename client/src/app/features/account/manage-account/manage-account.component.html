@@ -1,0 +1,96 @@
+<div class="container mx-auto px-4 py-12 md:py-20 max-w-4xl">
+    
+    <div class="text-center mb-8">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-[var(--primary)] mb-2">
+            Account Settings
+        </h1>
+        <p class="text-lg text-gray-600">Manage your profile information and security settings.</p>
+    </div>
+
+    <mat-tab-group animationDuration="300ms" class="shadow-2xl rounded-xl overflow-hidden">
+        
+        <mat-tab label="Profile Information">
+            <div class="p-6 md:p-8 bg-white">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">Edit Details</h2>
+
+                <form #profileForm="ngForm" (ngSubmit)="updateProfile(profileForm)">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>First Name</mat-label>
+                            <input matInput [(ngModel)]="userProfile.firstName" name="firstName" required>
+                            <mat-icon matSuffix>person</mat-icon>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Last Name</mat-label>
+                            <input matInput [(ngModel)]="userProfile.lastName" name="lastName" required>
+                            <mat-icon matSuffix>person_outline</mat-icon>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Email Address (Read-Only)</mat-label>
+                            <input matInput [value]="userProfile.email" name="email" readonly class="bg-gray-50 cursor-not-allowed">
+                            <mat-icon matSuffix>email</mat-icon>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Contact Number</mat-label>
+                            <input matInput [(ngModel)]="userProfile.contact" name="contact">
+                            <mat-icon matSuffix>phone</mat-icon>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 text-sm text-gray-700 space-y-2 mb-6">
+                        <p><span class="font-semibold text-gray-900">User Role:</span> {{ userProfile.role }}</p>
+                        <p><span class="font-semibold text-gray-900">Clinic ID:</span> {{ userProfile.clinicId || 'N/A' }}</p>
+                        <p class="text-xs text-gray-500">Note: Email and User Role are administrative settings and cannot be changed here.</p>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button mat-raised-button color="primary" type="submit" [disabled]="!profileForm.valid">
+                            <mat-icon class="mr-1">save</mat-icon> Save Profile Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Change Password">
+            <div class="p-6 md:p-8 bg-white">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">Security</h2>
+                
+                <form #passwordForm="ngForm" (ngSubmit)="changePassword(passwordForm)">
+                    
+                    <mat-form-field appearance="outline" class="w-full mb-4">
+                        <mat-label>Current Password</mat-label>
+                        <input matInput type="password" [(ngModel)]="passwordModel.currentPassword" name="currentPassword" required>
+                        <mat-icon matSuffix>lock_open</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-full mb-4">
+                        <mat-label>New Password</mat-label>
+                        <input matInput type="password" [(ngModel)]="passwordModel.newPassword" name="newPassword" required>
+                        <mat-icon matSuffix>lock</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-full mb-6">
+                        <mat-label>Confirm New Password</mat-label>
+                        <input matInput type="password" [(ngModel)]="passwordModel.confirmPassword" name="confirmPassword" required>
+                        <mat-icon matSuffix>lock</mat-icon>
+                    </mat-form-field>
+                    
+                    <div class="flex justify-end">
+                        <button mat-raised-button color="warn" type="submit" [disabled]="!passwordForm.valid">
+                            <mat-icon class="mr-1">vpn_key</mat-icon> Change Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </mat-tab>
+
+    </mat-tab-group>
+
+</div>

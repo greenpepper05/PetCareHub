@@ -71,7 +71,7 @@ public class AppointmentsController(IUnitOfWork unit,
     }
 
     // GET ALL APPOINTMENTS
-    [Authorize(Roles = "Customer")]
+    [Authorize(Roles = "Customer, Admin")]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<Appointment>>> GetAppointments()
     {

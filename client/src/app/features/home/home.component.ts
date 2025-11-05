@@ -1,12 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { ServicesService } from '../../core/services/services.service';
 import { RouterLink } from '@angular/router';
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: 'app-home',
   imports: [
-    RouterLink
-  ],
+    RouterLink,
+    MatIcon
+],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

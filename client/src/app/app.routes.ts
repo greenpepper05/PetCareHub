@@ -40,6 +40,8 @@ import { ClinicDetailComponent } from './features/superadmin/superadmin-clinic/c
 import { AboutComponent } from './features/about/about.component';
 import { VetsComponent } from './features/vets/vets.component';
 import { PetDetailComponent } from './features/my-pets/pet-detail/pet-detail.component';
+import { VetsDetailComponent } from './features/vets/vets-detail/vets-detail.component';
+import { ManageAccountComponent } from './features/account/manage-account/manage-account.component';
 
 export const routes: Routes = [
     {
@@ -85,6 +87,7 @@ export const routes: Routes = [
             {path: 'services-detail/:id', component: ServicesDetailComponent},
             {path: 'about', component: AboutComponent},
             {path: 'vets', component: VetsComponent},
+            {path: 'vets/vets-info/:id', component: VetsDetailComponent},
             {path: 'pet-detail/:id', component: PetDetailComponent},
             {path: 'appointment/:id', component: AppointmentComponent, canActivate: [authGuard]},
             {path: 'appointment-success', component: AppointmentSuccessComponent, canActivate: [authGuard]},
@@ -95,6 +98,7 @@ export const routes: Routes = [
             {path: 'mypets', component: MyPetsComponent, canActivate: [authGuard]},
             {path: 'account/login', component: LoginComponent},
             {path: 'account/register', component: RegisterComponent},
+            {path: 'account/manage-account', component: ManageAccountComponent},
             {path: 'test-error', component: TestErrorComponent},
             {path: 'not-found', component: NotFoundComponent},
             {path: 'server-error', component: ServerErrorComponent},
