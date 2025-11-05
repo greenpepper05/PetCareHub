@@ -1,31 +1,52 @@
-<div class="h-[100vh] flex justify-center items-center bg-[var(--primary)]">
-    <div class="flex w-fit rounded-2xl shadow-md">
-        <div class="flex flex-col justify-between w-1/3 bg-[var(--secondary)] px-10 pt-16 pb-4 rounded-tl-2xl rounded-bl-2xl">
-            <div class="w-fit ml-4">
-                <h1 class="text-2xl font-bold">Welcome to PetCareHub</h1>
-                <p class="text-lg">Built for Clinics. Loved by Pet Owners.</p>
+<div class="min-h-screen flex justify-center items-center bg-[var(--primary)] p-4 md:p-8">
+    
+    <div class="flex w-full max-w-4xl rounded-xl shadow-2xl overflow-hidden">
+        
+        <div class="hidden md:flex flex-col justify-between w-1/3 bg-[var(--secondary)] text-gray-800 
+                    px-6 lg:px-10 pt-16 pb-8 rounded-tl-xl rounded-bl-xl">
+            <div class="w-fit">
+                <h1 class="text-2xl lg:text-3xl font-bold">Welcome to PetCareHub</h1>
+                <p class="text-lg mt-2">Built for Clinics. Loved by Pet Owners.</p>
             </div>
-            <div class="flex justify-center">
-                <img src="/assets/images/icons/pet.svg" alt="" class="">
+            <div class="flex justify-center mt-8">
+                <img src="/assets/images/icons/pet.svg" alt="Pet illustration" class="w-2/3 max-w-[200px]">
             </div>
         </div>
-        <div class="flex w-2/3 justify-center py-32 bg-[var(--white)] rounded-tr-2xl rounded-br-2xl">
-            <div class="w-fit text-center">
-                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full max-w-md text-center mb-8">
-                    <div class="text-center mb-6">
-                        <h1 class="text-3xl font-semibold text-primary">Sign in</h1>
+        
+        <div class="flex w-full md:w-2/3 justify-center items-center py-12 md:py-16 lg:py-24 
+                    bg-[var(--white)] rounded-xl md:rounded-tr-xl md:rounded-br-xl md:rounded-tl-none md:rounded-bl-none">
+            
+            <div class="w-11/12 max-w-sm text-center px-4">
+                
+                <div class="md:hidden text-center mb-6">
+                    <h1 class="text-3xl font-bold text-[var(--secondary)]">PetCareHub</h1>
+                    <p class="text-sm text-gray-500">Built for Clinics. Loved by Pet Owners.</p>
+                </div>
+
+                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full text-center mb-6">
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-semibold text-[var(--primary)]">Sign in</h1>
                     </div>
+                    
                     <mat-form-field appearance="outline" class="w-full mb-4">
                         <mat-label>Email address</mat-label>
                         <input formControlName="email" type="email" placeholder="name@example.com" matInput/>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" class="w-full mb-4">
+                    
+                    <mat-form-field appearance="outline" class="w-full mb-6">
                         <mat-label>Password</mat-label>
                         <input formControlName="password" type="password" placeholder="Password" matInput/>
                     </mat-form-field>
-                    <button mat-flat-button type="submit" class="w-full py-2">Sign in</button>
+                    
+                    <button mat-flat-button color="primary" type="submit" class="w-full py-2 h-12 text-lg font-bold">
+                        Sign in
+                    </button>
                 </form>
-                <a routerLink="/account/register">Register</a>
+                
+                <p class="text-sm text-gray-600">
+                    Don't have an account? 
+                    <a routerLink="/account/register" class="font-semibold text-[var(--primary)] hover:underline">Register here</a>
+                </p>
             </div>
         </div>
     </div>

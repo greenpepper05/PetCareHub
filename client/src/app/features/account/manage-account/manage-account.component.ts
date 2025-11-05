@@ -1,10 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule, NgForm, NgModel, ReactiveFormsModule } from '@angular/forms';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
+import { MatFormField, MatFormFieldModule, MatLabel } from '@angular/material/form-field';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AccountService } from '../../../core/services/account.service';
 import { User } from '../../../shared/models/user';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
 
 interface UserProfile {
   id: string;
@@ -26,12 +29,13 @@ interface PasswordModel {
   selector: 'app-manage-account',
   standalone: true,
   imports: [
-    MatIcon,
-    MatLabel,
-    MatFormField,
     FormsModule,
-    ReactiveFormsModule,
-    MatTabsModule
+    MatTabsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterLink
   ],
   templateUrl: './manage-account.component.html',
   styleUrl: './manage-account.component.scss'
