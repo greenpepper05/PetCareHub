@@ -13,7 +13,5 @@ public class RegisterAdminDto
     public string Email { get; set; } = string.Empty;
     [Required]
     public string Contact { get; set; } = string.Empty;
-    [Required]
-    public string Password { get; set; } = string.Empty;
     public int? ClinicId { get; set; }
 }
