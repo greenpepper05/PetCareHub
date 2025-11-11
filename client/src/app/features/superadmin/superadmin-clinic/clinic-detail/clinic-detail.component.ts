@@ -8,13 +8,15 @@ import { MatIcon } from '@angular/material/icon';
 import { DatePipe } from '@angular/common';
 import { SnackbarService } from '../../../../core/services/snackbar.service';
 import { environment } from '../../../../../environments/environment';
+import { FormsModule, NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-clinic-detail',
   imports: [
     MatIcon,
-    RouterLink,
-    DatePipe
+    FormsModule,
+    DatePipe,
+    RouterLink
 ],
   templateUrl: './clinic-detail.component.html',
   styleUrl: './clinic-detail.component.scss'
@@ -27,6 +29,9 @@ export class ClinicDetailComponent implements OnInit {
   private snackbarService = inject(SnackbarService);
   clinic?: Clinic;
   user?: User;
+
+  isEditing = false;
+  editedClinic: Partial<Clinic> = {};
 
   ngOnInit(): void {
     this.loadClinic();
@@ -66,6 +71,42 @@ export class ClinicDetailComponent implements OnInit {
       },
       error: (err) => {
         this.snackbarService.error("An error occured: " + err);
+      }
+    });
+  }
+
+  onEdit() {
+    this.isEditing = true;
+    this.editedClinic = { ...this.clinic };
+  }
+
+  onCancel() {
+    this.isEditing = false;
+    this.editedClinic = {};
+  }
+
+  onSave() {
+    if (!this.clinic?.id) return;
+
+    const updatedClinic = {
+      clinicName: this.clinic.clinicName,
+      address: this.clinic.address,
+      phoneNumber: this.clinic.phoneNumber,
+      email: this.clinic.email,
+      pictureUrl: this.clinic.pictureUrl ?? "n/a",
+      status: this.editedClinic.status
+    };
+
+    this.clinicService.updateClinic(this.clinic.id, updatedClinic).subscribe({
+      next: (response) => {
+        this.snackbarService.success("Clinic updated successfully!");
+        this.clinic = response;
+        this.isEditing = false;
+        this.loadClinic();
+      },
+      error: (err) => {
+        this.snackbarService.error("Update failed. Please try again.");
+        console.log(err);
       }
     });
   }

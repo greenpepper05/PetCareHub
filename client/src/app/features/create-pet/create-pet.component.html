@@ -9,7 +9,6 @@
 
         <form [formGroup]="petProfileForm" class="p-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                
                 <div class="md:col-span-1 flex flex-col items-center pt-2">
                     <label for="pet-picture-upload" class="cursor-pointer">
                         <div class="w-48 h-48 rounded-full border-4 border-dashed border-indigo-300 flex items-center justify-center overflow-hidden bg-gray-100 hover:border-indigo-500 transition-colors shadow-inner">
@@ -33,14 +32,11 @@
                         id="pet-picture-upload" 
                         (change)="onFileSelected($event)" 
                         style="display: none;" 
-                        accept="image/*"
-                    />
-
+                        accept="image/*"/>
                     <p class="mt-4 text-sm text-gray-500">Max size 5MB (Recommended: Square)</p>
                 </div>
-                
+
                 <div class="md:col-span-2 grid grid-cols-2 gap-4">
-                    
                     <mat-form-field appearance="outline" class="col-span-2">
                         <mat-label>Name</mat-label>
                         <input formControlName="name" type="text" placeholder="Luna" matInput/>
@@ -80,18 +76,18 @@
             </div>
 
             <div class="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center">
-                <button routerLink="/appointment" mat-stroked-button color="primary">
+                <button routerLink="/appointment" mat-stroked-button color="primary" class="flex items-center">
                     <mat-icon class="mr-1">arrow_back</mat-icon> Back
                 </button>
-                <div class="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center">
                 <button 
                     mat-flat-button 
-                    type="button"  (click)="createPet()" 
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-lg transition-colors py-2 px-6"
-                >
-                    <mat-icon class="mr-1">save</mat-icon> Create Pet Profile
+                    type="button"  
+                    (click)="createPet()"
+                    [disabled]="petProfileForm.invalid || isUploading"
+                    class="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-lg transition-colors py-2 px-6">
+                    <mat-icon class="mr-1">save</mat-icon> 
+                    {{ isUploading ? 'Creating...' : 'Create Pet Profile'}}
                 </button>
-            </div>
             </div>
         </form>
     </div>

@@ -1,0 +1,68 @@
+<!-- <div class="container">
+  <h2>Manage Clinic Schedule</h2>
+
+  <form [formGroup]="scheduleForm">
+    <div formArrayName="schedules" class="schedule-grid">
+
+      @for (day of schedules.controls; track $index) {
+        <div [formGroupName]="$index" class="day-row">
+          <mat-checkbox formControlName="isOpen">
+            {{ day.value.dayOfWeek }}
+          </mat-checkbox>
+
+          @if (day.get('isOpen')?.value) {
+            <div class="time-inputs">
+              <mat-form-field appearance="outline">
+                <mat-label>Opening Time</mat-label>
+                <input matInput type="time" formControlName="openingTime" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Closing Time</mat-label>
+                <input matInput type="time" formControlName="closingTime" />
+              </mat-form-field>
+            </div>
+          }
+        </div>
+      }
+
+    </div>
+
+    <button mat-raised-button color="primary" (click)="saveClinicSchedule()">
+      Save Schedule
+    </button>
+  </form>
+</div> -->
+
+
+<div class="min-h-screen flex flex-col justify-center items-center bg-gray-50 text-center p-6">
+    
+    <div class="w-full max-w-lg bg-white rounded-xl shadow-2xl p-8 md:p-12 border-t-8 border-[var(--yellow)]">
+        
+        <mat-icon class="text-[var(--primary)] text-8xl md:text-9xl mb-6">construction</mat-icon>
+        
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">
+            Pardon Our Dust!
+        </h1>
+        
+        <p class="text-lg md:text-xl text-gray-600 mb-8">
+            This page is currently under **active construction**. We're busy perfecting the details to bring you the best experience.
+        </p>
+
+        <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 mb-8">
+            <p class="text-sm font-semibold text-[var(--primary)]">
+                Estimated completion: Check back soon!
+            </p>
+        </div>
+        
+        <button routerLink="/admin/dashboard" 
+                mat-flat-button 
+                color="primary" 
+                class="w-full sm:w-auto px-8 py-3 text-lg font-bold">
+            <mat-icon class="mr-2">arrow_back</mat-icon>
+            Return to Home
+        </button>
+
+    </div>
+    
+</div>

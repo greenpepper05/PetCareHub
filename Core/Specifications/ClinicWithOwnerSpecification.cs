@@ -11,8 +11,9 @@ public class ClinicWithOwnerSpecification : BaseSpecification<Clinic>
         AddInclude(c => c.Owner!);
     }
 
-    public ClinicWithOwnerSpecification()
+    public ClinicWithOwnerSpecification() : base()
     {
         AddInclude(c => c.Owner!);
+        AddInclude(c => c.Schedules);
     }
 }

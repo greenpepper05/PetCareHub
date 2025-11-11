@@ -42,6 +42,7 @@ import { VetsComponent } from './features/vets/vets.component';
 import { PetDetailComponent } from './features/my-pets/pet-detail/pet-detail.component';
 import { VetsDetailComponent } from './features/vets/vets-detail/vets-detail.component';
 import { ManageAccountComponent } from './features/account/manage-account/manage-account.component';
+import { ManageClinicComponent } from './features/admin/manage-clinic/manage-clinic.component';
 
 export const routes: Routes = [
     {
@@ -60,6 +61,7 @@ export const routes: Routes = [
             { path: 'service-record/:id/procedure', component: ProcedureComponent},
             { path: 'manage-services', component: ManageServicesComponent},
             { path: 'manage-services/:id', component: ServiceDetailComponent},
+            { path: 'manage-clinic', component: ManageClinicComponent},
         ]
     },
     { path: 'admin/login', component: AdminLoginComponent },

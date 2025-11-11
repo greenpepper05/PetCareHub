@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { MatIcon } from '@angular/material/icon';
+import { SnackbarService } from '../../../../core/services/snackbar.service';
 
 @Component({
   selector: 'app-appointment-detail',
@@ -32,7 +33,7 @@ export class AppointmentDetailComponent implements OnInit {
   private fb = inject(FormBuilder);
   private appointmentService = inject(AppointmentService);
   private activatedRoute = inject(ActivatedRoute);
-  private http = inject(HttpClient);
+  private snackbarService = inject(SnackbarService);
   appointment?: Appointment;
   services?: Services;
 
@@ -66,12 +67,10 @@ export class AppointmentDetailComponent implements OnInit {
 
     this.appointmentService.updateStatus(this.appointment?.id!, selectedStatus).subscribe({
       next: () => {
-        alert('Status updated successfully!');
+        this.snackbarService.success("Status has been updated!");
       },
       error: err => {
-
-        console.error(err);
-        alert("Failed to update status.");
+        this.snackbarService.error("Failed to update status");
       }
     })
   }

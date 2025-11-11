@@ -5,6 +5,7 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace API.Controllers;
 
 
 public class AccountController(SignInManager<AppUser> signInManager,
-    UserManager<AppUser> userManager, IUnitOfWork unit) : BaseApiController
+    UserManager<AppUser> userManager, IUnitOfWork unit, IOtpService otpService) : BaseApiController
 {
 
     // GET USER INFRO
@@ -40,11 +41,34 @@ public class AccountController(SignInManager<AppUser> signInManager,
 
     }
 
+    [HttpPost("send-otp")]
+    public async Task<ActionResult> SendOtp([FromBody] OtpSendDto otpSendDto)
+    {
+        if (string.IsNullOrEmpty(otpSendDto.Email)) return BadRequest(new { message = "Email is required." });
+
+        var user = await userManager.FindByEmailAsync(otpSendDto.Email);
+        if (user != null) return BadRequest(new { message = "An account with this email already exists." });
+
+        try
+        {
+            await otpService.GenerateAndSendOtpAsync(otpSendDto.Email);
+
+            return Ok(new { message = "Verification code sent successfully." });
+        }
+        catch(Exception)
+        {
+            return StatusCode(500, new { message = "Error sending verification code. Please try again." });
+        }
+    }
+
     // REGISTER NEW USER
 
     [HttpPost("register")]
     public async Task<ActionResult> Register([FromBody] RegisterDto registerDto)
     {
+        var isOtpValid = await otpService.ValidateOtpAsync(registerDto.Email, registerDto.Otp);
+        if (!isOtpValid) return BadRequest(new { message = "Invalid or expired verification code." });
+
         var user = new AppUser
         {
             FirstName = registerDto.FirstName,
@@ -52,10 +76,11 @@ public class AccountController(SignInManager<AppUser> signInManager,
             Email = registerDto.Email,
             Contact = registerDto.Contact,
             UserName = registerDto.Email,
-            ClinicId = registerDto.ClinicId
+            ClinicId = registerDto.ClinicId,
+            EmailConfirmed = true
         };
 
-        var result = await signInManager.UserManager.CreateAsync(user, registerDto.Password);
+        var result = await userManager.CreateAsync(user, registerDto.Password);
 
         if (!result.Succeeded)
         {
@@ -69,7 +94,9 @@ public class AccountController(SignInManager<AppUser> signInManager,
 
         await userManager.AddToRoleAsync(user, "Customer");
 
-        return Ok();
+        await otpService.InvalidateOtpAsync(registerDto.Email);
+
+        return Ok(new { message = "Registration successful" });
     }
 
     // LOGOUT USER

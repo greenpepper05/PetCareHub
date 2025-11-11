@@ -2,8 +2,10 @@ import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { User } from '../../shared/models/user';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { OtpSendRequest } from '../../shared/models/otpSendrequest';
+import { RegisterWithOtpRequest } from '../../shared/models/registrationWithOtpRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -28,8 +30,12 @@ export class AccountService {
     })
   }
 
-  register(values: any) {
-    return this.http.post(this.baseUrl + 'account/register', values);
+  register(payload: RegisterWithOtpRequest): Observable<any> {
+    return this.http.post(`${this.baseUrl}account/register`, payload);
+  }
+
+  sendOtp(payload: OtpSendRequest): Observable<any> {
+    return this.http.post(`${this.baseUrl}account/send-otp`, payload);
   }
 
   getUserInfo() {

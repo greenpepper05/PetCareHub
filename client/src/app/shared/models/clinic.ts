@@ -6,5 +6,6 @@ export type Clinic = {
     phoneNumber: string;
     email: string;
     pictureUrl: string;
+    status: string;
     createAt: string;
 }

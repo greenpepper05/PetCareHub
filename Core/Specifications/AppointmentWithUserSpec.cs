@@ -8,6 +8,9 @@ public class AppointmentWithUserSpec : BaseSpecification<Appointment>
 {
     public AppointmentWithUserSpec(int id) : base(x => x.Id == id)
     {
-        AddInclude(a => a.Owner!);
+        AddInclude(x => x.Owner!);
+        AddInclude(x => x.Pet!);
+        AddInclude(x => x.Service!);
+        AddInclude(x => x.Clinic!);
     }
 }

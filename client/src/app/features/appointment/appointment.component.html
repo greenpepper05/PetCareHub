@@ -90,7 +90,7 @@
                         <mat-form-field appearance="outline" class="w-full max-w-sm mb-4">
                             <mat-label>Appointment Date</mat-label>
                             <mat-hint>MM/DD/YYYY</mat-hint>
-                            <input formControlName="appointmentDate" matInput [matDatepicker]="picker2"/>
+                            <input formControlName="appointmentDate" matInput [matDatepicker]="picker2" [min]="minDate"/>
                             <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
                             <mat-datepicker #picker2></mat-datepicker>
                             @if (appointmentForm.get('appointmentDate')?.touched && appointmentForm.get('appointmentDate')?.invalid) {
@@ -106,7 +106,7 @@
                                 formControlName="appointmentTime" 
                                 class="grid grid-cols-3 sm:grid-cols-4 gap-2 p-3 border border-gray-200 rounded-xl bg-gray-50 max-w-md mx-auto"
                             >
-                                @for (time of availableTimeSlots; track time) {
+                                @for (time of getFilteredDate(); track time) {
                                     <mat-radio-button 
                                         [value]="time"
                                         class="py-2 text-sm text-center transition-colors rounded-lg"

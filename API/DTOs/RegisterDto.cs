@@ -15,4 +15,6 @@ public class RegisterDto
     [Required]
     public string Password { get; set; } = string.Empty;
     public int? ClinicId { get; set; }
+    [Required]
+    public string Otp { get; set; } = string.Empty;
 }

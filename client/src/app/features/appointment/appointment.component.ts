@@ -51,6 +51,9 @@ export class AppointmentComponent implements OnInit{
   services: any[] = [];
   pets: Pet[] = [];
 
+  minDate = new Date();
+  
+
   availableTimeSlots: string[] = [
     '09:00', '10:00', '11:00', '12:00', '13:00', 
     '14:00', '15:00', '16:00', '17:00'
@@ -73,7 +76,7 @@ export class AppointmentComponent implements OnInit{
   }
 
   appointmentForm = this.fb.group({
-    appointmentDate: [null, Validators.required],
+    appointmentDate: [null as Date | null, Validators.required],
     appointmentTime: ['', Validators.required],
     petid: ['', Validators.required],
     ownerid: ['', Validators.required],
@@ -81,6 +84,32 @@ export class AppointmentComponent implements OnInit{
     notes: ['', Validators.required],
     clinicid: ['', Validators.required],
   });
+
+  getFilteredDate(): string[] {
+    const selectedDate = this.appointmentForm.get('appointmentDate')?.value as Date | null;
+    const now = new Date();
+
+    if (!selectedDate) return this.availableTimeSlots;
+
+    const isToday =
+      selectedDate.getDate() === now.getDate() &&
+      selectedDate.getMonth() === now.getMonth() &&
+      selectedDate.getFullYear() === now.getFullYear();
+
+    if (!isToday) return this.availableTimeSlots;
+
+    const currentHour = now.getHours();
+    const currentMinutes = now.getMinutes();
+
+    return this.availableTimeSlots.filter((time) => {
+      const [hours, minute] = time.split(':').map(Number);
+
+      const slotMinutes = hours * 60 + minute;
+      const nowMinutes = currentHour * 60 + currentMinutes;
+
+      return slotMinutes > nowMinutes;
+    })
+  }
 
   formatTime(time: string): string {
     const [startHours, startMinutes] = time.split(':').map(Number);
@@ -100,7 +129,7 @@ export class AppointmentComponent implements OnInit{
     const startDisplay = startDate.toLocaleTimeString('en-US', timeFormatOptions);
     const endDisplay = endDate.toLocaleTimeString('en-US', timeFormatOptions);
 
-    return `${startDisplay} - ${endDisplay}`;
+    return `${startDisplay}`;
   }
 
   servicesForm = this.fb.group({

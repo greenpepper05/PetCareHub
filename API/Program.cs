@@ -39,6 +39,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 // builder.Services.AddValidatorsFromAssemblyContaining<CreateServiceDtoValidator>();
 // builder.Services.AddValidatorsFromAssemblyContaining<CreateServiceScheduleDtoValidator>();
+builder.Services.AddSingleton<IOtpService, OtpService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<AppointmentReminderJob>();

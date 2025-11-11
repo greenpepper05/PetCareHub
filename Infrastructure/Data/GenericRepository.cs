@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -75,4 +76,8 @@ public class GenericRepository<T>(PetHubContext context) : IGenericRepository<T>
         return await query.CountAsync();
     }
 
+    public void RemoveRange(IEnumerable<T> entities)
+    {
+        context.Set<T>().RemoveRange(entities);
+    }
 }

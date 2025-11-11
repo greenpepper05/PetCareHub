@@ -47,7 +47,11 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">{{ clinic.address }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">{{ clinic.email }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
-                                    <span class="bg-green-100 text-green-800 px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">Active</span>
+                                    @if (clinic.status === "Active") {
+                                        <span class="bg-green-100 text-green-800 px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">Active</span>
+                                    } @else {
+                                        <span class="bg-red-100 text-red-800 px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">Inactive</span>
+                                    }
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <button routerLink="/superadmin/clinics/{{ clinic.id }}" class="text-[var(--primary)] hover:text-[var(--secondary)] font-semibold text-sm">

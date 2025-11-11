@@ -99,7 +99,7 @@ export class PetServiceComponent implements OnInit {
       });
   }
 
-  loadHistory() {
+  loadServiceRecord() {
     this.serviceRecord.getAll().subscribe({
       next: (data) => {
         this.records = data;

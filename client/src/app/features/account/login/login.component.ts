@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCard } from '@angular/material/card';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { AccountService } from '../../../core/services/account.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { SnackbarService } from '../../../core/services/snackbar.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,8 @@ import { MatStepper, MatStepperModule } from '@angular/material/stepper';
     MatInput,
     MatLabel,
     MatButton,
-    RouterLink
+    RouterLink,
+    MatError
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -26,6 +28,7 @@ export class LoginComponent {
   private accountService = inject(AccountService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private snackbarService = inject(SnackbarService);
   returnUrl = '/appointment';
 
   constructor() {
@@ -34,8 +37,8 @@ export class LoginComponent {
   }
 
   loginForm = this.fb.group({
-    email: [''],
-    password: ['']
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required]]
   });
 
   onSubmit() {
@@ -43,6 +46,11 @@ export class LoginComponent {
       next: () => {
         this.accountService.getUserInfo().subscribe();
         this.router.navigateByUrl(this.returnUrl);
+        this.snackbarService.success("Login successful");
+      },
+      error: (err) => {
+        const errorMessage = err.error?.message || 'Login failed, Please check your credentials.';
+        this.snackbarService.error(errorMessage);
       }
     })
   }

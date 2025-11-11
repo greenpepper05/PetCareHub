@@ -39,7 +39,7 @@ export class AppointmentService {
   }
 
   updateStatus(id: number, status: string) {
-    return this.http.patch<Appointment>(`${this.baseUrl}appointments/${id}/status/`, {status});
+    return this.http.patch<Appointment>(`${this.baseUrl}appointments/${id}/status`, {status});
   }
 
   getAllAppointmentByClinicId(id: number) {

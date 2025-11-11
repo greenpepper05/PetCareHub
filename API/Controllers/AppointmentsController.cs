@@ -154,14 +154,104 @@ public class AppointmentsController(IUnitOfWork unit,
         switch (dto.Status.ToLower())
         {
             case "confirmed":
-                subject = "Your Appointment is Confirmed";
-                message = $"Hello <strong>{appointment?.Owner?.FirstName} {appointment?.Owner?.LastName}</strong>,  <br><br>Your appointment on {appointment?.AppointmentDate:MMMM dd, yyyy} has been <strong>confirmed</strong>. <br><br>Thank you!";
-                break;
-            case "cancelled":
-                subject = "Appointment Cancelled";
-                message = $"Hello <strong>{appointment?.Owner?.FirstName} {appointment?.Owner?.LastName}</strong>, <br><br>Your appoiuntment on {appointment?.AppointmentDate:MMMM dd, yyyy} has been <strong>cancelled.</strong> <br><br>Thank you!";
-                break;
+                    subject = "✅ Your Appointment Has Been Confirmed";
 
+                    message = $@"
+                        <p>Hello <strong>{appointment?.Owner?.FirstName} {appointment?.Owner?.LastName}</strong>,</p>
+                        <p>We’re pleased to inform you that your appointment has been <strong>confirmed</strong>.</p>
+
+                        <table style='border-collapse: collapse; width: 100%; margin-top: 10px;'>
+                            <tr>
+                                <td style='padding: 8px; border: 1px solid #ddd;'>Appointment ID:</td>
+                                <td style='padding: 8px; border: 1px solid #ddd;'><strong>#{appointment?.Id}</strong></td>
+                            </tr>
+                            <tr>
+                                <td style='padding: 8px; border: 1px solid #ddd;'>Date:</td>
+                                <td style='padding: 8px; border: 1px solid #ddd;'>
+                                    <strong>{appointment?.AppointmentDate:MMMM dd, yyyy (dddd)}</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style='padding: 8px; border: 1px solid #ddd;'>Time:</td>
+                                <td style='padding: 8px; border: 1px solid #ddd;'>
+                                    <strong>{appointment?.AppointmentDate:hh:mm tt}</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style='padding: 8px; border: 1px solid #ddd;'>Pet:</td>
+                                <td style='padding: 8px; border: 1px solid #ddd;'>
+                                    <strong>{appointment?.Pet?.Name ?? "N/A"}</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style='padding: 8px; border: 1px solid #ddd;'>Service:</td>
+                                <td style='padding: 8px; border: 1px solid #ddd;'>
+                                    <strong>{appointment?.Service?.Name ?? "N/A"}</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style='padding: 8px; border: 1px solid #ddd;'>Clinic:</td>
+                                <td style='padding: 8px; border: 1px solid #ddd;'>
+                                    <strong>{appointment?.Clinic?.ClinicName ?? "N/A"}</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style='padding: 8px; border: 1px solid #ddd;'>Status:</td>
+                                <td style='padding: 8px; border: 1px solid #ddd; color: green;'>
+                                    <strong>Confirmed</strong>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p style='margin-top: 16px;'>Please arrive 10–15 minutes before your scheduled time.</p>
+                        <p>We look forward to seeing you and your pet!</p>
+                        <p>— <strong>{appointment?.Clinic?.ClinicName ?? "Your Veterinary Clinic"}</strong></p>
+                    ";
+                    break;
+            case "cancelled":
+                subject = "❌ Appointment Cancelled";
+
+                message = $@"
+                    <p>Hello <strong>{appointment?.Owner?.FirstName} {appointment?.Owner?.LastName}</strong>,</p>
+
+                    <p>We’re sorry to inform you that your appointment has been <strong>cancelled</strong>.</p>
+
+                    <table style='border-collapse: collapse; width: 100%; margin-top: 10px;'>
+                        <tr>
+                            <td style='padding: 8px; border: 1px solid #ddd;'>Appointment ID:</td>
+                            <td style='padding: 8px; border: 1px solid #ddd;'><strong>#{appointment?.Id}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 8px; border: 1px solid #ddd;'>Date:</td>
+                            <td style='padding: 8px; border: 1px solid #ddd;'>
+                                <strong>{appointment?.AppointmentDate:MMMM dd, yyyy (dddd)}</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 8px; border: 1px solid #ddd;'>Service:</td>
+                            <td style='padding: 8px; border: 1px solid #ddd;'>
+                                <strong>{appointment?.Service?.Name ?? "N/A"}</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 8px; border: 1px solid #ddd;'>Clinic:</td>
+                            <td style='padding: 8px; border: 1px solid #ddd;'>
+                                <strong>{appointment?.Clinic?.ClinicName ?? "N/A"}</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 8px; border: 1px solid #ddd;'>Status:</td>
+                            <td style='padding: 8px; border: 1px solid #ddd; color: red;'>
+                                <strong>Cancelled</strong>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <p style='margin-top: 16px;'>If this cancellation was a mistake or you’d like to reschedule, please contact our clinic.</p>
+                    <p>Thank you for your understanding.</p>
+                    <p>— <strong>{appointment?.Clinic?.ClinicName ?? "Your Veterinary Clinic"}</strong></p>
+                ";
+            break;
         }
 
         var email = appointment?.Owner?.Email;
@@ -240,46 +330,6 @@ public class AppointmentsController(IUnitOfWork unit,
 
         return Ok();
     }
-
-
-    // [HttpPut("{id}/start")]
-    // public async Task<ActionResult> StartAppointment(int id)
-    // {
-    //     var spec = new AppointmentWithServiceProcedureSpec(id);
-
-    //     var appointment = await unit.Repository<Appointment>().GetEntityWithSpec(spec);
-
-    //     if (appointment == null) return NotFound("Appointment not found");
-
-    //     appointment.Status = AppointmentStatus.Ongoing;
-
-    //     if (appointment.Service?.Name == "Pet Grooming")
-    //     {
-    //         if (appointment.Procedures == null)
-    //             appointment.Procedures = new List<ServiceProcedure>();
-
-    //         var groomingSteps = new List<string>
-    //         {
-    //             "Brushing", "Bathing", "Drying", "Earing Cleaning", "Nail Trimming", "Coat Trimming"
-    //         };
-
-    //         var procedureSteps = groomingSteps.Select(step => new ProcedureStep
-    //         {
-    //             AppointmentId = appointment.Id,
-    //             StepName = step,
-    //             IsCompleted = false,
-    //             StartedAt = null,
-    //             CompletedAt = null
-    //         });
-
-    //         await unit.Repository<ProcedureStep>().AddRangeAsync(procedureSteps);
-
-    //         await unit.Complete();
-
-    //     }
-
-    //     return NoContent();
-    // }
 
     [Authorize(Roles = "SuperAdmin")]
     [HttpGet("all-confirmed")]

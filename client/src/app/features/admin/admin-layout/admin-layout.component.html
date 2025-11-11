@@ -190,6 +190,21 @@
                                     }
                                 </a>
                             </mat-list-item>
+
+                            <!-- Manage Clinic -->
+                            <mat-list-item role="listitem" class="p-0 h-auto">
+                                <a routerLink="/admin/manage-clinic" routerLinkActive="active-link"
+                                    class="flex items-center p-3 rounded-xl transition-colors duration-200 w-full hover:bg-[var(--secondary)]"
+                                    [class.justify-center]="isSidebarCollapsed"
+                                    [class.gap-4]="!isSidebarCollapsed"
+                                    [matTooltip]="isSidebarCollapsed ? 'Pets' : ''" matTooltipPosition="right"
+                                >
+                                    <mat-icon>settings</mat-icon>
+                                    @if (!isSidebarCollapsed) {
+                                        <h1 class="text-lg whitespace-nowrap">Manage Clinic</h1>
+                                    }
+                                </a>
+                            </mat-list-item>
                         </mat-list>
                     </div>
                     

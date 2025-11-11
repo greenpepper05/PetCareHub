@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Cms;
+using Org.BouncyCastle.Crypto.Modes;
 
 namespace API.Controllers;
 
@@ -16,8 +18,21 @@ public class ClinicController(IUnitOfWork unit,
     UserManager<AppUser> userManager, IMapper mapper) : BaseApiController
 {
 
-    // [Authorize(Roles = "SuperAdmin")]
-    [HttpGet]
+    
+    [HttpGet("active")]
+    public async Task<ActionResult<IReadOnlyList<ClinicDto>>> GetActiveClinic()
+    {
+        var spec = new ActiveClinicWithOwnderSpecification();
+
+        var clinic = await unit.Repository<Clinic>().ListAsync(spec);
+
+        var data = mapper.Map<IReadOnlyList<ClinicDto>>(clinic);
+
+        return Ok(data);
+    }
+    
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpGet()]
     public async Task<ActionResult<IReadOnlyList<ClinicDto>>> GetClinic()
     {
         var spec = new ClinicWithOwnerSpecification();
@@ -88,6 +103,44 @@ public class ClinicController(IUnitOfWork unit,
         return Ok(clinicDto);
     }
 
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpPost("update/{id}")]
+    public async Task<ActionResult> UpdateClinic([FromBody] ClinicDto dto, int id)
+    {
+        var spec = new ClinicWithOwnerSpecification(id);
+
+        var clinic = await unit.Repository<Clinic>().GetEntityWithSpec(spec);
+
+        if (clinic == null) return NotFound();
+
+        clinic.ClinicName = dto.ClinicName ?? clinic.ClinicName;
+        clinic.Address = dto.Address ?? clinic.Address;
+        clinic.PhoneNumber = dto.PhoneNumber ?? clinic.PhoneNumber;
+        clinic.Status = dto.Status ?? clinic.Status;
+        clinic.UpdatedAt = DateTime.UtcNow;
+        clinic.PictureUrl = dto.PictureUrl ?? clinic.PictureUrl;
+        clinic.Email = dto.Email ?? clinic.Email;
+
+        unit.Repository<Clinic>().Update(clinic);
+        var result = await unit.Complete();
+
+        if (!result) return BadRequest(new { message = "Failed to update clinic." });
+
+        return Ok(new
+        {
+            message = "Clinic updated successfully.",
+            clinic = new
+            {
+                clinic.Id,
+                clinic.ClinicName,
+                clinic.Address,
+                clinic.PhoneNumber,
+                clinic.Status,
+                clinic.UpdatedAt
+            }
+        });
+    }
+
     [HttpGet("info/{id}")]
     public async Task<ActionResult<ClinicDto>> GetClinicInfo(int id)
     {
@@ -103,7 +156,7 @@ public class ClinicController(IUnitOfWork unit,
     }
     
     [Authorize(Roles = "SuperAdmin")]
-    [HttpDelete("{id:int}")]
+    [HttpDelete("delete/{id:int}")]
     public async Task<ActionResult> DeleteClinic(int id)
     {
        
@@ -348,6 +401,73 @@ public class ClinicController(IUnitOfWork unit,
         await unit.Complete();
 
         return Ok("Procedure updated successfuly!");
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("{id}/schedules")]
+    public async Task<ActionResult<IEnumerable<ClinicScheduleDto>>> GetClinicSchedules(int id)
+    {
+        var spec = new ClinicScheduleSpecification(id);
+        var schedules = await unit.Repository<ClinicSchedule>().ListAsync(spec);
+
+        if (schedules == null || !schedules.Any())
+        {
+            var defaultSchedules = Enum.GetValues(typeof(DayOfWeek))
+                .Cast<DayOfWeek>()
+                .Select(day => new ClinicScheduleDto
+                {
+                    DayOfWeek = day,
+                    IsOpen = false,
+                    OpeningTime = new TimeOnly(9, 0),
+                    ClosingTime = new TimeOnly(17, 0)
+                });
+
+            return Ok(defaultSchedules);
+        }
+
+        var result = schedules.Select(s => new ClinicScheduleDto
+        {
+            DayOfWeek = s.DayOfWeek,
+            IsOpen = s.IsOpen,
+            OpeningTime = s.OpeningTime,
+            ClosingTime = s.ClosingTime
+        });
+
+        return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("{id}/schedules")]
+    public async Task<ActionResult> SaveClinicSchedules(int id, [FromBody] List<ClinicScheduleDto> schedules)
+    {
+        if (schedules == null || !schedules.Any()) return BadRequest("No schedules provided.");
+
+        var spec = new ClinicScheduleSpecification(id);
+
+        var existing = await unit.Repository<ClinicSchedule>().ListAsync(spec);
+
+        if (existing.Any())
+        {
+            unit.Repository<ClinicSchedule>().RemoveRange(existing);
+        }
+
+        var newSchedules = schedules.Select(dto => new ClinicSchedule
+        {
+            ClinicId = id,
+            DayOfWeek = dto.DayOfWeek,
+            IsOpen = dto.IsOpen,
+            OpeningTime = dto.OpeningTime ?? new TimeOnly(9, 0),
+            ClosingTime = dto.ClosingTime ?? new TimeOnly(17, 0)
+        }).ToList();
+
+        await unit.Repository<ClinicSchedule>().AddRangeAsync(newSchedules);
+
+        if (await unit.Complete())
+        {
+            return Ok("Clinic schedules updated successfully");
+        }
+
+        return BadRequest("Failed to update clinic schedules.");
     }
 
 }

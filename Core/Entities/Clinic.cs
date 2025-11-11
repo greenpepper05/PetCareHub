@@ -9,8 +9,12 @@ public class Clinic : BaseEntity
     public string? PhoneNumber { get; set; }
     public string? Email { get; set; }
     public string? PictureUrl { get; set; }
+    public string? Status { get; set; }
     public DateTime CreateAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+    public ICollection<ClinicSchedule> Schedules { get; set; } = [];
+
     public ICollection<Service> Services { get; set; } = [];
     public ICollection<Staff> StaffMembers { get; set; } = [];
     public ICollection<AppUser> Staff { get; set; } = [];

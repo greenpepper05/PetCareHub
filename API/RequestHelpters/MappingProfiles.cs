@@ -61,6 +61,7 @@ public class MappingProfiles : Profile
             .ForMember(c => c.PhoneNumber, o => o.MapFrom(c => c.PhoneNumber))
             .ForMember(c => c.Email, o => o.MapFrom(c => c.Email))
             .ForMember(c => c.PictureUrl, o => o.MapFrom(c => c.PictureUrl))
+            .ForMember(c => c.Status, o => o.MapFrom(c => c.Status))
             .ForMember(c => c.CreateAt, o => o.MapFrom(c => c.CreateAt))
             .ForMember(c => c.UpdatedAt, o => o.MapFrom(c => c.UpdatedAt));
 

@@ -1,70 +1,159 @@
 <div class="min-h-screen flex justify-center items-center bg-[var(--primary)] p-4 md:p-8">
-    
-    <div class="flex w-full max-w-4xl rounded-xl shadow-2xl overflow-hidden">
-        
-        <div class="hidden md:flex flex-col justify-between w-1/3 bg-[var(--secondary)] text-gray-800 
-                    px-6 lg:px-10 pt-16 pb-8 rounded-tl-xl rounded-bl-xl">
-            <div class="w-fit">
-                <h1 class="text-2xl lg:text-3xl font-bold">Welcome to PetCareHub</h1>
-                <p class="text-lg mt-2">Built for Clinics. Loved by Pet Owners.</p>
-            </div>
-            <div class="flex justify-center mt-8">
-                <img src="/assets/images/icons/pet.svg" alt="Pet illustration" class="w-2/3 max-w-[200px]">
-            </div>
-        </div>
-        
-        <div class="flex w-full md:w-2/3 justify-center items-center py-8 md:py-10 lg:py-12 
-                    bg-[var(--white)] rounded-xl md:rounded-tr-xl md:rounded-br-xl md:rounded-tl-none md:rounded-bl-none">
-            
-            <div class="w-11/12 max-w-sm text-center px-4">
-                
-                <div class="md:hidden text-center mb-6">
-                    <h1 class="text-3xl font-bold text-[var(--secondary)]">PetCareHub</h1>
-                    <p class="text-sm text-gray-500">Register an account.</p>
-                </div>
+  <div class="flex w-full max-w-4xl rounded-xl shadow-2xl overflow-hidden">
 
-                <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="w-full text-center mb-6">
-                    <div class="text-center mb-6">
-                        <h1 class="text-3xl font-semibold text-[var(--primary)]">Create Account</h1>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                        <mat-form-field appearance="outline" class="w-full">
-                            <mat-label>First name</mat-label>
-                            <input formControlName="firstName" type="text" placeholder="John" matInput/>
-                        </mat-form-field>
-                        
-                        <mat-form-field appearance="outline" class="w-full">
-                            <mat-label>Last name</mat-label>
-                            <input formControlName="lastName" type="text" placeholder="Doe" matInput/>
-                        </mat-form-field>
-                    </div>
-
-                    <mat-form-field appearance="outline" class="w-full mb-4">
-                        <mat-label>Email address</mat-label>
-                        <input formControlName="email" type="email" placeholder="name@example.com" matInput/>
-                    </mat-form-field>
-                    
-                    <mat-form-field appearance="outline" class="w-full mb-4">
-                        <mat-label>Contact Number</mat-label>
-                        <input formControlName="contact" type="tel" placeholder="09123456789" matInput/>
-                    </mat-form-field>
-                    
-                    <mat-form-field appearance="outline" class="w-full mb-6">
-                        <mat-label>Password</mat-label>
-                        <input formControlName="password" type="password" placeholder="Password" matInput/>
-                    </mat-form-field>
-                    
-                    <button mat-flat-button color="primary" type="submit" class="w-full py-2 h-12 text-lg font-bold">
-                        Register
-                    </button>
-                </form>
-                
-                <p class="text-sm text-gray-600">
-                    Already have an account? 
-                    <a routerLink="/account/login" class="font-semibold text-[var(--primary)] hover:underline">Sign in</a>
-                </p>
-            </div>
-        </div>
+    <!-- LEFT SIDE -->
+    <div
+      class="hidden md:flex flex-col justify-between w-1/3 bg-[var(--secondary)] text-gray-800 px-6 lg:px-10 pt-16 pb-8 rounded-tl-xl rounded-bl-xl">
+      <div class="w-fit">
+        <h1 class="text-2xl lg:text-3xl font-bold">Welcome to PetCareHub</h1>
+        <p class="text-lg mt-2">Built for Clinics. Loved by Pet Owners.</p>
+      </div>
+      <div class="flex justify-center mt-8">
+        <img src="/assets/images/icons/pet.svg" alt="Pet illustration" class="w-2/3 max-w-[200px]">
+      </div>
     </div>
+
+    <!-- RIGHT SIDE -->
+    <div
+      class="flex w-full md:w-2/3 justify-center items-center py-8 md:py-10 lg:py-12 bg-[var(--white)] rounded-xl md:rounded-tr-xl md:rounded-br-xl md:rounded-tl-none md:rounded-bl-none">
+      <div class="w-11/12 max-w-sm text-center px-4">
+
+        <div class="md:hidden text-center mb-6">
+          <h1 class="text-3xl font-bold text-[var(--secondary)]">PetCareHub</h1>
+          <p class="text-sm text-gray-500">Register an account.</p>
+        </div>
+
+        <!-- REGISTRATION FORM -->
+        <form [formGroup]="registerForm" (ngSubmit)="verifyOtpAndRegistration()" class="w-full text-center mb-6">
+
+          <div class="text-center mb-6">
+            <h1 class="text-3xl font-semibold text-[var(--primary)]">Create Account</h1>
+          </div>
+
+          <!-- NAME FIELDS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>First name</mat-label>
+              <input formControlName="firstName" type="text" placeholder="John" matInput />
+              @if (registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched) {
+                <mat-error>First name is required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Last name</mat-label>
+              <input formControlName="lastName" type="text" placeholder="Doe" matInput />
+              @if (registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched) {
+                <mat-error>Last name is required</mat-error>
+              }
+            </mat-form-field>
+        </div>
+
+          <!-- EMAIL FIELD -->
+        <mat-form-field appearance="outline" class="w-full mb-2">
+            <mat-label>Email address</mat-label>
+                <input formControlName="email" type="email" placeholder="name@example.com" matInput/>
+                @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+                    <mat-error class="text-left">
+                    @if (registerForm.get('email')?.hasError('required')) { Email is required. }
+                    @if (registerForm.get('email')?.hasError('email')) { Please enter a valid email address. }
+                    </mat-error>
+                }
+        </mat-form-field>
+
+        <div class="flex gap-2 mb-4 items-center">
+          <!-- Show OTP input only if OTP is sent -->
+          @if (isOtpSent) {
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>Enter OTP</mat-label>
+              <input formControlName="otp" type="text" placeholder="6-digit code" matInput maxlength="6" />
+              @if (registerForm.get('otp')?.invalid && registerForm.get('otp')?.touched) {
+                <mat-error>Please enter a valid 6-digit OTP.</mat-error>
+              }
+            </mat-form-field>
+          }
+
+          <!-- Send OTP button always visible -->
+          <button mat-stroked-button color="primary" type="button" (click)="sendOtp()"
+            [disabled]="!registerForm.get('email')?.valid">
+            Send OTP
+          </button>
+        </div>
+
+        <!-- OTP helper text -->
+        @if (isOtpSent) {
+          <p class="text-xs text-gray-500 text-left mb-4">
+            Check your email for the verification code.
+          </p>
+        }
+        
+
+        <!-- CONTACT FIELD -->
+        <mat-form-field appearance="outline" class="w-full mb-4">
+        <mat-label>Contact Number</mat-label>
+        <input formControlName="contact" type="tel" placeholder="09123456789" matInput />
+        @if (registerForm.get('contact')?.invalid && registerForm.get('contact')?.touched) {
+            <mat-error>Contact number is required</mat-error>
+        }
+        </mat-form-field>
+
+          <!-- PASSWORD FIELD -->
+        <div class="mb-8">
+        <mat-form-field appearance="outline" class="w-full mb-[-20px]">
+            <mat-label>Password</mat-label>
+            <input formControlName="password" type="password" placeholder="Password" matInput />
+        </mat-form-field>
+
+        @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+            @if (registerForm.get('password')?.hasError('required')) {
+            <mat-error class="text-left text-[12px] ml-[16px] mb-[-20px]">Password is required.</mat-error>
+            }
+            @if (registerForm.get('password')?.hasError('minlength')) {
+            <mat-error class="text-left text-[12px] ml-[16px]">Min 8 characters.</mat-error>
+            }
+            @if (registerForm.get('password')?.hasError('capitalRequired')) {
+            <mat-error class="text-left text-[12px] ml-[16px]">Need at least 1 capital letter.</mat-error>
+            }
+            @if (registerForm.get('password')?.hasError('numberRequired')) {
+            <mat-error class="text-left text-[12px] ml-[16px]">Needs at least 1 number.</mat-error>
+            }
+            @if (registerForm.get('password')?.hasError('specialRequired')) {
+            <mat-error class="text-left text-[12px] ml-[16px]">Needs at least 1 special character.</mat-error>
+            }
+        }
+        </div>
+
+          <!-- CONFIRM PASSWORD FIELD -->
+          <div class="mb-6">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Confirm Password</mat-label>
+              <input formControlName="confirmPassword" type="password" placeholder="Confirm Password" matInput />
+              @if (registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) {
+                <mat-error class="text-left">
+                  @if (registerForm.get('confirmPassword')?.hasError('required')) { Confirmation is required. }
+                  @if (registerForm.get('confirmPassword')?.hasError('mismatch')) { Passwords must match. }
+                </mat-error>
+              }
+              @else if (registerForm.get('confirmPassword')?.valid && registerForm.get('password')?.valid && registerForm.valid) {
+                <mat-icon matSuffix color="primary" class="ml-2">check_circle</mat-icon>
+              }
+            </mat-form-field>
+          </div>
+
+          <!-- REGISTER BUTTON -->
+          <button mat-flat-button color="primary" type="submit"
+            [disabled]="registerForm.invalid"
+            class="w-full py-2 h-12 text-lg font-bold">
+            Register
+          </button>
+        </form>
+
+        <p class="text-sm text-gray-600">
+          Already have an account?
+          <a routerLink="/account/login" class="font-semibold text-[var(--primary)] hover:underline">Sign in</a>
+        </p>
+
+      </div>
+    </div>
+  </div>
 </div>

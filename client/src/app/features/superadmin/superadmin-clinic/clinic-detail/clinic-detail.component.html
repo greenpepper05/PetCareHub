@@ -1,83 +1,228 @@
 <div class="min-h-full">
-
-        <!-- Header Block -->
-        <div class="bg-[var(--secondary)] text-white p-6 rounded-xl shadow-lg mb-6">
-            <div class="flex items-center text-sm mb-2 opacity-80">
-                <mat-icon class="mr-1 text-base">apartment</mat-icon>
-                <span>Clinic Detail</span>
-            </div>
-            
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-                <h1 class="text-3xl font-bold mb-4 sm:mb-0">
-                    Clinic ID: #{{ clinic?.id }}
-                </h1>
-                
-                <button 
-                    routerLink="/superadmin/clinics"
-                    class="flex items-center border border-white text-white hover:bg-white hover:text-[var(--secondary)] transition-colors py-2 px-4 rounded-lg text-sm"
-                >
-                    <mat-icon class="mr-1 text-base">arrow_back</mat-icon> Back to List
-                </button>
-            </div>
-        </div>
-        
-        <div class="space-y-6"> 
-            
-            <!-- Picture and Clinic Details -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                <!-- Clinic Picture Card (New Section) -->
-                <div class="lg:col-span-1 bg-white rounded-xl shadow-lg border border-gray-100 p-6 flex flex-col items-center">
-                    <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 w-full text-center flex items-center justify-center">
-                        <mat-icon class="text-2xl mr-2 text-indigo-600">business</mat-icon> Clinic Logo
-                    </h3>
-                    <img src="{{ clinic?.pictureUrl || 'https://placehold.co/150x150/e0e7ff/4f46e5?text=NO+LOGO' }}" 
-                         alt="Clinic Logo" 
-                         class="w-36 h-36 rounded-full object-cover border-4 border-indigo-200 shadow-md mb-4"/>
-                    
-                    <p class="text-center text-sm text-gray-500">
-                        Date Established: <strong class="text-gray-900">{{ clinic?.createAt | date:'mediumDate' }}</strong>
-                    </p>
-                </div>
-
-                <!-- Clinic Information Card -->
-                <div class="lg:col-span-2 bg-white rounded-xl shadow-lg border border-gray-100 p-6">
-                    <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 flex items-center">
-                        <mat-icon class="text-2xl mr-2 text-indigo-600">info</mat-icon> Primary Information
-                    </h3>
-                    <div class="space-y-3 text-sm">
-                        <p class="flex justify-between border-b pb-2"><span class="font-medium text-gray-500">Clinic Name:</span><strong class="text-gray-900">{{ clinic?.clinicName }}</strong></p>
-                        <p class="flex justify-between border-b pb-2"><span class="font-medium text-gray-500">Address:</span><strong class="text-gray-900 text-right max-w-[70%]">{{ clinic?.address }}</strong></p>
-                        <p class="flex justify-between border-b pb-2"><span class="font-medium text-gray-500">Phone Number:</span><strong class="text-gray-900">{{ clinic?.phoneNumber }}</strong></p>
-                        <p class="flex justify-between pb-1"><span class="font-medium text-gray-500">Contact Email:</span><strong class="text-gray-900">{{ clinic?.email }}</strong></p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Owner/Admin Information -->
-            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
-                <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 flex items-center">
-                    <mat-icon class="text-2xl mr-2 text-green-600">manage_accounts</mat-icon> Owner / Admin Information
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3 text-sm">
-                    <p class="flex justify-between border-b pb-1"><span class="font-medium text-gray-500">First Name:</span><strong class="text-gray-900">{{ user?.firstName }}</strong></p>
-                    <p class="flex justify-between border-b pb-1"><span class="font-medium text-gray-500">Email:</span><strong class="text-gray-900">{{ user?.email }}</strong></p>
-                    <p class="flex justify-between border-b pb-1"><span class="font-medium text-gray-500">Last Name:</span><strong class="text-gray-900">{{ user?.lastName }}</strong></p>
-                    <p class="flex justify-between border-b pb-1"><span class="font-medium text-gray-500">Role:</span><strong class="text-gray-900">{{ user?.role }}</strong></p>
-                    <p class="flex justify-between pb-1"><span class="font-medium text-gray-500">Contact Number:</span><strong class="text-gray-900">{{ user?.contact || "n/a" }}</strong></p>
-                </div>
-            </div>
-
-            <!-- Management Buttons Placeholder -->
-            <div class="flex justify-end pt-4 gap-3">
-                <!-- <button (click)="onEdit()"
-                        class="flex items-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors">
-                    <mat-icon class="mr-1">edit</mat-icon> Edit Clinic
-                </button> -->
-                <button (click)="onDelete()"
-                        class="flex items-center px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition-colors">
-                    <mat-icon class="mr-1">delete</mat-icon> Delete Clinic
-                </button>
-            </div>
-        </div>
+  <!-- Header Block -->
+  <div class="bg-[var(--secondary)] text-white p-6 rounded-xl shadow-lg mb-6">
+    <div class="flex items-center text-sm mb-2 opacity-80">
+      <mat-icon class="mr-1 text-base">apartment</mat-icon>
+      <span>Clinic Detail</span>
     </div>
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+      <h1 class="text-3xl font-bold mb-4 sm:mb-0">
+        Clinic ID: #{{ clinic?.id }}
+      </h1>
+      <button
+        routerLink="/superadmin/clinics"
+        class="flex items-center border border-white text-white hover:bg-white hover:text-[var(--secondary)] transition-colors py-2 px-4 rounded-lg text-sm"
+      >
+        <mat-icon class="mr-1 text-base">arrow_back</mat-icon>
+        Back to List
+      </button>
+    </div>
+  </div>
+
+  <div class="space-y-6">
+    <!-- Picture and Clinic Details -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Clinic Picture Card -->
+      <div
+        class="lg:col-span-1 bg-white rounded-xl shadow-lg border border-gray-100 p-6 flex flex-col items-center"
+      >
+        <h3
+          class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 w-full text-center flex items-center justify-center"
+        >
+          <mat-icon class="text-2xl mr-2 text-indigo-600">business</mat-icon>
+          Clinic Logo
+        </h3>
+
+        <img
+          [src]="clinic?.pictureUrl || 'https://placehold.co/150x150/e0e7ff/4f46e5?text=NO+LOGO'"
+          alt="Clinic Logo"
+          class="w-36 h-36 rounded-full object-cover border-4 border-indigo-200 shadow-md mb-4"
+        />
+
+        <!-- Editable field for Picture URL -->
+        @if (isEditing) {
+            <div class="w-full text-center">
+                <input
+                [(ngModel)]="clinic!.pictureUrl"
+                type="text"
+                placeholder="Enter new picture URL"
+                class="border rounded-lg w-full p-2 text-sm"
+                />
+            </div>
+        }
+
+        <div class="flex justify-between border-b pb-2 items-center">
+            <span class="font-medium text-gray-500">Status:</span>
+                @if (!isEditing) {
+                    <strong class="text-gray-900">{{ clinic?.status }}</strong>
+                } @else {
+                <select [(ngModel)]="editedClinic.status" class="border rounded px-2 py-1 text-sm w-1/2 text-right">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                </select>
+            }
+        </div>
+
+        <p class="text-center text-sm text-gray-500 mt-2">
+          Date Established:
+          <strong class="text-gray-900">{{
+            clinic?.createAt | date: 'mediumDate'
+          }}</strong>
+        </p>
+      </div>
+
+      <!-- Clinic Information Card -->
+      <div
+        class="lg:col-span-2 bg-white rounded-xl shadow-lg border border-gray-100 p-6"
+      >
+        <h3
+          class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 flex items-center"
+        >
+          <mat-icon class="text-2xl mr-2 text-indigo-600">info</mat-icon>
+          Primary Information
+        </h3>
+
+        <!-- Read Mode -->
+        @if (!isEditing) {
+            <div class="space-y-3 text-sm">
+                <p class="flex justify-between border-b pb-2">
+                    <span class="font-medium text-gray-500">Clinic Name:</span>
+                    <strong class="text-gray-900">{{ clinic?.clinicName }}</strong>
+                </p>
+                <p class="flex justify-between border-b pb-2">
+                    <span class="font-medium text-gray-500">Address:</span>
+                    <strong class="text-gray-900 text-right max-w-[70%]">
+                        {{ clinic?.address }}
+                    </strong>
+                </p>
+                <p class="flex justify-between border-b pb-2">
+                    <span class="font-medium text-gray-500">Phone Number:</span>
+                    <strong class="text-gray-900">{{ clinic?.phoneNumber }}</strong>
+                </p>
+                <p class="flex justify-between pb-1">
+                    <span class="font-medium text-gray-500">Contact Email:</span>
+                    <strong class="text-gray-900">{{ clinic?.email }}</strong>
+                </p>
+            </div>
+        }
+
+        <!-- Edit Mode -->
+        @if (isEditing) {
+
+        
+        <div class="space-y-3 text-sm">
+          <div>
+            <label class="block text-gray-600 mb-1">Clinic Name</label>
+            <input
+              [(ngModel)]="clinic!.clinicName"
+              type="text"
+              class="border rounded-lg w-full p-2"
+            />
+          </div>
+          <div>
+            <label class="block text-gray-600 mb-1">Address</label>
+            <input
+              [(ngModel)]="clinic!.address"
+              type="text"
+              class="border rounded-lg w-full p-2"
+            />
+          </div>
+          <div>
+            <label class="block text-gray-600 mb-1">Phone Number</label>
+            <input
+              [(ngModel)]="clinic!.phoneNumber"
+              type="text"
+              class="border rounded-lg w-full p-2"
+            />
+          </div>
+          <div>
+            <label class="block text-gray-600 mb-1">Contact Email</label>
+            <input
+              [(ngModel)]="clinic!.email"
+              type="email"
+              class="border rounded-lg w-full p-2"
+            />
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Owner/Admin Information -->
+    <div
+      class="bg-white rounded-xl shadow-lg border border-gray-100 p-6"
+    >
+      <h3
+        class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 flex items-center"
+      >
+        <mat-icon class="text-2xl mr-2 text-green-600">manage_accounts</mat-icon>
+        Owner / Admin Information
+      </h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3 text-sm">
+        <p class="flex justify-between border-b pb-1">
+          <span class="font-medium text-gray-500">First Name:</span>
+          <strong class="text-gray-900">{{ user?.firstName }}</strong>
+        </p>
+        <p class="flex justify-between border-b pb-1">
+          <span class="font-medium text-gray-500">Email:</span>
+          <strong class="text-gray-900">{{ user?.email }}</strong>
+        </p>
+        <p class="flex justify-between border-b pb-1">
+          <span class="font-medium text-gray-500">Last Name:</span>
+          <strong class="text-gray-900">{{ user?.lastName }}</strong>
+        </p>
+        <p class="flex justify-between border-b pb-1">
+          <span class="font-medium text-gray-500">Role:</span>
+          <strong class="text-gray-900">{{ user?.role }}</strong>
+        </p>
+        <p class="flex justify-between pb-1">
+          <span class="font-medium text-gray-500">Contact Number:</span>
+          <strong class="text-gray-900">{{ user?.contact || 'n/a' }}</strong>
+        </p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end pt-4 gap-3">
+        @if(!isEditing) {
+            <button
+                (click)="onEdit()"
+                class="flex items-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                >
+                <mat-icon class="mr-1">edit</mat-icon>
+                Edit Clinic
+            </button>
+        }
+
+        @if (isEditing) {
+            <button
+            (click)="onSave()"
+            class="flex items-center px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors"
+            >
+            <mat-icon class="mr-1">save</mat-icon>
+            Save Changes
+            </button>
+        }
+
+        @if (isEditing) {
+            <button
+                (click)="onCancel()"
+                class="flex items-center px-4 py-2 bg-gray-400 text-white font-semibold rounded-lg shadow-md hover:bg-gray-500 transition-colors"
+                >
+                <mat-icon class="mr-1">close</mat-icon>
+                Cancel
+            </button>
+        }
+        @if (!isEditing) {
+            <button
+            (click)="onDelete()"
+            class="flex items-center px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition-colors"
+            >
+            <mat-icon class="mr-1">delete</mat-icon>
+            Delete Clinic
+            </button>
+        }
+    </div>
+  </div>
+</div>

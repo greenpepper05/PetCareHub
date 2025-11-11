@@ -12,10 +12,12 @@ public class ClinicConfiguration : IEntityTypeConfiguration<Clinic>
         builder.Property(c => c.Address).IsRequired().HasMaxLength(200);
         builder.Property(c => c.PhoneNumber).HasMaxLength(20);
         builder.Property(c => c.Email).HasMaxLength(100);
+        builder.Property(c => c.Status).HasMaxLength(20).HasDefaultValue("Inactive");
         builder.Property(c => c.CreateAt).HasDefaultValueSql("GETUTCDATE()");
         builder.Property(c => c.UpdatedAt).HasDefaultValueSql("GETUTCDATE()").ValueGeneratedOnAddOrUpdate();
         builder.HasMany(c => c.Services).WithOne(s => s.Clinic).HasForeignKey(s => s.ClinicId).OnDelete(DeleteBehavior.Restrict);
         builder.HasMany(c => c.StaffMembers).WithOne(s => s.Clinic).HasForeignKey(s => s.ClinicId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasMany(c => c.Schedules).WithOne(s => s.Clinic).HasForeignKey(s => s.ClinicId).OnDelete(DeleteBehavior.Cascade);
         builder.HasIndex(c => c.ClinicName).IsUnique(true);
         builder.HasIndex(c => c.OwnerId);
         builder.HasOne(c => c.Owner).WithMany().HasForeignKey(c => c.OwnerId).OnDelete(DeleteBehavior.SetNull);
