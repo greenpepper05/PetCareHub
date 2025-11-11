@@ -26,7 +26,6 @@ import { SnackbarService } from '../../../core/services/snackbar.service';
     MatSelectModule,
     MatSlideToggleModule,
     MatTabsModule,
-    MatIconButton,
     RouterLink
   ],
   templateUrl: './manage-clinic.component.html',
