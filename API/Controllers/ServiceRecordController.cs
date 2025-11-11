@@ -188,8 +188,48 @@ public class ServiceRecordController(IUnitOfWork unit,
         unit.Repository<ServiceRecord>().Update(serviceRecord);
         await unit.Complete();
 
-        var subject = "Pet Service Completed";
-        var message = $"Hello <strong>{pet.Owner.FirstName} {pet.Owner.LastName}</strong>, Your pet <strong>{pet.Name}</strong> service has been <strong>Completed</strong> and ready for pick-up .<br><br>Thank you!";
+       var subject = "🐾 Pet Service Completed";
+
+        var message = $@"
+            <p>Hello <strong>{pet.Owner.FirstName} {pet.Owner.LastName}</strong>,</p>
+            <p>We’re happy to inform you that the service for your pet <strong>{pet.Name}</strong> has been successfully <strong>completed</strong>.</p>
+
+            <table style='border-collapse: collapse; width: 100%; margin-top: 10px;'>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>Service Record ID:</td>
+                    <td style='padding: 8px; border: 1px solid #ddd;'><strong>#{serviceRecord.Id}</strong></td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>Pet Name:</td>
+                    <td style='padding: 8px; border: 1px solid #ddd;'><strong>{pet.Name}</strong></td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>Service Type:</td>
+                    <td style='padding: 8px; border: 1px solid #ddd;'><strong>{serviceRecord.Service?.Name ?? "N/A"}</strong></td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>Clinic:</td>
+                    <td style='padding: 8px; border: 1px solid #ddd;'><strong>{serviceRecord.Clinic?.ClinicName ?? "N/A"}</strong></td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>Completion Date:</td>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>
+                        <strong>{DateTime.UtcNow:MMMM dd, yyyy (dddd)} at {DateTime.UtcNow:hh:mm tt}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>Status:</td>
+                    <td style='padding: 8px; border: 1px solid #ddd; color: green;'>
+                        <strong>Completed</strong>
+                    </td>
+                </tr>
+            </table>
+
+            <p style='margin-top: 16px;'>You may now proceed to pick up your pet or check with the clinic for further details.</p>
+            <p>Thank you for trusting us with your pet’s care!</p>
+            <p>— <strong>{serviceRecord.Clinic?.ClinicName ?? "Your Veterinary Clinic"}</strong></p>
+        ";
+        
         var email = pet.Owner.Email;
 
         if (!string.IsNullOrWhiteSpace(email))

@@ -108,7 +108,14 @@ export class PetServiceComponent implements OnInit {
   }
 
   loadServices() {
-    this.services.getServices().subscribe({
+
+    const currentUser = this.accountService.currentUser();
+
+    if (!currentUser) return;
+
+    const clinicId = currentUser.clinicId;
+
+    this.services.getServiceByClinic(clinicId).subscribe({
       next: (services) => {
         this.serviceList = services
       }

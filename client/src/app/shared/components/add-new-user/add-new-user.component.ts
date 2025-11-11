@@ -26,7 +26,7 @@ export class AddNewUserComponent {
   registerForm = this.fb.group({
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
-    email: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
     contact: ['', Validators.required],
     clinicId: [null]
   });
