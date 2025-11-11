@@ -253,7 +253,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
     // Register AdminUser
     [Authorize(Roles = "SuperAdmin")]
     [HttpPost("register/admin")]
-    public async Task<ActionResult> RegisterAdmin([FromBody] RegisterDto registerDto)
+    public async Task<ActionResult> RegisterAdmin([FromBody] RegisterAdminDto registerDto)
     {
         const string defaultPassword = "Pa$$w0rd";
 

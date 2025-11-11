@@ -22,15 +22,12 @@ export class AddNewUserComponent {
   private accountService = inject(AccountService);
   private fb = inject(FormBuilder);
   private snacbar = inject(SnackbarService);
-
-  defaultPassword = "Petcarehub26!";
   
   registerForm = this.fb.group({
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
     email: ['', Validators.required],
     contact: ['', Validators.required],
-    password: [''],
     clinicId: [null]
   });
 
@@ -46,7 +43,6 @@ export class AddNewUserComponent {
         lastName: this.registerForm.value.lastName,
         email: this.registerForm.value.email,
         contact: this.registerForm.value.contact,
-        password: this.defaultPassword
       }
 
       this.accountService.registerAdminUser(payload).subscribe({
