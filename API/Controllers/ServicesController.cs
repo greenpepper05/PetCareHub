@@ -1,4 +1,5 @@
 using API.DTOs;
+using API.Extensions;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -87,4 +88,25 @@ public class ServicesController(IUnitOfWork unit, UserManager<AppUser> userManag
             Price = service.Price
         });
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteService(int id)
+    {
+        var user = await userManager.GetUserByEmail(User);
+
+        if (user == null) return Unauthorized();
+
+        var service = await unit.Repository<Service>().GetByIdAsync(id);
+        if (service == null) return NotFound();
+
+        unit.Repository<Service>().Remove(service);
+
+        await unit.Complete();
+
+        return Ok(new { message = "Service succefully deleted" });
+    }
+
+    
+
 }

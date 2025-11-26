@@ -27,7 +27,7 @@
                     type="text" 
                     placeholder="Search pets by name or owner" 
                     class="py-2 px-4 w-full text-gray-700 focus:outline-none"
-                    
+                    [(ngModel)]="petParams.search"
                     (input)="onSearchChange()"
                 >
                 <mat-icon class="text-gray-500 mx-3">search</mat-icon>

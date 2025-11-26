@@ -10,7 +10,7 @@ public class ClinicScheduleSpecification : BaseSpecification<ClinicSchedule>
         AddInclude(x => x.Clinic);
     }
 
-    protected ClinicScheduleSpecification()
+    public ClinicScheduleSpecification(int clinicId, DayOfWeek day) : base(s => s.ClinicId == clinicId && s.DayOfWeek == day)
     {
     }
 }

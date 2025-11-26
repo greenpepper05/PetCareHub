@@ -1,6 +1,7 @@
 using API.DTOs;
 using API.Job;
 using API.Middleware;
+using API.Services;
 using Core.Entities;
 using Core.Interfaces;
 using FluentValidation;
@@ -9,6 +10,7 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using Infrastructure.Data;
 using Infrastructure.Services;
+using Infrastructure.Services.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,6 +44,8 @@ builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.AddSingleton<IOtpService, OtpService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IClinicStatusService, ClinicStatusService>();
+builder.Services.AddScoped<PdfService>();
 builder.Services.AddScoped<AppointmentReminderJob>();
 builder.WebHost.UseWebRoot("wwwroot");
 
@@ -61,6 +65,7 @@ app.UseAuthorization();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
+
 app.UseHangfireDashboard("/hangfire");
 RecurringJob.AddOrUpdate<AppointmentReminderJob>(
     "hourly-appointment-reminder",

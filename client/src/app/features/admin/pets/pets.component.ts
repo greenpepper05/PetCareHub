@@ -9,6 +9,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { PetParams } from '../../../shared/models/petParams';
 import { MatInput, MatInputModule } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: 'app-pets',
@@ -17,7 +18,8 @@ import { MatIcon } from '@angular/material/icon';
     RouterLink,
     MatPaginator,
     MatInputModule,
-    MatIcon
+    MatIcon,
+    FormsModule
 ],
   templateUrl: './pets.component.html',
   styleUrl: './pets.component.scss'
@@ -61,8 +63,8 @@ export class PetsComponent implements OnInit {
   }
 
   onSearchChange() {
-    // this.petParams.pageSize = 1;
-    // this.loadPet();
+    this.petParams.pageNumber = 1;
+    this.loadPet();
   }
 
 }

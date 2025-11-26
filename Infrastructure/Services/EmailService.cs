@@ -1,15 +1,11 @@
 using Core.Entities;
+using Infrastructure.Services.Interface;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace Infrastructure.Services;
-
-public interface IEmailService
-{
-    Task SendEmailAsync(string toEmail, string subject, string body);
-}
 
 public class EmailService(IOptions<EmailSettings> settings) : IEmailService
 {

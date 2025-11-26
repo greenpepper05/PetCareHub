@@ -1,68 +1,175 @@
-<!-- <div class="container">
-  <h2>Manage Clinic Schedule</h2>
+<div class="min-h-full">
+  <!-- Header -->
+  <div class="bg-[var(--secondary)] text-white p-6 rounded-xl shadow-lg mb-6">
+    <div class="flex items-center text-sm mb-2 opacity-80">
+      <mat-icon class="mr-1 text-base">local_hospital</mat-icon>
+      <span>Manage Clinic</span>
+    </div>
 
-  <form [formGroup]="scheduleForm">
-    <div formArrayName="schedules" class="schedule-grid">
+    <div class="flex justify-between items-center">
+      <h1 class="text-3xl font-bold">Manage Clinic</h1>
+    </div>
+  </div>
 
-      @for (day of schedules.controls; track $index) {
-        <div [formGroupName]="$index" class="day-row">
-          <mat-checkbox formControlName="isOpen">
-            {{ day.value.dayOfWeek }}
-          </mat-checkbox>
+  <!-- Tabs container -->
+  <mat-tab-group mat-stretch-tabs class="rounded-xl overflow-hidden shadow-lg bg-white">
 
-          @if (day.get('isOpen')?.value) {
-            <div class="time-inputs">
-              <mat-form-field appearance="outline">
-                <mat-label>Opening Time</mat-label>
-                <input matInput type="time" formControlName="openingTime" />
-              </mat-form-field>
+    <!-- ========================= -->
+    <!-- TAB 1: CLINIC SCHEDULE   -->
+    <!-- ========================= -->
+    <mat-tab label="Clinic Schedule">
 
-              <mat-form-field appearance="outline">
-                <mat-label>Closing Time</mat-label>
-                <input matInput type="time" formControlName="closingTime" />
-              </mat-form-field>
+      <div class="p-6">
+        <!-- Title & Button -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <h1 class="text-xl font-semibold">Clinic Schedule</h1>
+
+          <button 
+            (click)="toggleEdit()"
+            mat-flat-button 
+            class="bg-[var(--primary)] hover:bg-[var(--secondary)] text-white font-semibold rounded-lg py-2 px-4 shadow-md transition-colors w-full sm:w-auto">
+            {{ isEditing ? 'Cancel' : 'Edit Schedule' }}
+          </button>
+        </div>
+
+        <!-- VIEW MODE -->
+        @if (!isEditing) {
+          <div>
+            <div class="divide-y divide-gray-200">
+              @for (sched of schedules; track sched.dayOfWeek) {
+                <div class="py-4 flex justify-between">
+                  <p class="font-medium">{{ getDayName(sched.dayOfWeek) }}</p>
+
+                  <p class="text-gray-600">
+                    @if (!sched.isOpen) {
+                      Closed
+                    } @else {
+                      {{ formatTime(sched.openingTime) }} – {{ formatTime(sched.closingTime) }}
+                    }
+                  </p>
+                </div>
+              } @empty {
+                <p class="text-gray-500 text-center py-6">No schedule found.</p>
+              }
             </div>
+          </div>
+        }
+
+        <!-- EDIT MODE -->
+        @if (isEditing) {
+          <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <form [formGroup]="scheduleForm">
+              @for (dayCtrl of days.controls; track $index; let i = $index) {
+                <div class="flex items-center justify-between mb-5 pb-4 border-b border-gray-300" [formGroup]="getDayGroup(i)">
+                  
+                  <label class="font-medium w-28">{{ getDayGroup(i).value.day }}</label>
+
+                  <div class="flex items-center gap-3">
+                    <div class="flex flex-col">
+                      <label class="text-xs text-gray-500 mb-1">Opening</label>
+                      <input type="time" 
+                             formControlName="opening"
+                             class="bg-white border border-gray-300 rounded px-3 py-2 text-sm" />
+                    </div>
+
+                    <span class="mt-6">-</span>
+
+                    <div class="flex flex-col">
+                      <label class="text-xs text-gray-500 mb-1">Closing</label>
+                      <input type="time" 
+                             formControlName="closing" 
+                             class="bg-white border border-gray-300 rounded px-3 py-2 text-sm" />
+                    </div>
+                  </div>
+                </div>
+              }
+
+              <div class="flex justify-end gap-3 mt-6">
+                <button 
+                  (click)="toggleEdit()" 
+                  type="button" 
+                  class="bg-gray-500 hover:bg-gray-400 text-white px-4 py-2 rounded">
+                  Cancel
+                </button>
+
+                <button 
+                  (click)="onSave()" 
+                  type="button"
+                  class="bg-[var(--primary)] hover:bg-[var(--secondary)] text-white px-4 py-2 rounded">
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        }
+      </div>
+
+    </mat-tab>
+
+    <!-- ================================ -->
+    <!-- TAB 2: STAFF MANAGEMENT (Empty) -->
+    <!-- ================================ -->
+    <mat-tab label="Staff Management">
+      <div class="p-6 bg-white rounded-lg shadow">
+
+        <!-- Header Row -->
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-800">Staff Members</h2>
+
+          <button 
+            mat-flat-button 
+            color="primary"
+            class="!py-2 !px-4 !rounded-md"
+            (click)="openCreateStaffModal()">
+            + Add Staff
+          </button>
+        </div>
+
+
+        <!-- Empty State -->
+        @if (staff.length === 0) {
+          <div class="text-center py-10 text-gray-500">
+            <p class="text-lg">No staff found</p>
+            <p class="text-sm">Click the button above to add your first staff member.</p>
+          </div>
+        }
+
+
+        <!-- Staff Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          @for (s of staff; track s.id) {
+
+          <div class="p-4 bg-gray-50 rounded-xl shadow-sm border hover:shadow-md transition cursor-pointer">
+            
+            <div class="flex items-center gap-4">
+
+              <!-- Profile Picture -->
+              <img 
+                [src]="s.pictureUrl || 'https://via.placeholder.com/100?text=No+Image'" 
+                class="w-16 h-16 rounded-full object-cover shadow"
+              />
+
+              <!-- Staff Info -->
+              <div routerLink="/admin/manage-clinic/staff/{{ s.id}}">
+                <p class="text-lg font-semibold text-gray-800">
+                  {{ s.firstName }} {{ s.lastName }}
+                </p>
+                <p class="text-sm text-gray-600">{{ s.staffRole }}</p>
+                <p class="text-sm text-gray-500">{{ s.email }}</p>
+              </div>
+
+            </div>
+
+          </div>
+
           }
+
         </div>
-      }
 
-    </div>
-
-    <button mat-raised-button color="primary" (click)="saveClinicSchedule()">
-      Save Schedule
-    </button>
-  </form>
-</div> -->
+      </div>
+    </mat-tab>
 
 
-<div class="min-h-screen flex flex-col justify-center items-center bg-gray-50 text-center p-6">
-    
-    <div class="w-full max-w-lg bg-white rounded-xl shadow-2xl p-8 md:p-12 border-t-8 border-[var(--yellow)]">
-        
-        <mat-icon class="text-[var(--primary)] text-8xl md:text-9xl mb-6">construction</mat-icon>
-        
-        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">
-            Pardon Our Dust!
-        </h1>
-        
-        <p class="text-lg md:text-xl text-gray-600 mb-8">
-            This page is currently under **active construction**. We're busy perfecting the details to bring you the best experience.
-        </p>
-
-        <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 mb-8">
-            <p class="text-sm font-semibold text-[var(--primary)]">
-                Estimated completion: Check back soon!
-            </p>
-        </div>
-        
-        <button routerLink="/admin/dashboard" 
-                mat-flat-button 
-                color="primary" 
-                class="w-full sm:w-auto px-8 py-3 text-lg font-bold">
-            <mat-icon class="mr-2">arrow_back</mat-icon>
-            Return to Home
-        </button>
-
-    </div>
-    
+  </mat-tab-group>
 </div>

@@ -8,6 +8,7 @@ import { CdkDragDrop, moveItemInArray, CdkDrag, CdkDropList } from '@angular/cdk
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddProcedureModalComponent } from '../../../../shared/components/add-procedure-modal/add-procedure-modal.component';
 import { MatIcon } from '@angular/material/icon';
+import { SnackbarService } from '../../../../core/services/snackbar.service';
 
 @Component({
   selector: 'app-service-detail',
@@ -25,6 +26,7 @@ export class ServiceDetailComponent {
   private servicesService = inject(ServicesService);
   private procedureService = inject(ProcedureService);
   private activatedRoute = inject(ActivatedRoute);
+  private snackService = inject(SnackbarService);
   private dialog = inject(MatDialog);
 
   service = signal<Services | undefined>(undefined);
@@ -101,6 +103,7 @@ export class ServiceDetailComponent {
     this.procedureService.deleteProcedure(id).subscribe({
       next: () => {
         this.procedures.update(procs => procs.filter(proc => proc.id !== id));
+        this.snackService.success("Procedure Updated");
       },
       error: (err) => console.error('Failed to delete procedure:', err)
     });
@@ -120,9 +123,9 @@ export class ServiceDetailComponent {
     if (procedureToUpdate && serviceId) {
       this.procedureService.updateProcedure(procedureToUpdate).subscribe({
         next: () => {
-          console.log('Successfully updated procedure.');
-          this.editingProcedureId.set(null); // Exit editing mode
+          this.editingProcedureId.set(null);
           this.loadProcedures(serviceId); // Reload procedures to reset UI state
+          this.snackService.success("Procedure Updated");
         },
         error: (err) => console.error('Failed to update procedure:', err)
       });

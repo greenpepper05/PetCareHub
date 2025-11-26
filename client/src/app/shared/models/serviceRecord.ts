@@ -7,6 +7,7 @@ export type  ServiceRecord = {
     clinicName: string;
     price?: number;
     dateOfService: string;
+    staffId: number;
     notes?: string;
     appointmentId?: number;
     visitType: string;

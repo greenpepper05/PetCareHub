@@ -22,6 +22,7 @@ export class PetDetailComponent implements OnInit{
   private petService = inject(PetService);
   records: ServiceRecord[] = [];
   pet: Pet[] = [];
+  petId = 0;
 
   ngOnInit(): void {
     this.loadPet();
@@ -38,6 +39,7 @@ export class PetDetailComponent implements OnInit{
     this.serviceRecord.getRecordByPetId(id).subscribe({
       next: data => {
         this.records = data;
+        this.petId = +id;
       }
     })
 

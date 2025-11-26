@@ -83,5 +83,10 @@ public class MappingProfiles : Profile
             .ForMember(u => u.ClinicName, o => o.MapFrom(a => a.Clinic!.ClinicName));
 
         CreateMap<Service, ServiceDto>();
+
+        CreateMap<Staff, StaffDto>();
+            
+        CreateMap<CreateStaffDto, Staff>();
+
     }
 }

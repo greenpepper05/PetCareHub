@@ -17,6 +17,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatFormFieldModule, MatHint, MatLabel } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { SnackbarService } from '../../../core/services/snackbar.service';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
@@ -45,12 +46,10 @@ import { MatInputModule } from '@angular/material/input';
 export class PetServiceComponent implements OnInit {
   private fb = inject(FormBuilder);
   private services = inject(ServicesService);
-  private service = inject(PetServiceHistoryService);
-  private router = inject(Router);
-  private historyService = inject(PetServiceHistoryService);
   private serviceRecord = inject(ServiceRecordService);
   private petService = inject(PetService);
   private accountService = inject(AccountService);
+  private snackbarService = inject(SnackbarService);
   records: ServiceRecord[] = [];
 
   pets: Pet[] = [];
@@ -72,7 +71,7 @@ export class PetServiceComponent implements OnInit {
 
   
   ngOnInit(): void {
-    // this.loadHistory();
+
     this.fetchHistoriesByDate(new Date());
     this.loadServices();
     this.loadPets();
@@ -153,11 +152,11 @@ export class PetServiceComponent implements OnInit {
       
       this.serviceRecord.createServiceRecord(payload).subscribe({
         next: () => {
-          alert("Service added");
-          // this.loadHistory();
+          this.snackbarService.success("Service record created");
+          this.loadServiceRecord();
         }
         ,
-        error: err => console.error('Failed to create history:', err)
+        error: err => this.snackbarService.error(`Failed to create history: ${err}`)
       });
       
     }

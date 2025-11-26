@@ -1,11 +1,9 @@
-using System.Security.Claims;
 using API.DTOs;
 using API.Extensions;
-using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
-using Infrastructure.Services;
+using Infrastructure.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -330,5 +328,65 @@ public class AccountController(SignInManager<AppUser> signInManager,
         }
         return NoContent();
     }
+    
+    [Authorize]
+    [HttpPut("update-user/{userId}")]
+    public async Task<ActionResult> UpdateUser(string userId, [FromBody] UpdateUserDto dto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
+        var user = await userManager.FindByIdAsync(userId);
+
+        if (user == null) return NotFound("User not found");
+
+        var isOldPassword = await userManager.CheckPasswordAsync(user, dto.OldPassword);
+
+        if (!isOldPassword) return BadRequest("Incorrect old password");
+
+        user.FirstName = dto.FirstName;
+        user.LastName = dto.LastName;
+        user.Email = dto.Email;
+        user.UserName = dto.Email;
+        user.Contact = dto.Contact;
+
+        if (dto.ClinicId.HasValue) user.ClinicId = dto.ClinicId.Value;
+
+        if (!string.IsNullOrEmpty(dto.NewPassword))
+        {
+            var passwordChangeResult = await userManager.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
+
+            if (!passwordChangeResult.Succeeded) return BadRequest(passwordChangeResult.Errors);
+        }
+
+        var updateResult = await userManager.UpdateAsync(user);
+
+        if (!updateResult.Succeeded) return BadRequest(updateResult.Errors);
+
+        return Ok( new { message = "User updated successfully." });
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPatch("change-password/{userId}")]
+    public async Task<ActionResult> ChangePassword(string userId, ChangePasswordDto dto)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+
+        if (user == null) return NotFound("User not found");
+
+        var isOldPassword = await userManager.CheckPasswordAsync(user, dto.OldPassword);
+
+        if (!isOldPassword) return BadRequest("Incorect old password");
+
+        if (!string.IsNullOrEmpty(dto.NewPassword))
+        {
+            var passwordChangeResult = await userManager.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
+            if (!passwordChangeResult.Succeeded) return BadRequest(passwordChangeResult);
+        }
+
+        var updateResult = await userManager.UpdateAsync(user);
+
+        if (!updateResult.Succeeded) return BadRequest(updateResult.Errors);
+
+        return Ok( new { message = "Admin password change successfully."});
+    }
 }

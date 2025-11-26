@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.development';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { User } from '../../shared/models/user';
 import { Observable } from 'rxjs';
@@ -55,7 +55,7 @@ export class AppointmentService {
     return this.http.get<Pagination<Appointment>>(`${this.baseUrl}appointments/upcoming`, { params });
   }
 
-  getAppointmentByClinic(appointmentParams: AppointmentParams, date: Date) {
+  getAppointmentByClinicAndDate(appointmentParams: AppointmentParams, date: Date) {
     let params = new HttpParams();
 
     if (appointmentParams.sort) {
@@ -70,6 +70,27 @@ export class AppointmentService {
     params = params.append('pageIndex', appointmentParams.pageNumber);
     const formattedDate = date.toLocaleDateString('en-CA').split('T')[0];
     return this.http.get<Pagination<Appointment>>(this.baseUrl + 'appointments/clinic/by-date?date=' + formattedDate, { params });
+  }
+
+  getAppointmentsByClinic(appointmentsParams: AppointmentParams) {
+    let params = new HttpParams();
+
+    if (appointmentsParams.sort) {
+      params = params.append('sort', appointmentsParams.sort);
+    }
+
+    if (appointmentsParams.search) {
+      params = params.append('search', appointmentsParams.search);
+    }
+
+    params = params.append('pagesize', appointmentsParams.pageSize);
+    params = params.append('pageIndex', appointmentsParams.pageNumber);
+
+    return this.http.get<Pagination<Appointment>>(`${this.baseUrl}appointments/clinic`, { params });
+  }
+
+  getBookedSlots(clinicId: number, year: number, month: number, day: number) {
+    return this.http.get<string[]>(`${this.baseUrl}appointments/booked-slots?clinicId=${clinicId}&year=${year}&month=${month}&day=${day}`);
   }
 
   // SuperAdmin

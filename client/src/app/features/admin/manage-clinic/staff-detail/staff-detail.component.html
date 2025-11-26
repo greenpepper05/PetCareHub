@@ -1,0 +1,127 @@
+<div class="min-h-full">
+    <!-- Header -->
+  <div class="bg-[var(--secondary)] text-white p-6 rounded-xl shadow-lg mb-6">
+        <div class="flex items-center text-sm mb-2 opacity-80">
+            <mat-icon class="mr-1 text-base">pets</mat-icon>
+            <a routerLink="/admin/manage-clinic" class="hover:underline">Manage Clinic</a>
+            <mat-icon class="mx-1 text-base">chevron_right</mat-icon>
+            <span>Staff Details</span>
+        </div>
+        
+        <div class="flex justify-between items-center">
+            <div class="text-xl">
+                <h1>
+                    Staff Id: {{ staff?.id  || 'Loading...'}}
+                </h1>
+                <h1 class="text-3xl font-bold">
+                    Name: {{ staff?.firstName + ' ' + staff?.lastName || 'Loading...' }}
+                </h1>
+                <h1 class="text-3xl font-bold">
+                    Role: {{ staff?.staffRole || 'Loading...'}}
+                </h1>
+            </div>
+            <button 
+                mat-stroked-button 
+                routerLink="/admin/manage-clinic" 
+                class="text-[var(--white)] hover:text-black font-semibold rounded-lg py-2 px-4 transition-colors cursor-pointer"
+            >
+                ← Back to List
+            </button>
+        </div>
+    </div>
+
+    <!-- Service Records Table -->
+<div class="bg-white p-6 rounded-xl shadow-lg mt-6">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold flex items-center gap-2">
+            <mat-icon>assignment</mat-icon>
+            Service Records
+        </h2>
+        <div class="text-gray-500 text-center">
+            <button (click)="deleteStaff(staff!.id)" mat-flat-button class="bg-red-500">
+                Delete Staff
+            </button>
+        </div>
+    </div>
+
+    <!-- If no records -->
+    @if (serviceRecords.length === 0) {
+        <div class="text-gray-500 text-center py-6">
+            <p class="mb-4">No service records found for this staff.</p>
+        </div>
+    }
+
+    <!-- Records table -->
+
+    @if (serviceRecords.length > 0) {
+    <div class="overflow-x-auto">
+        <table class="min-w-full border-collapse">
+            <thead>
+                <tr class="bg-[var(--secondary)] text-white text-left">
+                    <th class="py-3 px-4 rounded-l-lg">Date</th>
+                    <th class="py-3 px-4">Pet</th>
+                    <th class="py-3 px-4">Service</th>
+                    <th class="py-3 px-4">Visit Type</th>
+                    <th class="py-3 px-4">Status</th>
+                    <th class="py-3 px-4">Price</th>
+                    <th class="py-3 px-4 rounded-r-lg">Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (r of serviceRecords; track r.id) {
+                <tr 
+                    routerLink="/admin/service-record/{{r.id}}"
+                    class="border-b hover:bg-gray-50 transition"
+                >
+                    <!-- Date -->
+                    <td class="py-3 px-4">
+                        {{ r.dateOfService | date:'mediumDate' }}
+                    </td>
+
+                    <!-- Pet -->
+                    <td class="py-3 px-4">
+                        {{ r.petName }}
+                    </td>
+
+                    <!-- Service -->
+                    <td class="py-3 px-4">
+                        {{ r.serviceName }}
+                    </td>
+
+                    <!-- Visit type -->
+                    <td class="py-3 px-4">
+                        {{ r.visitType }}
+                    </td>
+
+                    <!-- Status Badge -->
+                    <td class="py-3 px-4">
+                        <span 
+                            class="px-3 py-1 rounded-full text-sm font-medium"
+                            [ngClass]="{
+                                'bg-green-100 text-green-700': r.status === 'Completed',
+                                'bg-yellow-100 text-yellow-700': r.status === 'Scheduled',
+                                'bg-red-100 text-red-700': r.status === 'Cancelled'
+                            }"
+                        >
+                            {{ r.status }}
+                        </span>
+                    </td>
+
+                    <!-- Price -->
+                    <td class="py-3 px-4">
+                        {{ r.price ? ('₱' + r.price) : '—' }}
+                    </td>
+
+                    <!-- Notes -->
+                    <td class="py-3 px-4">
+                        {{ r.notes || '—' }}
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+</div>
+
+</div>

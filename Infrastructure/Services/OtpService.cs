@@ -1,14 +1,8 @@
 using System.Collections.Concurrent;
+using Infrastructure.Services.Interface;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Services;
-
-public interface IOtpService
-{
-    Task GenerateAndSendOtpAsync(string email);
-    Task<bool> ValidateOtpAsync(string email, string otp);
-    Task InvalidateOtpAsync(string email);
-}
 
 public class OtpData
 {

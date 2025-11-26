@@ -14,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { FilterDialogComponent } from './filter-dialog/filter-dialog.component';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
+import { FormsModule, NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-appointments',
@@ -25,7 +26,8 @@ import { MatIcon } from '@angular/material/icon';
     DatePipe,
     RouterLink,
     MatPaginator,
-    MatIcon
+    MatIcon,
+    FormsModule
 ],
   templateUrl: './appointments.component.html',
   styleUrl: './appointments.component.scss'
@@ -49,19 +51,17 @@ export class AppointmentsComponent implements OnInit{
     this.fetchHistoriesByDate(new Date());
   }
 
-  // getAppointments() {
-  //   this.appointmentService.getAppointmentByClinic(this.appointmentParams, date).subscribe({
-  //     next: (response) => {
-  //       this.appointments = response;
-  //     }
-  //   })
-  // }
-
   fetchHistoriesByDate(date: Date) {
-    this.appointmentService.getAppointmentByClinic(this.appointmentParams,date).subscribe({
+    this.appointmentService.getAppointmentByClinicAndDate(this.appointmentParams,date).subscribe({
       next: data => {
         this.appointments = data;
       }
+    })
+  }
+
+  getAppointments() {
+    this.appointmentService.getAppointmentsByClinic(this.appointmentParams).subscribe({
+      next: response => this.appointments = response,
     })
   }
 
@@ -77,7 +77,8 @@ export class AppointmentsComponent implements OnInit{
   }
 
   onSearchChange() {
-    
+    this.appointmentParams.pageNumber = 1;
+    this.getAppointments();
   }
 
 

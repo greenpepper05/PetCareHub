@@ -1,128 +1,101 @@
-import { Component, inject } from '@angular/core';
-import { FormsModule, NgForm, NgModel, ReactiveFormsModule } from '@angular/forms';
-import { MatFormField, MatFormFieldModule, MatLabel } from '@angular/material/form-field';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
-import { MatTabsModule } from '@angular/material/tabs';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { PasswordInputComponent } from "../../../shared/components/password-input/password-input.component";
+import { MatIcon } from '@angular/material/icon';
 import { AccountService } from '../../../core/services/account.service';
 import { User } from '../../../shared/models/user';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
-
-interface UserProfile {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  contact: string;
-  role: string;
-  clinicId: number | null; // clinicId can be null if not associated
-}
-
-interface PasswordModel {
-  currentPassword: string;
-  newPassword: string;
-  confirmPassword: string;
-}
+import { passwordValidator } from '../../../shared/validators/password.validators';
+import { matchValidator } from '../../../shared/validators/matchValidator.Validators';
+import { SnackbarService } from '../../../core/services/snackbar.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-manage-account',
   standalone: true,
   imports: [
-    FormsModule,
-    MatTabsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    RouterLink
+    ReactiveFormsModule,
+    MatButton,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    MatIcon
   ],
-  templateUrl: './manage-account.component.html',
-  styleUrl: './manage-account.component.scss'
+  templateUrl: './manage-account.component.html'
 })
-export class ManageAccountComponent {
+export class ManageAccountComponent implements OnInit {
   private accountService = inject(AccountService);
-  user?: User;
+  private snackbarService = inject(SnackbarService);
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
+  user!: User;
 
-  userProfile: UserProfile = {
-    id: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    contact: '',
-    role: '',
-    clinicId: null
-  };
+  isEditMode = false;
 
-  // Initialize the password change model
-  passwordModel: PasswordModel = {
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  };
-
-  // --- Constructor and Initialization ---
-  constructor(
-    // private accountService: AccountService, // Assume you inject this
-    // private snackBar: MatSnackBar // For user feedback
-  ) {}
+  accountForm = this.fb.group({
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    contact: ['', Validators.required],
+    oldPassword: ['', Validators.required],
+    newPassword: ['', [Validators.required, passwordValidator()]],
+    confirmPassword: ['', Validators.required]
+  }, { validators: matchValidator('newPassword', 'confirmPassword')});
 
   ngOnInit(): void {
-    // 3. Load user data on initialization
-    this.loadUserProfile();
+    this.loadUser();
+    this.populateForm();
   }
 
-  // --- Methods ---
+  populateForm() {
+    this.accountForm = this.fb.group({
+      firstName: [this.user.firstName, Validators.required],
+      lastName: [this.user.lastName, Validators.required],
+      email: [this.user.email, [Validators.required, Validators.email]],
+      contact: [this.user.contact, Validators.required],
+      oldPassword: ['', Validators.required],
+      newPassword: ['', [Validators.required, passwordValidator()]],
+      confirmPassword: ['', Validators.required]
+    })
+  }
 
-  private loadUserProfile(): void {
-    // *****************************************************************
-    // TODO: Replace this with actual data retrieval from your AccountService
-    // *****************************************************************
+  loadUser() {
+    const user = this.accountService.currentUser();
     
-    // Example of fetching and mapping data (replace with actual service call)
-    const currentUserData = { 
-      clinicId: 2, 
-      contact: "09386089484", 
-      email: "jimuelgaas@gmail.com", 
-      firstName: "Jimuel", 
-      id: "528d17f1-1a29-45d3-b3db-5408309155cd", 
-      lastName: "Gaas", 
-      role: "Admin" 
-    };
+    if (!user) return;
 
-    this.userProfile = { ...currentUserData }; // Use spread to safely copy data
-    console.log('User profile loaded:', this.userProfile);
+    return this.user = user;
   }
 
-
-  updateProfile(form: NgForm): void {
-    if (form.valid) {
-      // *****************************************************************
-      // TODO: Implement API call to update the profile (firstName, lastName, contact)
-      // *****************************************************************
-      console.log('Attempting to update profile with:', this.userProfile);
-      // Example success feedback:
-      // this.snackBar.open('Profile updated successfully!', 'Close', { duration: 3000 });
-    }
+  toggleEdit() {
+    this.isEditMode = !this.isEditMode;
   }
 
-  changePassword(form: NgForm): void {
-    if (form.valid) {
-      if (this.passwordModel.newPassword !== this.passwordModel.confirmPassword) {
-        // Example error feedback:
-        // this.snackBar.open('New passwords do not match.', 'Dismiss', { duration: 5000 });
-        console.error('New passwords do not match.');
-        return;
+  saveChanges() {
+    if (this.accountForm.invalid) return;
+
+    const userId = this.accountService.currentUser()!.id;
+
+    if (!userId) return;
+
+    const updatedData = this.accountForm.value as any;
+
+    console.log("Updating account:", updatedData);
+
+    // if (!updatedData) return; 
+
+    this.accountService.updateUser(userId, updatedData).subscribe({
+      next: () => {
+        this.snackbarService.success("User successfully updated");
+        this.accountService.logout();
+        this.router.navigateByUrl("/account/login");
+        this.snackbarService.success("Please re-login you account");
       }
+    })
 
-      // *****************************************************************
-      // TODO: Implement API call to change password using the model data
-      // *****************************************************************
-      console.log('Attempting to change password:', this.passwordModel);
-      
-      // Clear form on success:
-      // form.resetForm();
-      // this.snackBar.open('Password changed successfully!', 'Close', { duration: 3000 });
-    }
+    this.isEditMode = false;
   }
 }

@@ -1,4 +1,4 @@
-import { DecimalPipe, NgClass } from '@angular/common';
+import { CommonModule, DecimalPipe, NgClass } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ClinicService } from '../../core/services/clinic.service';
@@ -12,6 +12,7 @@ import { RouterLink } from "@angular/router";
     MatIconModule,
     RouterLink,
     DecimalPipe,
+    CommonModule
 ],
   templateUrl: './vets.component.html',
   styleUrl: './vets.component.scss'
@@ -19,6 +20,7 @@ import { RouterLink } from "@angular/router";
 export class VetsComponent implements OnInit{
   private clinicService = inject(ClinicService);
   clinics: Clinic[] = [];
+  isOpen?: boolean;
 
   ngOnInit(): void {
     this.loadClinic();
@@ -26,9 +28,19 @@ export class VetsComponent implements OnInit{
 
   loadClinic(){
     this.clinicService.getActiveClinic().subscribe({
-      next: response => {
-        this.clinics = response
+      next: clinics => {
+        this.clinics = clinics;
+
+        this.clinics.forEach(c => {
+          this.clinicService.getClinicStatus(c.id).subscribe(status => {
+            c.isOpen = status;
+          })
+        })
       }
     })
+  }
+
+  getClinicStatus() {
+    
   }
 }

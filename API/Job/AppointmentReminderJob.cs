@@ -1,8 +1,7 @@
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
-using Infrastructure.Services;
-using Microsoft.AspNetCore.Identity;
+using Infrastructure.Services.Interface;
 
 namespace API.Job;
 

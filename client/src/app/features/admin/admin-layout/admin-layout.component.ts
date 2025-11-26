@@ -14,6 +14,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { User } from '../../../shared/models/user';
 import { ClinicService } from '../../../core/services/clinic.service';
 import { Clinic } from '../../../shared/models/clinic';
+import { MatDialog } from '@angular/material/dialog';
+import { AdminChangePasswordComponent } from '../../../shared/components/admin-change-password/admin-change-password.component';
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
@@ -41,6 +43,7 @@ export class AdminLayoutComponent {
   private router = inject(Router);
   busyService = inject(BusyService);
   private clinicService = inject(ClinicService);
+  private dialog = inject(MatDialog);
   clinic?: Clinic;
   admin?: User;
 
@@ -118,5 +121,11 @@ export class AdminLayoutComponent {
 
   toggleDropdown(): void {
     this.isDropdownOpen.update(open => !open);
+  }
+
+  openChangePasswordModal() {
+    const dialogRef = this.dialog.open(AdminChangePasswordComponent, {
+      width: '400px'
+    })
   }
 }

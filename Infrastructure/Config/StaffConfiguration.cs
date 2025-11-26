@@ -14,8 +14,8 @@ public class StaffConfiguration : IEntityTypeConfiguration<Staff>
         builder.HasIndex(s => s.Email).IsUnique();
         builder.Property(s => s.PhoneNumber).IsRequired().HasMaxLength(20);
         builder.Property(s => s.StaffRole).IsRequired().HasConversion<string>().HasMaxLength(50);
-        builder.HasOne(s => s.Clinic).WithMany(c => c.StaffMembers).HasForeignKey(c => c.ClinicId).OnDelete(DeleteBehavior.Cascade);
-        builder.HasMany(s => s.ServiceRecord).WithOne(sr => sr.Staff).HasForeignKey(sr => sr.StaffId).OnDelete(DeleteBehavior.SetNull);
+        builder.HasOne(s => s.Clinic).WithMany(c => c.StaffMembers).HasForeignKey(s => s.ClinicId).OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(s => s.ServiceRecord).WithOne(sr => sr.Staff).HasForeignKey(sr => sr.StaffId).OnDelete(DeleteBehavior.Cascade);
         builder.Property(s => s.UserId).HasMaxLength(450);
     }
 }

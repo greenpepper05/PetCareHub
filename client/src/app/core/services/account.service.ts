@@ -1,11 +1,13 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.development';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { User } from '../../shared/models/user';
 import { map, Observable } from 'rxjs';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { OtpSendRequest } from '../../shared/models/otpSendrequest';
 import { RegisterWithOtpRequest } from '../../shared/models/registrationWithOtpRequest';
+import { UpdateUser } from '../../shared/models/updateUser';
+import { ChangePassword } from '../../shared/models/changePassword';
 
 @Injectable({
   providedIn: 'root'
@@ -34,8 +36,16 @@ export class AccountService {
     return this.http.post(`${this.baseUrl}account/register`, payload);
   }
 
+  updateUser(userId: string, payload: UpdateUser): Observable<any> {
+    return this.http.put(`${this.baseUrl}account/update-user/${userId}`, payload);
+  }
+
   sendOtp(payload: OtpSendRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}account/send-otp`, payload);
+  }
+
+  changePassword(userId: string, payload: ChangePassword) {
+    return this.http.patch(`${this.baseUrl}account/change-password/${userId}`, payload)
   }
 
   getUserInfo() {

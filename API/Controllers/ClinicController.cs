@@ -4,20 +4,18 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using Infrastructure.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.Cms;
-using Org.BouncyCastle.Crypto.Modes;
 
 namespace API.Controllers;
 
 
 public class ClinicController(IUnitOfWork unit,
-    UserManager<AppUser> userManager, IMapper mapper) : BaseApiController
+    UserManager<AppUser> userManager, IMapper mapper, IClinicStatusService clinicStatusService) : BaseApiController
 {
-
     
     [HttpGet("active")]
     public async Task<ActionResult<IReadOnlyList<ClinicDto>>> GetActiveClinic()
@@ -29,6 +27,15 @@ public class ClinicController(IUnitOfWork unit,
         var data = mapper.Map<IReadOnlyList<ClinicDto>>(clinic);
 
         return Ok(data);
+    }
+
+    [Authorize]
+    [HttpGet("{id}/status")]
+    public async Task<ActionResult<bool>> GetClinicStatus(int id)
+    {
+
+        var isOpen = await clinicStatusService.IsClinicOpenAsync(id);
+        return Ok(isOpen);
     }
     
     [Authorize(Roles = "SuperAdmin")]
@@ -400,10 +407,10 @@ public class ClinicController(IUnitOfWork unit,
 
         await unit.Complete();
 
-        return Ok("Procedure updated successfuly!");
+        return Ok( new { message = "Procedure updated successfuly!" });
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [HttpGet("{id}/schedules")]
     public async Task<ActionResult<IEnumerable<ClinicScheduleDto>>> GetClinicSchedules(int id)
     {
@@ -427,6 +434,7 @@ public class ClinicController(IUnitOfWork unit,
 
         var result = schedules.Select(s => new ClinicScheduleDto
         {
+            ClinicId = s.ClinicId,
             DayOfWeek = s.DayOfWeek,
             IsOpen = s.IsOpen,
             OpeningTime = s.OpeningTime,
@@ -464,7 +472,7 @@ public class ClinicController(IUnitOfWork unit,
 
         if (await unit.Complete())
         {
-            return Ok("Clinic schedules updated successfully");
+            return Ok(new { message = "Clinic schedules updated successfully" });
         }
 
         return BadRequest("Failed to update clinic schedules.");

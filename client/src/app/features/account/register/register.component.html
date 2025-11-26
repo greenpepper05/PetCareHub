@@ -31,97 +31,96 @@
           </div>
 
           <!-- NAME FIELDS -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>First name</mat-label>
-              <input formControlName="firstName" type="text" placeholder="John" matInput />
-              @if (registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched) {
-                <mat-error>First name is required</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Last name</mat-label>
-              <input formControlName="lastName" type="text" placeholder="Doe" matInput />
-              @if (registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched) {
-                <mat-error>Last name is required</mat-error>
-              }
-            </mat-form-field>
-        </div>
-
-          <!-- EMAIL FIELD -->
-        <mat-form-field appearance="outline" class="w-full mb-2">
-            <mat-label>Email address</mat-label>
-                <input formControlName="email" type="email" placeholder="name@example.com" matInput/>
-                @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
-                    <mat-error class="text-left">
-                    @if (registerForm.get('email')?.hasError('required')) { Email is required. }
-                    @if (registerForm.get('email')?.hasError('email')) { Please enter a valid email address. }
-                    </mat-error>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>First name</mat-label>
+                <input formControlName="firstName" type="text" placeholder="John" matInput />
+                @if (registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched) {
+                  <mat-error>First name is required</mat-error>
                 }
-        </mat-form-field>
+              </mat-form-field>
 
-        <div class="flex gap-2 mb-4 items-center">
-          <!-- Show OTP input only if OTP is sent -->
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Last name</mat-label>
+                <input formControlName="lastName" type="text" placeholder="Doe" matInput />
+                @if (registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched) {
+                  <mat-error>Last name is required</mat-error>
+                }
+              </mat-form-field>
+          </div>
+
+            <!-- EMAIL FIELD -->
+          <mat-form-field appearance="outline" class="w-full mb-2">
+              <mat-label>Email address</mat-label>
+                  <input formControlName="email" type="email" placeholder="name@example.com" matInput/>
+                  @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+                      <mat-error class="text-left">
+                      @if (registerForm.get('email')?.hasError('required')) { Email is required. }
+                      @if (registerForm.get('email')?.hasError('email')) { Please enter a valid email address. }
+                      </mat-error>
+                  }
+          </mat-form-field>
+
+          <div class="flex gap-2 mb-4 items-center">
+            <!-- Show OTP input only if OTP is sent -->
+            @if (isOtpSent) {
+              <mat-form-field appearance="outline" class="flex-1">
+                <mat-label>Enter OTP</mat-label>
+                <input formControlName="otp" type="text" placeholder="6-digit code" matInput maxlength="6" />
+                @if (registerForm.get('otp')?.invalid && registerForm.get('otp')?.touched) {
+                  <mat-error>Please enter a valid 6-digit OTP.</mat-error>
+                }
+              </mat-form-field>
+            }
+
+            <!-- Send OTP button always visible -->
+            <button mat-stroked-button color="primary" type="button" (click)="sendOtp()"
+              [disabled]="!registerForm.get('email')?.valid">
+              Send OTP
+            </button>
+          </div>
+
+          <!-- OTP helper text -->
           @if (isOtpSent) {
-            <mat-form-field appearance="outline" class="flex-1">
-              <mat-label>Enter OTP</mat-label>
-              <input formControlName="otp" type="text" placeholder="6-digit code" matInput maxlength="6" />
-              @if (registerForm.get('otp')?.invalid && registerForm.get('otp')?.touched) {
-                <mat-error>Please enter a valid 6-digit OTP.</mat-error>
-              }
-            </mat-form-field>
+            <p class="text-xs text-gray-500 text-left mb-4">
+              Check your email for the verification code.
+            </p>
           }
+          
 
-          <!-- Send OTP button always visible -->
-          <button mat-stroked-button color="primary" type="button" (click)="sendOtp()"
-            [disabled]="!registerForm.get('email')?.valid">
-            Send OTP
-          </button>
-        </div>
-
-        <!-- OTP helper text -->
-        @if (isOtpSent) {
-          <p class="text-xs text-gray-500 text-left mb-4">
-            Check your email for the verification code.
-          </p>
-        }
-        
-
-        <!-- CONTACT FIELD -->
-        <mat-form-field appearance="outline" class="w-full mb-4">
-        <mat-label>Contact Number</mat-label>
-        <input formControlName="contact" type="tel" placeholder="09123456789" matInput />
-        @if (registerForm.get('contact')?.invalid && registerForm.get('contact')?.touched) {
-            <mat-error>Contact number is required</mat-error>
-        }
-        </mat-form-field>
+          <!-- CONTACT FIELD -->
+          <mat-form-field appearance="outline" class="w-full mb-4">
+            <mat-label>Contact Number</mat-label>
+            <input formControlName="contact" type="tel" placeholder="09123456789" matInput />
+            @if (registerForm.get('contact')?.invalid && registerForm.get('contact')?.touched) {
+                <mat-error>Contact number is required</mat-error>
+            }
+          </mat-form-field>
 
           <!-- PASSWORD FIELD -->
-        <div class="mb-8">
-        <mat-form-field appearance="outline" class="w-full mb-[-20px]">
-            <mat-label>Password</mat-label>
-            <input formControlName="password" type="password" placeholder="Password" matInput />
-        </mat-form-field>
-
-        @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
-            @if (registerForm.get('password')?.hasError('required')) {
-            <mat-error class="text-left text-[12px] ml-[16px] mb-[-20px]">Password is required.</mat-error>
-            }
-            @if (registerForm.get('password')?.hasError('minlength')) {
-            <mat-error class="text-left text-[12px] ml-[16px]">Min 8 characters.</mat-error>
-            }
-            @if (registerForm.get('password')?.hasError('capitalRequired')) {
-            <mat-error class="text-left text-[12px] ml-[16px]">Need at least 1 capital letter.</mat-error>
-            }
-            @if (registerForm.get('password')?.hasError('numberRequired')) {
-            <mat-error class="text-left text-[12px] ml-[16px]">Needs at least 1 number.</mat-error>
-            }
-            @if (registerForm.get('password')?.hasError('specialRequired')) {
-            <mat-error class="text-left text-[12px] ml-[16px]">Needs at least 1 special character.</mat-error>
-            }
-        }
-        </div>
+          <div class="mb-8"> 
+            <mat-form-field appearance="outline" class="w-full mb-[-20px]"> 
+            <mat-label>Password</mat-label> 
+            <input formControlName="password" type="password" placeholder="Password" matInput /> 
+            </mat-form-field> 
+            @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+              @if (registerForm.get('password')?.hasError('required')) { 
+                <mat-error class="text-left text-[12px] ml-[16px] mb-[-20px]">Password is required.</mat-error> 
+              } 
+              @if (registerForm.get('password')?.hasError('minlength')) { 
+                <mat-error class="text-left text-[12px] ml-[16px]">Min 8 characters.</mat-error> 
+              } 
+              @if (registerForm.get('password')?.hasError('capitalRequired')) { 
+                <mat-error class="text-left text-[12px] ml-[16px]">Need at least 1 capital letter.</mat-error> 
+              } 
+              @if (registerForm.get('password')?.hasError('numberRequired')) { 
+                <mat-error class="text-left text-[12px] ml-[16px]">Needs at least 1 number.</mat-error> 
+              } 
+              @if (registerForm.get('password')?.hasError('specialRequired')) { 
+                <mat-error class="text-left text-[12px] ml-[16px]">Needs at least 1 special character.</mat-error>
+              } 
+            } 
+          </div>
 
           <!-- CONFIRM PASSWORD FIELD -->
           <div class="mb-6">
@@ -142,9 +141,9 @@
 
           <!-- REGISTER BUTTON -->
           <button mat-flat-button color="primary" type="submit"
-            [disabled]="registerForm.invalid"
-            class="w-full py-2 h-12 text-lg font-bold">
-            Register
+              [disabled]="registerForm.invalid"
+              class="w-full py-2 h-12 text-lg font-bold">
+              Register
           </button>
         </form>
 

@@ -43,6 +43,8 @@ import { PetDetailComponent } from './features/my-pets/pet-detail/pet-detail.com
 import { VetsDetailComponent } from './features/vets/vets-detail/vets-detail.component';
 import { ManageAccountComponent } from './features/account/manage-account/manage-account.component';
 import { ManageClinicComponent } from './features/admin/manage-clinic/manage-clinic.component';
+import { StaffDetailComponent } from './features/admin/manage-clinic/staff-detail/staff-detail.component';
+import { PetRecordComponent } from './features/my-pets/pet-record/pet-record.component';
 
 export const routes: Routes = [
     {
@@ -62,6 +64,7 @@ export const routes: Routes = [
             { path: 'manage-services', component: ManageServicesComponent},
             { path: 'manage-services/:id', component: ServiceDetailComponent},
             { path: 'manage-clinic', component: ManageClinicComponent},
+            { path: 'manage-clinic/staff/:id', component: StaffDetailComponent},
         ]
     },
     { path: 'admin/login', component: AdminLoginComponent },
@@ -91,6 +94,7 @@ export const routes: Routes = [
             {path: 'vets', component: VetsComponent},
             {path: 'vets/vets-info/:id', component: VetsDetailComponent},
             {path: 'pet-detail/:id', component: PetDetailComponent},
+            {path: 'pet-detail/:id/:serviceId', component: PetRecordComponent},
             {path: 'appointment/:id', component: AppointmentComponent, canActivate: [authGuard]},
             {path: 'appointment-success', component: AppointmentSuccessComponent, canActivate: [authGuard]},
             {path: 'appointment-success/:id', component: AppointmentSuccessComponent, canActivate: [authGuard]},

@@ -13,7 +13,11 @@ public class ServiceRecordByPetIdSpecification : BaseSpecification<ServiceRecord
         AddInclude(s => s.Clinic!);
     }
 
-    protected ServiceRecordByPetIdSpecification()
+    public ServiceRecordByPetIdSpecification(int petId, int serviceId) :
+        base(sr => sr.PetId == petId && sr.Id == serviceId)
     {
+        AddInclude(s => s.Pet!);
+        AddInclude(s => s.Service!);
+        AddInclude(s => s.Clinic!);
     }
 }

@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.development';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { User } from '../../shared/models/user';
 import { Pet } from '../../shared/models/pet';
@@ -30,11 +30,11 @@ export class PetService {
   getAllPetByClinic(petParams: PetParams, clinicId: number) {
     let params = new HttpParams();
 
-    params.append('pageSize', petParams.pageSize);
-    params.append('pageIndex', petParams.pageNumber);
+    params = params.append('pageSize', petParams.pageSize);
+    params = params.append('pageIndex', petParams.pageNumber);
 
     if (petParams.search) {
-      params.append('search', petParams.search);
+      params = params.append('search', petParams.search);
     }
     return this.http.get<Pagination<Pet>>(`${this.baseUrl}pets/${clinicId}/paginated`, {params});
   }

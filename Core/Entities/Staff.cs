@@ -6,8 +6,8 @@ public class Staff : BaseEntity
     public string LastName { get; set; } = null!;
     public string Email { get; set; } = null!;
     public string PhoneNumber { get; set; } = null!;
-
     public string StaffRole { get; set; } = null!;
+    public string? PictureUrl { get; set; }
 
     public int ClinicId { get; set; }
     public Clinic Clinic { get; set; } = null!;

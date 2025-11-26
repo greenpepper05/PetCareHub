@@ -3,17 +3,13 @@ using Core.Entities;
 
 namespace Core.Specifications;
 
-public class PetsByClinicIdSpecification : BaseSpecification<Appointment>
+public class PetsByClinicIdSpecification : BaseSpecification<Pet>
 {
-    public PetsByClinicIdSpecification(PetSpecParams specParams, int clinicId) : base(p => p.ClinicId == clinicId)
+    public PetsByClinicIdSpecification(PetSpecParams specParams, int clinicId) : base(p => p.Appointments.Any(a => a.ClinicId == clinicId && (string.IsNullOrEmpty(specParams.Search) || p.Name.Contains(specParams.Search) || p.Species.Contains(specParams.Search))))
     {
+        AddInclude(p => p.Owner);
         ApplyPaging(specParams.PageSize * (specParams.PageIndex - 1), specParams.PageSize);
 
-        AddInclude(sr => sr.Pet!);
     }
 
-    public PetsByClinicIdSpecification(int clinicId) : base(p => p.ClinicId == clinicId)
-    {
-        AddInclude(sr => sr.Pet!);
-    }
 }

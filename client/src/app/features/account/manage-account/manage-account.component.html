@@ -1,100 +1,151 @@
-<!-- <div class="container mx-auto px-4 py-12 md:py-20 max-w-4xl">
-    
-    <div class="text-center mb-8">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-[var(--primary)] mb-2">
-            Account Settings
-        </h1>
-        <p class="text-lg text-gray-600">Manage your profile information and security settings.</p>
+<div class="min-h-screen flex justify-center items-center bg-[var(--primary)] p-4 md:p-8">
+  <div class="w-full max-w-3xl bg-[var(--white)] rounded-xl shadow-2xl p-6 md:p-10">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl md:text-3xl font-bold text-[var(--secondary)]">Manage Account</h1>
+
+      <button 
+        mat-stroked-button 
+        color="primary" 
+        (click)="toggleEdit()">
+        {{ isEditMode ? 'Cancel' : 'Edit' }}
+      </button>
     </div>
 
-    <mat-tab-group animationDuration="300ms" class="shadow-2xl rounded-xl overflow-hidden">
-        
-        <mat-tab label="Profile Information">
-            <div class="p-6 md:p-8 bg-white">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">Edit Details</h2>
+    <!-- VIEW MODE -->
+    @if (!isEditMode) {
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
-                <form #profileForm="ngForm" (ngSubmit)="updateProfile(profileForm)">
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <mat-form-field appearance="outline" class="w-full">
-                            <mat-label>First Name</mat-label>
-                            <input matInput [(ngModel)]="userProfile.firstName" name="firstName" required>
-                            <mat-icon matSuffix>person</mat-icon>
-                        </mat-form-field>
+        <div>
+          <p class="text-sm text-gray-500">Full Name</p>
+          <p class="text-xl font-semibold">{{ user.firstName }} {{ user.lastName }}</p>
+        </div>
 
-                        <mat-form-field appearance="outline" class="w-full">
-                            <mat-label>Last Name</mat-label>
-                            <input matInput [(ngModel)]="userProfile.lastName" name="lastName" required>
-                            <mat-icon matSuffix>person_outline</mat-icon>
-                        </mat-form-field>
-                    </div>
+        <div>
+          <p class="text-sm text-gray-500">Email Address</p>
+          <p class="text-xl font-semibold">{{ user.email }}</p>
+        </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <mat-form-field appearance="outline" class="w-full">
-                            <mat-label>Email Address (Read-Only)</mat-label>
-                            <input matInput [value]="userProfile.email" name="email" readonly class="bg-gray-50 cursor-not-allowed">
-                            <mat-icon matSuffix>email</mat-icon>
-                        </mat-form-field>
+        <div>
+          <p class="text-sm text-gray-500">Contact Number</p>
+          <p class="text-xl font-semibold">{{ user.contact }}</p>
+        </div>
 
-                        <mat-form-field appearance="outline" class="w-full">
-                            <mat-label>Contact Number</mat-label>
-                            <input matInput [(ngModel)]="userProfile.contact" name="contact">
-                            <mat-icon matSuffix>phone</mat-icon>
-                        </mat-form-field>
-                    </div>
+      </div>
+    }
 
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 text-sm text-gray-700 space-y-2 mb-6">
-                        <p><span class="font-semibold text-gray-900">User Role:</span> {{ userProfile.role }}</p>
-                        <p><span class="font-semibold text-gray-900">Clinic ID:</span> {{ userProfile.clinicId || 'N/A' }}</p>
-                        <p class="text-xs text-gray-500">Note: Email and User Role are administrative settings and cannot be changed here.</p>
-                    </div>
-                    
-                    <div class="flex justify-end">
-                        <button mat-raised-button color="primary" type="submit" [disabled]="!profileForm.valid">
-                            <mat-icon class="mr-1">save</mat-icon> Save Profile Changes
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </mat-tab>
+    @if (isEditMode) {
+  <form [formGroup]="accountForm" (ngSubmit)="saveChanges()" class="space-y-5">
 
-        <mat-tab label="Change Password">
-            <div class="p-6 md:p-8 bg-white">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">Security</h2>
-                
-                <form #passwordForm="ngForm" (ngSubmit)="changePassword(passwordForm)">
-                    
-                    <mat-form-field appearance="outline" class="w-full mb-4">
-                        <mat-label>Current Password</mat-label>
-                        <input matInput type="password" [(ngModel)]="passwordModel.currentPassword" name="currentPassword" required>
-                        <mat-icon matSuffix>lock_open</mat-icon>
-                    </mat-form-field>
+    <!-- NAME -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>First Name</mat-label>
+        <input formControlName="firstName" matInput />
+        @if (accountForm.get('firstName')?.invalid && accountForm.get('firstName')?.touched) {
+          <mat-error>First name is required</mat-error>
+        }
+      </mat-form-field>
 
-                    <mat-form-field appearance="outline" class="w-full mb-4">
-                        <mat-label>New Password</mat-label>
-                        <input matInput type="password" [(ngModel)]="passwordModel.newPassword" name="newPassword" required>
-                        <mat-icon matSuffix>lock</mat-icon>
-                    </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Last Name</mat-label>
+        <input formControlName="lastName" matInput />
+        @if (accountForm.get('lastName')?.invalid && accountForm.get('lastName')?.touched) {
+          <mat-error>Last name is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
 
-                    <mat-form-field appearance="outline" class="w-full mb-6">
-                        <mat-label>Confirm New Password</mat-label>
-                        <input matInput type="password" [(ngModel)]="passwordModel.confirmPassword" name="confirmPassword" required>
-                        <mat-icon matSuffix>lock</mat-icon>
-                    </mat-form-field>
-                    
-                    <div class="flex justify-end">
-                        <button mat-raised-button color="warn" type="submit" [disabled]="!passwordForm.valid">
-                            <mat-icon class="mr-1">vpn_key</mat-icon> Change Password
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </mat-tab>
+    <!-- EMAIL -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Email</mat-label>
+      <input formControlName="email" type="email" matInput readonly/>
+      @if (accountForm.get('email')?.invalid && accountForm.get('email')?.touched) {
+          <mat-error class="text-left">
+          @if (accountForm.get('email')?.hasError('required')) { Email is required. }
+          @if (accountForm.get('email')?.hasError('email')) { Please enter a valid email address. }
+          </mat-error>
+      }
+    </mat-form-field>
 
-    </mat-tab-group>
+    <!-- CONTACT -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Contact Number</mat-label>
+      <input formControlName="contact" matInput />
+      @if (accountForm.get('contact')?.invalid && accountForm.get('contact')?.touched) {
+          <mat-error>Contact number is required</mat-error>
+      }
+    </mat-form-field>
 
-</div> -->
+    <!-- OLD PASSWORD (normal input) -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Old Password</mat-label>
+      <input formControlName="oldPassword" type="password" matInput />
+      @if (accountForm.get('oldPassword')?.invalid && accountForm.get('oldPassword')?.touched) {
+        <mat-error>
+          Old Password is required.
+        </mat-error>
+      }
+    </mat-form-field>
 
+    <!-- NEW PASSWORD -->
+    <div class="mb-8"> 
+      <mat-form-field appearance="outline" class="w-full mb-[-20px]"> 
+      <mat-label>New Password</mat-label> 
+      <input formControlName="newPassword" type="password" placeholder="Password" matInput /> 
+      </mat-form-field> 
+        @if (accountForm.get('newPassword')?.invalid && accountForm.get('newPassword')?.touched) {
+          @if (accountForm.get('newPassword')?.hasError('required')) { 
+            <mat-error class="text-left text-[12px] ml-[16px] mb-[-20px]">Password is required.</mat-error> 
+          } 
+          @if (accountForm.get('newPassword')?.hasError('minlength')) { 
+            <mat-error class="text-left text-[12px] ml-[16px]">Min 8 characters.</mat-error> 
+          } 
+          @if (accountForm.get('newPassword')?.hasError('capitalRequired')) { 
+            <mat-error class="text-left text-[12px] ml-[16px]">Need at least 1 capital letter.</mat-error> 
+          } 
+          @if (accountForm.get('newPassword')?.hasError('numberRequired')) { 
+            <mat-error class="text-left text-[12px] ml-[16px]">Needs at least 1 number.</mat-error> 
+          } 
+          @if (accountForm.get('newPassword')?.hasError('specialRequired')) { 
+          <mat-error class="text-left text-[12px] ml-[16px]">Needs at least 1 special character.</mat-error> 
+          } 
+        } 
+    </div>
+
+    <!-- CONFIRM PASSWORD FIELD -->
+    <div class="mb-6">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Confirm Password</mat-label>
+        <input formControlName="confirmPassword" type="password" placeholder="Confirm Password" matInput />
+        @if (accountForm.get('confirmPassword')?.invalid && accountForm.get('confirmPassword')?.touched) {
+          <mat-error class="text-left">
+            @if (accountForm.get('confirmPassword')?.hasError('required')) { Confirmation is required. }
+            @if (accountForm.get('confirmPassword')?.hasError('mismatch')) { Passwords must match. }
+          </mat-error>
+        }
+        @else if (accountForm.get('confirmPassword')?.valid && accountForm.get('newPassword')?.valid && accountForm.valid) {
+          <mat-icon matSuffix color="primary" class="ml-2">check_circle</mat-icon>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- SAVE BUTTON -->
+    <button 
+      mat-flat-button 
+      color="primary" 
+      class="w-full py-3 text-lg font-semibold mt-4"
+      [disabled]="accountForm.invalid">
+      Save Changes
+    </button>
+
+  </form>
+}
+  </div>
+</div>
+
+<!-- 
 
 <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50 text-center p-6">
     
@@ -126,4 +177,4 @@
 
     </div>
     
-</div>
+</div> -->

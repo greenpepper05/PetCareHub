@@ -18,6 +18,8 @@ import { MatButton } from '@angular/material/button';
 import { ClinicService } from '../../core/services/clinic.service';
 import { MatIcon } from '@angular/material/icon';
 import { CurrencyPipe } from '@angular/common';
+import { ClinicSchedule } from '../../shared/models/clinicSchedule';
+import { Slot } from '../../shared/models/slot';
 
 @Component({
   selector: 'app-appointment',
@@ -50,21 +52,80 @@ export class AppointmentComponent implements OnInit{
   private activatedRoute = inject(ActivatedRoute);
   services: any[] = [];
   pets: Pet[] = [];
+  clinicSchedules: ClinicSchedule[] = [];
 
   minDate = new Date();
-  
+  bookedSlots: string[] = [];
 
-  availableTimeSlots: string[] = [
-    '09:00', '10:00', '11:00', '12:00', '13:00', 
-    '14:00', '15:00', '16:00', '17:00'
-  ];
+  isDateDisabled = (date: Date | null): boolean => {
+    if (!date || this.clinicSchedules.length === 0) return true;
+
+    const day = date.getDay();
+
+    const schedule = this.clinicSchedules.find(x => x.dayOfWeek === day);
+
+    return !!(schedule && schedule.isOpen);
+
+  }
+
+  getAvailableTimeSlot(): Slot[] {
+    const selectedDate = this.appointmentForm.get('appointmentDate')?.value;
+
+    if (!selectedDate || this.clinicSchedules.length === 0 ) return [];
+
+    const day = selectedDate.getDay();
+    const schedule = this.clinicSchedules.find(x => x.dayOfWeek === day);
+
+    if (!schedule || !schedule.isOpen) return [];
+
+    const opening = schedule.openingTime.substring(0,5);
+    const closing = schedule.closingTime.substring(0,5);
+
+    const slots: Slot[] = [];
+    let [openHour] = opening.split(':').map(Number);
+    let [closeHour] = closing.split(':').map(Number);
+
+    for (let hour = openHour; hour < closeHour; hour++) {
+      const time = `${hour.toString().padStart(2, '0')}:00`;
+      slots.push({
+        time,  
+        isBooked: this.bookedSlots.includes(time),
+        isPast: this.isPastSlot(selectedDate, time)
+        // `${hour.toString().padStart(2,'0')}:00`);
+      });
+    }
+
+    return slots;
+  }
+
+  // filterPastTimesIfToday(date: Date, slots: string[]): string[] {
+  //   const now = new Date();
+
+  //   const isToday = 
+  //     date.getFullYear() === now.getFullYear() &&
+  //     date.getMonth() === now.getMonth() &&
+  //     date.getDate() === now.getDate();
+    
+  //   if (!isToday) return slots;
+
+  //   const nowMinutes = now.getHours() * 60  + now.getMinutes();
+
+  //   return slots.filter(time => {
+  //     const [h, m] = time.split(':').map(Number);
+  //     return (h * 60 + m) > nowMinutes;
+  //   })
+  // }
   
   ngOnInit(): void {
 
-    var id = this.activatedRoute.snapshot.paramMap.get("id");
-    if (!id) return;
+    var clinicId = this.activatedRoute.snapshot.paramMap.get("id");
+    if (!clinicId) return;
 
-    this.servicesService.getServiceByClinic(+id).subscribe({
+    this.appointmentForm.get('appointmentDate')?.valueChanges.subscribe(date => {
+      if (date) this.loadBokedSlots(date);
+    })
+
+    this.servicesService.getServiceByClinic(+clinicId).subscribe({
       next: response => this.services = response,
       error: error => console.log(error)
     })
@@ -73,6 +134,13 @@ export class AppointmentComponent implements OnInit{
         this.pets = pets
       }
     })
+
+    this.clinicService.getClinicSchedules(+clinicId).subscribe({
+      next: schedule => {
+        this.clinicSchedules = schedule;
+      }
+    })
+
   }
 
   appointmentForm = this.fb.group({
@@ -84,32 +152,6 @@ export class AppointmentComponent implements OnInit{
     notes: ['', Validators.required],
     clinicid: ['', Validators.required],
   });
-
-  getFilteredDate(): string[] {
-    const selectedDate = this.appointmentForm.get('appointmentDate')?.value as Date | null;
-    const now = new Date();
-
-    if (!selectedDate) return this.availableTimeSlots;
-
-    const isToday =
-      selectedDate.getDate() === now.getDate() &&
-      selectedDate.getMonth() === now.getMonth() &&
-      selectedDate.getFullYear() === now.getFullYear();
-
-    if (!isToday) return this.availableTimeSlots;
-
-    const currentHour = now.getHours();
-    const currentMinutes = now.getMinutes();
-
-    return this.availableTimeSlots.filter((time) => {
-      const [hours, minute] = time.split(':').map(Number);
-
-      const slotMinutes = hours * 60 + minute;
-      const nowMinutes = currentHour * 60 + currentMinutes;
-
-      return slotMinutes > nowMinutes;
-    })
-  }
 
   formatTime(time: string): string {
     const [startHours, startMinutes] = time.split(':').map(Number);
@@ -187,6 +229,39 @@ export class AppointmentComponent implements OnInit{
       },
       error: err => console.error('Appointment error', err)
     })
+  }
+
+  loadBokedSlots(date: Date) {
+    const clinicId = Number(this.activatedRoute.snapshot.paramMap.get('id'));
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    this.appointmentService
+      .getBookedSlots(clinicId, year, month, day)
+      .subscribe(slots => {
+        this.bookedSlots = slots;
+      })
+  }
+
+  isPastSlot(date: Date, time: string): boolean {
+    const now = new Date();
+    const [h,m] = time.split(':').map(Number);
+    
+    const slotMinutes = h * 60 + m;
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+    const isToday = 
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate();
+
+    return isToday && slotMinutes <= nowMinutes;
+  }
+
+  selectSlot(slot: any) {
+    if (slot.isBooked || slot.isPast) return;
+    this.appointmentForm.patchValue({ appointmentTime: slot.time });
   }
 
 }

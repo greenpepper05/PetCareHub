@@ -1,9 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { Clinic } from '../../shared/models/clinic';
 import { Observable } from 'rxjs';
 import { ClinicSchedule } from '../../shared/models/clinicSchedule';
+import { SaveScheduleDto } from '../../shared/models/saveScheduleDto';
 
 @Injectable({
   providedIn: 'root'
@@ -24,12 +25,16 @@ export class ClinicService {
     return this.http.get<Clinic[]>(`${this.baseUrl}clinic/active`);
   }
 
-  getClinicSchedules(id: number){
-    return this.http.get<ClinicSchedule[]>(`${this.baseUrl}clinic/${id}/schedule`);
+  getClinicStatus(clinicId: number) {
+    return this.http.get<boolean>(`${this.baseUrl}clinic/${clinicId}/status`);
   }
 
-  saveClinicSchedules(id: number, schedules: ClinicSchedule[]) {
-    return this.http.post(`${this.baseUrl}clinic/${id}/schedule`, schedules);
+  getClinicSchedules(id: number){
+    return this.http.get<ClinicSchedule[]>(`${this.baseUrl}clinic/${id}/schedules`);
+  }
+
+  saveClinicSchedules(id: number, schedules: SaveScheduleDto[]): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}clinic/${id}/schedules`, schedules);
   }
 
   // SUPER ADMIN

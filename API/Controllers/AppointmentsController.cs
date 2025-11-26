@@ -5,7 +5,7 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
-using Infrastructure.Services;
+using Infrastructure.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -113,6 +113,37 @@ public class AppointmentsController(IUnitOfWork unit,
         var data = mapper.Map<IReadOnlyList<AppointmentDto>>(appointments);
 
         return Ok(new Pagination<AppointmentDto>(
+            specParams.PageIndex,
+            specParams.PageSize,
+            totalItems,
+            data
+        ));
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("clinic")]
+    public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> GetAppointmentByClinicId(
+        [FromQuery] AppointmentSpecParams specParams)
+    {
+        var user = await userManager.GetUserByEmail(User);
+        if (user == null) return Unauthorized();
+
+        if (user.ClinicId == null)
+        {
+            return BadRequest("This admin is not assigned to a clinic.");
+        }
+
+        var clinicId = user.ClinicId.Value;
+
+        var spec = new AppointmentSpecification(specParams, clinicId);
+        var countSpec = new AppointmentSpecification(specParams, clinicId);
+
+        var totalItems = await unit.Repository<Appointment>().CountAsync(countSpec);
+        var appointments = await unit.Repository<Appointment>().ListAsync(spec);
+
+        var data = mapper.Map<IReadOnlyList<AppointmentDto>>(appointments);
+
+        return Ok (new Pagination<AppointmentDto>(
             specParams.PageIndex,
             specParams.PageSize,
             totalItems,
@@ -404,6 +435,20 @@ public class AppointmentsController(IUnitOfWork unit,
             totalItems,
             data
         ));
+    }
+
+    [Authorize]
+    [HttpGet("booked-slots")]
+    public async Task<ActionResult<List<string>>> GetBookedSlots(int clinicId, int year, int month, int day)
+    {
+        var specs = new BookedSlotSpecification(clinicId, year, month, day);
+        var appointments = await unit.Repository<Appointment>().ListAsync(specs);
+
+        var bookedTimes = appointments
+            .Select(a => a.AppointmentDate.ToString("HH:mm"))
+            .ToList();
+            
+        return Ok(bookedTimes);
     }
 
 }

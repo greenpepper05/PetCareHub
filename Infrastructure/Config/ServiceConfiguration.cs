@@ -11,6 +11,6 @@ public class ServiceConfiguration : IEntityTypeConfiguration<Service>
         builder.Property(s => s.Name).IsRequired().HasMaxLength(100);
         builder.Property(s => s.Description).HasMaxLength(500);
         builder.Property(s => s.Price).HasColumnType("decimal(18,2)");
-        builder.HasOne(s => s.Clinic).WithMany(c => c.Services).HasForeignKey(s => s.ClinicId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(s => s.Clinic).WithMany(c => c.Services).HasForeignKey(s => s.ClinicId).OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -10,6 +10,7 @@ public class ServiceRecordSpecification : BaseSpecification<ServiceRecord>
         AddInclude(x => x.Pet!);
         AddInclude(x => x.Service!);
         AddInclude(x => x.Clinic!);
+        AddInclude(x => x.Pet!.Owner);
     }
     public ServiceRecordSpecification(int petId, int appointmentId) : base(s => s.PetId == petId && s.AppointmentId == appointmentId)
     {

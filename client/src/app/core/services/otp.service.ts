@@ -5,12 +5,15 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { RegisterFormValues } from '../../shared/models/registerFormValues';
 import { RegisterWithOtpRequest } from '../../shared/models/registrationWithOtpRequest';
 import { OtpSendRequest } from '../../shared/models/otpSendrequest';
+import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OtpService {
   private accountService = inject(AccountService);
+  private http = inject(HttpClient);
+  baseUrl = environment.apiUrl;
 
   private _isOtpSent = new BehaviorSubject<boolean>(false);
   isOtpSent$ = this._isOtpSent.asObservable();
@@ -38,4 +41,10 @@ export class OtpService {
       tap(() => this.updateOtpService(true))
     )
   }
+
+  public validateOtp(email: string, otp: string) {
+    return this.http.post<boolean>(`${this.baseUrl}otp/validate`, { email })
+  }
+
+
 }

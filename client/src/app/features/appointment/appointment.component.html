@@ -1,6 +1,6 @@
 <div class="flex justify-center mt-8 mb-8 md:mt-16 md:mb-16 lg:mt-32 lg:mb-32">
 
-    <div class="w-full max-w-2xl lg:max-w-2xl">
+    <div class="w-full max-w-4xl">
         <div class="text-center mb-6">
             <h1 class="text-xl md:text-2xl px-4 py-3 bg-[var(--yellow)] font-bold inline-block rounded-lg shadow-md">
                 Book Your Appointment
@@ -37,7 +37,7 @@
                         <mat-icon class="mr-1 text-base">arrow_back</mat-icon>
                         Go back to vets
                     </button>
-                    <button matStepperNext mat-flat-button class="bg-[var(--primary)] text-[var(--white)] px-6 py-2 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-colors">
+                    <button matStepperNext mat-flat-button class="bg-[var(--primary)] text-[var(--white)] px-6 py-2 rounded-lg font-semibold shadow-md hover:bg-[var(--secondary)] transition-colors">
                         Next Step
                     </button>
                 </div>
@@ -47,11 +47,6 @@
             <mat-step label="Select Service">
                 <div class="text-center mt-4">
                     <form [formGroup]="servicesForm">
-                        <!-- 
-                            Responsive Radio Group:
-                            - Mobile: Column layout (`flex-col`) with full width buttons
-                            - Tablet/Desktop: Row layout (`md:flex-row`)
-                        -->
                         <mat-radio-group formControlName="serviceId" aria-label="Select an option"
                             class="flex flex-col md:flex-row md:flex-wrap justify-center gap-4 p-4 rounded-lg border border-gray-100">
                             @for (service of services; track service.id)
@@ -62,7 +57,6 @@
                                         <h1 class="text-lg font-medium text-gray-800">
                                             {{service.name}}
                                         </h1>
-                                        <!-- Placeholder for price/description -->
                                         <p class="text-sm text-gray-500">Starting at {{ service.price || 0.00 | currency:'PHP' }}</p>
                                     </div>
                                 </mat-radio-button>
@@ -74,7 +68,7 @@
                         <button class="text-gray-600 hover:text-gray-800 font-medium z-0" matStepperPrevious mat-stroked-button>
                             <mat-icon class="mr-1 text-base">navigate_before</mat-icon>Back
                         </button>
-                        <button matStepperNext mat-flat-button class="bg-[var(--primary)] text-[var(--white)] px-6 py-2 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-colors">
+                        <button matStepperNext mat-flat-button class="bg-[var(--primary)] text-[var(--white)] px-6 py-2 rounded-lg font-semibold shadow-md hover:bg-[var(--secondary)] transition-colors">
                             Next Step
                         </button>
                     </div>
@@ -83,51 +77,60 @@
             
             <!-- STEP 3: Appointment Date -->
             <mat-step label="Appointment Date">
-                <div class="text-center mt-4">
+                <div class="mt-4">
                     <form [formGroup]="appointmentForm" class="space-y-6">
-                        
-                        <!-- Date Picker: Full width on mobile, max width on desktop -->
-                        <mat-form-field appearance="outline" class="w-full max-w-sm mb-4">
-                            <mat-label>Appointment Date</mat-label>
-                            <mat-hint>MM/DD/YYYY</mat-hint>
-                            <input formControlName="appointmentDate" matInput [matDatepicker]="picker2" [min]="minDate"/>
-                            <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-                            <mat-datepicker #picker2></mat-datepicker>
-                            @if (appointmentForm.get('appointmentDate')?.touched && appointmentForm.get('appointmentDate')?.invalid) {
-                                <mat-error>Date is required</mat-error>
-                            }
-                        </mat-form-field>
-                        
-                        <!-- Time Slot Picker -->
-                        <div class="w-full">
-                            <mat-label class="text-base font-bold text-indigo-700 block mb-3">Select Time Slot</mat-label>
-                            <!-- Time Slots: Adjusted grid for better mobile layout -->
-                            <mat-radio-group 
-                                formControlName="appointmentTime" 
-                                class="grid grid-cols-3 sm:grid-cols-4 gap-2 p-3 border border-gray-200 rounded-xl bg-gray-50 max-w-md mx-auto"
-                            >
-                                @for (time of getFilteredDate(); track time) {
-                                    <mat-radio-button 
-                                        [value]="time"
-                                        class="py-2 text-sm text-center transition-colors rounded-lg"
-                                        color="primary"
+                        <div class="flex flex-col md:flex-row justify-center items-start gap-10">
+
+                            <div class="flex justify-center w-full md:w-auto">
+                                <mat-calendar
+                                    [(selected)]="appointmentForm.controls['appointmentDate'].value"
+                                    (selectedChange)="appointmentForm.controls['appointmentDate'].setValue($event)"
+                                    [dateFilter]="isDateDisabled"
+                                    [minDate]="minDate"
+                                    class="border rounded-xl shadow-md p-4 w-[22rem]"
+                                >
+                                </mat-calendar>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 md:grid-cols-3">
+                                @for (slot of getAvailableTimeSlot(); track $index) {
+                                    <button
+                                    type="button"
+                                    class="p-3 rounded-lg text-center border font-semibold transition-all duration-200"
+                                    [class.bg-red-500]="slot.isBooked"
+                                    [class.bg-gray-300]="slot.isPast"
+                                    [class.cursor-not-allowed]="slot.isPast || slot.isBooked"
+                                    [class.opacity-60]="slot.isPast || slot.isBooked"
+                                    [class.hover:bg-blue-100]="!slot.isPast && !slot.isBooked"
+                                    [class.hover:scale-105]="!slot.isPast && !slot.isBooked"
+                                    [class.bg-blue-500]="appointmentForm.value.appointmentTime === slot.time"
+                                    [class.text-white]="appointmentForm.value.appointmentTime === slot.time"
+                                    (click)="selectSlot(slot)"
+                                    [disabled]="slot.isPast || slot.isBooked"
                                     >
-                                        {{ formatTime(time) }}
-                                    </mat-radio-button>
+                                    {{ formatTime(slot.time) }}
+                                    @if (slot.isBooked) { <div class="text-xs">Booked</div> }
+                                    @if (slot.isPast) { <div class="text-xs">Past</div> }
+                                    </button>
                                 }
-                            </mat-radio-group>
-                            
-                            @if (appointmentForm.get('appointmentTime')?.touched && appointmentForm.get('appointmentTime')?.invalid) {
-                                <mat-error class="text-xs mt-1 block">A time slot must be selected.</mat-error>
-                            }
+                            </div>
+
                         </div>
                     </form>
-                    
+
                     <div class="flex justify-between mt-8 pt-4 border-t border-gray-100">
-                        <button class="text-gray-600 hover:text-gray-800 font-medium z-0" matStepperPrevious mat-stroked-button>
+                        <button
+                            class="text-gray-600 hover:text-gray-800 font-medium z-0"
+                            matStepperPrevious mat-stroked-button
+                        >
                             <mat-icon class="mr-1 text-base">navigate_before</mat-icon>Back
                         </button>
-                        <button mat-flat-button class="bg-[var(--primary)] text-[var(--white)] px-6 py-2 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-colors" (click)="onSubmit()">
+
+                        <button
+                            mat-flat-button
+                            class="bg-[var(--primary)] text-[var(--white)] px-6 py-2 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-colors"
+                            (click)="onSubmit()"
+                        >
                             Submit Appointment
                         </button>
                     </div>

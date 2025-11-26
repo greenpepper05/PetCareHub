@@ -11,9 +11,14 @@
         </div>
         
         <div class="flex justify-between items-center">
-            <h1 class="text-3xl font-bold">
-                Pet Profile: {{ pet?.name || 'Loading...' }}
-            </h1>
+            <div class="text-xl">
+                <h1>
+                    Pet Id: {{ pet?.id  || 'Loading...'}}
+                </h1>
+                <h1 class="text-3xl font-bold">
+                    Pet Profile: {{ pet?.name || 'Loading...' }}
+                </h1>
+            </div>
             <button 
                 mat-stroked-button 
                 routerLink="/admin/pets" 

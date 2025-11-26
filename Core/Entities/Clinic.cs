@@ -10,6 +10,7 @@ public class Clinic : BaseEntity
     public string? Email { get; set; }
     public string? PictureUrl { get; set; }
     public string? Status { get; set; }
+    public bool IsOpen { get; set; }
     public DateTime CreateAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 

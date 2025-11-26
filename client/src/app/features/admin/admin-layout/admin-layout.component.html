@@ -36,26 +36,28 @@
             </div>
             
             <!-- Dropdown Menu -->
-            <div *ngIf="isDropdownOpen()" 
-                 (click)="$event.stopPropagation()"
+            @if (isDropdownOpen()) {
+
+                <div (click)="$event.stopPropagation()"
                  class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 z-30 border border-gray-200 animate-fadeInUp">
                 
-                <!-- User Details in Menu (Optional) -->
-                <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-100 mb-1">
-                    <p class="font-medium">{{ admin?.firstName }} {{ admin?.lastName }}</p>
-                    <p class="text-xs text-gray-500">{{ admin?.role }}</p>
+                    <!-- User Details in Menu (Optional) -->
+                    <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-100 mb-1">
+                        <p class="font-medium">{{ admin?.firstName }} {{ admin?.lastName }}</p>
+                        <p class="text-xs text-gray-500">{{ admin?.role }}</p>
+                    </div>
+
+                    <!-- Divider -->
+                    <hr class="my-1 border-gray-100">
+                    <button (click)="openChangePasswordModal()">changepassword</button>
+                    <!-- Logout Option -->
+                    <button (click)="logout()"
+                            class="w-full text-left flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors">
+                        <mat-icon class="!w-5 !h-5 mr-3 text-red-500">logout</mat-icon>
+                        Logout
+                    </button>
                 </div>
-
-                <!-- Divider -->
-                <hr class="my-1 border-gray-100">
-
-                <!-- Logout Option -->
-                <button (click)="logout()"
-                        class="w-full text-left flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors">
-                    <mat-icon class="!w-5 !h-5 mr-3 text-red-500">logout</mat-icon>
-                    Logout
-                </button>
-            </div>
+            }
         </div>
     </header>
 

@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { EmailValidator, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, Input } from '@angular/core';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
@@ -10,7 +10,7 @@ import { matchValidator } from '../../../shared/validators/matchValidator.Valida
 import { MatIconModule } from '@angular/material/icon';
 import { SnackbarService } from '../../../core/services/snackbar.service';
 import { OtpService } from '../../../core/services/otp.service';
-import { AsyncPipe } from '@angular/common';
+import { PasswordInputComponent } from "../../../shared/components/password-input/password-input.component";
 
 @Component({
   selector: 'app-register',
@@ -22,8 +22,8 @@ import { AsyncPipe } from '@angular/common';
     MatInput,
     RouterLink,
     MatError,
-    MatIconModule
-  ],
+    MatIconModule,
+],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -34,7 +34,7 @@ export class RegisterComponent {
   private router = inject(Router);
   private snackbarService = inject(SnackbarService);
   public otpService = inject(OtpService);
-
+  
   public isOtpSent = false;
 
   registerForm = this.fb.group({
@@ -47,29 +47,6 @@ export class RegisterComponent {
     clinicId: [null],
     otp: ['', Validators.pattern('^[0-9]{6}$')]
   }, { validators: matchValidator('password', 'confirmPassword') });
-
-  // async onSubmit() {
-    
-  //   const payload = {
-  //     firstName: this.registerForm.value.firstName,
-  //     lastName: this.registerForm.value.lastName,
-  //     email: this.registerForm.value.email,
-  //     contact: this.registerForm.value.contact,
-  //     password: this.registerForm.value.password,
-  //     clinicId: this.registerForm.value.clinicId || null
-  //   }
-
-  //   this.accountService.register(payload).subscribe({
-  //     next: () => {
-  //       this.router.navigateByUrl('/account/login');
-  //       this.snackbarService.success("Registration successful");
-  //     },
-  //     error: (err) => {
-  //       const errorMessage = err.error?.message || 'Registration failed, Please check your credentials.';
-  //       this.snackbarService.error(errorMessage);
-  //     }
-  //   })
-  // }
 
   async sendOtp() {
     const emailControl = this.registerForm.get('email');

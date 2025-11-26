@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Services } from '../../shared/models/services';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -29,5 +29,9 @@ export class ServicesService {
 
   createService(payload: any) {
     return this.http.post<Services>(`${this.baseUrl}services`, payload);
+  }
+
+  deleteService(id: number) {
+    return this.http.delete<Services>(`${this.baseUrl}services/${id}`);
   }
 }

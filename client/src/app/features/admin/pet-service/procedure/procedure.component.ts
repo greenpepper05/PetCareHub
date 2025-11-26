@@ -48,6 +48,8 @@ export class ProcedureComponent implements OnInit{
     if (id) {
       this.loadServiceRecord(+id);
     }
+
+    const staffId = this.activatedRoute.snapshot.queryParamMap.get("staffId");
   }
 
   loadServiceRecord(id: number) {

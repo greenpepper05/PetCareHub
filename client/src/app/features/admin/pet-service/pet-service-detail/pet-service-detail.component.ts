@@ -18,6 +18,8 @@ import { MatIcon } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfimationDialogComponent } from '../../../../shared/components/confimation-dialog/confimation-dialog.component';
 import { finalize, tap } from 'rxjs';
+import { SelectStaffComponent } from '../../../../shared/components/select-staff/select-staff.component';
+import { SnackbarService } from '../../../../core/services/snackbar.service';
 
 @Component({
   selector: 'app-pet-service-detail',
@@ -38,6 +40,7 @@ export class PetServiceDetailComponent implements OnInit{
   private serviceRecord = inject(ServiceRecordService);
   private serviceRecordStep = inject(ServiceRecordStepService);
   private procedureService = inject(ProceduresService);
+  private snackbarService = inject(SnackbarService);
   private petService = inject(PetService);
   private user = inject(AccountService);
   private dialog = inject(MatDialog);
@@ -62,7 +65,6 @@ export class PetServiceDetailComponent implements OnInit{
       next: (history) => {
         this.services = history;
         this.loadPet(history.petId);
-        console.log(this.services);
         this.loadProcedure(history.id);
       } 
     })
@@ -81,7 +83,6 @@ export class PetServiceDetailComponent implements OnInit{
   loadOwner(userId: string) {
     this.user.getUserById(userId).subscribe({
       next: (userInfo) => {
-        console.log(userInfo)
         if (userInfo.id === userId) {
           this.owner = userInfo;
         }
@@ -89,7 +90,6 @@ export class PetServiceDetailComponent implements OnInit{
     })
   }
   
-
   loadProcedure(serviceId: number) {
 
     if (!serviceId) return;
@@ -158,6 +158,32 @@ export class PetServiceDetailComponent implements OnInit{
     })
   }
 
-  
+  openStaffSelection() {
+    const dialogRef = this.dialog.open(SelectStaffComponent, {
+      width: '450px',
+    });
+
+    dialogRef.afterClosed().subscribe(selectedStaffId => {
+      if (!selectedStaffId) return;
+
+      this.serviceRecord.assignStaff(this.services!.id, selectedStaffId).subscribe({
+        next: () => {
+          this.snackbarService.success("Staff assigned!");
+          this.router.navigate(
+            ['admin', 'service-record', this.services!.id, 'procedure'],
+            { queryParams: { staffId: selectedStaffId }}
+          );
+        }
+      })
+      
+
+    })
+  }
+
+  viewProcedure() {
+    this.router.navigate(
+      ['admin', 'service-record', this.services!.id, 'procedure']
+    )
+  }
 
 }

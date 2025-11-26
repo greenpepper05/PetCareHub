@@ -1,0 +1,75 @@
+<h2 mat-dialog-title class="text-xl font-bold pb-2">
+  Select Staff
+</h2>
+
+<div mat-dialog-content class="px-8 pt-1 pb-4">
+
+  <p class="text-gray-600 mb-4">
+    Choose the staff member who will handle this procedure.
+  </p>
+
+  <div class="max-h-72 overflow-y-auto space-y-3 pr-1">
+
+    @for (s of staff; track s.id) {
+
+    <div 
+      (click)="selectedStaffId = s.id"
+      class="p-4 border rounded-xl flex items-center gap-4 cursor-pointer transition 
+             hover:bg-blue-50 hover:shadow-sm"
+      [class.border-blue-600]="selectedStaffId === s.id"
+    >
+
+      <!-- Staff Image -->
+      <img 
+        [src]="s.pictureUrl || 'https://via.placeholder.com/60'"
+        class="w-14 h-14 rounded-full object-cover shadow-sm"
+      >
+
+      <!-- Staff Info -->
+      <div class="flex flex-col">
+        <p class="font-semibold text-gray-800 text-[15px]">
+          {{ s.firstName }} {{ s.lastName }}
+        </p>
+        <p class="text-sm text-gray-600">
+          {{ s.staffRole }}
+        </p>
+      </div>
+
+      <!-- Check Icon -->
+      @if (selectedStaffId === s.id) {
+        <mat-icon class="ml-auto text-blue-600 text-[22px]">
+          check_circle
+        </mat-icon>
+      }
+
+    </div>
+
+    }
+  </div>
+</div>
+
+<div 
+  mat-dialog-actions 
+  align="end" 
+  class="pt-3 pb-6 px-4 flex justify-end gap-3"
+>
+
+  <button 
+    mat-stroked-button 
+    (click)="cancel()"
+    class="rounded-lg"
+  >
+    Cancel
+  </button>
+
+  <button 
+    mat-flat-button 
+    color="primary"
+    [disabled]="!selectedStaffId"
+    (click)="selectStaff()"
+    class="rounded-lg px-5"
+  >
+    Confirm
+  </button>
+
+</div>

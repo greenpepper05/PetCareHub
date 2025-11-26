@@ -150,24 +150,19 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit, 
     public async Task<ActionResult<Pagination<PetDto>>> GetPaginatedPet([FromQuery] PetSpecParams specParams, int clinicId)
     {
 
-        var spec = new PetsByClinicIdSpecification(specParams, clinicId);
+        var petsSpec = new PetsByClinicIdSpecification(specParams, clinicId);
+        var countSpec = new PetsByClinicIdSpecification(new PetSpecParams { Search = specParams.Search }, clinicId);
 
-        var serviceRecords = await unit.Repository<Appointment>().ListAsync(spec);
+        var totalItems = await unit.Repository<Pet>().CountAsync(countSpec);
 
-        var pets = serviceRecords
-            .Where(sr => sr.Pet != null)
-            .Select(sr => sr.Pet!)
-            .DistinctBy(p => p.Id)
-            .ToList();
-
-        var totalCount = pets.Count;
+        var pets = await unit.Repository<Pet>().ListAsync(petsSpec);
 
         var data = mapper.Map<IReadOnlyList<PetDto>>(pets);
 
         return Ok(new Pagination<PetDto>(
             specParams.PageIndex,
             specParams.PageSize,
-            totalCount,
+            totalItems,
             data
         ));
     }

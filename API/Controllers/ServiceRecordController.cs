@@ -1,11 +1,12 @@
 using API.DTOs;
 using API.Extensions;
 using API.RequestHelpters;
+using API.Services;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
-using Infrastructure.Services;
+using Infrastructure.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 public class ServiceRecordController(IUnitOfWork unit,
-    IMapper mapper, UserManager<AppUser> userManager, IEmailService emailService) : BaseApiController
+    IMapper mapper, UserManager<AppUser> userManager, IEmailService emailService, PdfService pdfService) : BaseApiController
 {
     // GET SERVICE RECORD BY ID
     [HttpGet("{id:int}")]
@@ -144,7 +145,7 @@ public class ServiceRecordController(IUnitOfWork unit,
         var step = await unit.Repository<ServiceRecordStep>().GetByIdAsync(stepId);
         if (step == null || step.ServiceRecordId != recordId) return NotFound();
 
-        var phTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
+        var phTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila");
         var nowPST = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, phTimeZone);
 
         step.IsCompleted = true;
@@ -175,7 +176,8 @@ public class ServiceRecordController(IUnitOfWork unit,
     [HttpPatch("records/{serviceId}")]
     public async Task<ActionResult> CompleteProcedure(int serviceId)
     {
-        var serviceRecord = await unit.Repository<ServiceRecord>().GetByIdAsync(serviceId);
+        var specRecord = new ServiceRecordSpecification(serviceId);
+        var serviceRecord = await unit.Repository<ServiceRecord>().GetEntityWithSpec(specRecord);
 
         var spec = new PetServiceIdSpecification(serviceId);
         var pet = await unit.Repository<Pet>().GetEntityWithSpec(spec);
@@ -192,7 +194,7 @@ public class ServiceRecordController(IUnitOfWork unit,
 
         var message = $@"
             <p>Hello <strong>{pet.Owner.FirstName} {pet.Owner.LastName}</strong>,</p>
-            <p>We’re happy to inform you that the service for your pet <strong>{pet.Name}</strong> has been successfully <strong>completed</strong>.</p>
+            <p>We're happy to inform you that the service for your pet <strong>{pet.Name}</strong> has been successfully <strong>completed</strong>.</p>
 
             <table style='border-collapse: collapse; width: 100%; margin-top: 10px;'>
                 <tr>
@@ -226,18 +228,20 @@ public class ServiceRecordController(IUnitOfWork unit,
             </table>
 
             <p style='margin-top: 16px;'>You may now proceed to pick up your pet or check with the clinic for further details.</p>
-            <p>Thank you for trusting us with your pet’s care!</p>
+            <p>Thank you for trusting us with your pet's care!</p>
             <p>— <strong>{serviceRecord.Clinic?.ClinicName ?? "Your Veterinary Clinic"}</strong></p>
         ";
         
         var email = pet.Owner.Email;
+        var pdfUrl = pdfService.GenerateServiceRecordPdf(serviceRecord, pet);
 
         if (!string.IsNullOrWhiteSpace(email))
         {
             await emailService.SendEmailAsync(email, subject, message);
         }
 
-        return NoContent();
+
+        return Ok(new {pdfUrl});
     }
 
     [Authorize(Roles = "Admin")]
@@ -282,10 +286,58 @@ public class ServiceRecordController(IUnitOfWork unit,
 
         var records = await unit.Repository<ServiceRecord>().ListAsync(spec);
 
-        var mapped = mapper.Map<IReadOnlyList<ServiceRecordDto>>(records);
         if (records == null) return NotFound();
 
+        var mapped = mapper.Map<IReadOnlyList<ServiceRecordDto>>(records);
+
         return Ok(mapped);
+    }
+
+    [Authorize]
+    [HttpGet("pet-record")]
+    public async Task<ActionResult<ServiceRecordDto>>  GetRecordByPet([FromQuery] int petId, [FromQuery] int serviceId)
+    {
+        var spec = new ServiceRecordByPetIdSpecification(petId, serviceId);
+
+        var record = await unit.Repository<ServiceRecord>().GetEntityWithSpec(spec);
+
+        if (record == null) return NotFound();
+
+        var mapped = mapper.Map<ServiceRecordDto>(record);
+
+        return Ok(mapped);
+
+    }
+
+    // ASSIGN STAFF
+    [Authorize(Roles = "Admin")]
+    [HttpPatch("{id}/assign-staff")]
+    public async Task<ActionResult> AssignStaffToRecord(int id, [FromBody] AssignStaffDto dto)
+    {
+        var serviceRecord = await unit.Repository<ServiceRecord>().GetByIdAsync(id);
+
+        if (serviceRecord == null) return NotFound("Servoice record not found");
+
+        serviceRecord.StaffId = dto.StaffId;
+
+        unit.Repository<ServiceRecord>().Update(serviceRecord);
+
+        if (!await unit.Complete()) return BadRequest("Failed to assign staff");
+
+        return Ok(new { message = "Staff assigned succesfully!"});
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("staff/service-record")]
+    public async Task<ActionResult<IReadOnlyList<ServiceRecordDto>>> StaffWithServiceRecord([FromQuery] int staffId, [FromQuery] int clinicId)
+    {
+        var spec = new StaffWithServiceRecordsSpecification(staffId, clinicId);
+
+        var record = await unit.Repository<ServiceRecord>().ListAsync(spec);
+
+        if (record == null) return NotFound("No record found");
+
+        return Ok(mapper.Map<IReadOnlyList<ServiceRecordDto>>(record));
     }
     
 }
