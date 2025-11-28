@@ -299,8 +299,6 @@ public class ClinicController(IUnitOfWork unit,
         var spec = new ProceduresByServiceIdSpecification(serviceId);
         var procedures = await unit.Repository<Procedure>().ListAsync(spec);
 
-        // if (procedures == null || !procedures.Any()) return NotFound("No procedures found for this service");
-
         var data = mapper.Map<IReadOnlyList<ProcedureDto>>(procedures);
 
         return Ok(data);

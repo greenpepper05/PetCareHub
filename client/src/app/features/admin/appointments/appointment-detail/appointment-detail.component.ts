@@ -8,7 +8,7 @@ import { MatFormField, MatLabel, MatOption, MatSelect } from '@angular/material/
 import { Services } from '../../../../shared/models/services';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../../environments/environment.development';
+import { environment } from '../../../../../environments/environment';
 import { MatIcon } from '@angular/material/icon';
 import { SnackbarService } from '../../../../core/services/snackbar.service';
 

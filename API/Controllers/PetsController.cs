@@ -103,21 +103,6 @@ public class PetsController(UserManager<AppUser> userManager, IUnitOfWork unit, 
         return Ok(await pet);
     }
 
-    // SELECT PETS BY CLINIC
-    // [Authorize(Roles = "Admin")]
-    // [HttpGet("clinic")]
-    // public async Task<ActionResult<IReadOnlyList<Pet>>> GetPetsByClinic()
-    // {
-    //     var user = await userManager.GetUserAsync(User);
-
-    //     if (user == null) return NotFound("No user found!");
-
-    //     var spec = new PetByClinicIdSpecification(user.ClinicId);
-    //     var pets = await unit.Repository<Pet>().ListAsync(spec);
-
-    //     return Ok(pets);
-    // }
-
     // SELECT PETS BY OWNER
 
     [Authorize]

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ServiceRecordStep } from '../../shared/models/serviceRecordStep';
 import { ServiceRecord } from '../../shared/models/serviceRecord';

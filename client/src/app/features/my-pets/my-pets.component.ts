@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { PetService } from '../../core/services/pet.service';
 import { Pet } from '../../shared/models/pet';
 import { DatePipe } from '@angular/common';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { RouterLink } from '@angular/router';
 
 @Component({

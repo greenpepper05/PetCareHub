@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { RegisterFormValues } from '../../shared/models/registerFormValues';
 import { RegisterWithOtpRequest } from '../../shared/models/registrationWithOtpRequest';
 import { OtpSendRequest } from '../../shared/models/otpSendrequest';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
