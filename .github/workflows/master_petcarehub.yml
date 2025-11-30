@@ -1,64 +1,31 @@
-name: Build and deploy ASP.Net Core app to Azure Web App - petcarehub
+name: Build and deploy ASP.NET Core app to Azure Web App - petcarehub
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: windows-latest
-    permissions:
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.x'
-
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
-
-      - name: Publish with dotnet
-        run: dotnet publish -c Release -o ./publish
-
-      - name: Zip published output
-        run: Compress-Archive -Path ./publish/* -DestinationPath ./publish.zip
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: .net-app
-          path: ./publish.zip
-
-  deploy:
-    runs-on: windows-latest
-    needs: build
     permissions:
       id-token: write
       contents: read
 
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: .net-app
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPP_CLIENTID }}
-          tenant-id: ${{ secrets.AZUREAPP_TENANTID }}
-          subscription-id: ${{ secrets.AZUREAPP_SUBSCRIPTIONID }}
+    - uses: actions/checkout@v4
 
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'petcarehub'
-          slot-name: 'Production'
-          package: ./publish.zip
+    - name: Set up .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.x'
+
+    - name: Publish
+      run: dotnet publish -c Release -o published
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: 'petcarehub'
+        slot-name: 'Production'
+        package: ./published
