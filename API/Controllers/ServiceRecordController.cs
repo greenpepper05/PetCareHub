@@ -240,7 +240,6 @@ public class ServiceRecordController(IUnitOfWork unit,
             await emailService.SendEmailAsync(email, subject, message);
         }
 
-
         return Ok( new { message = "Service Record completed"});
     }
 
