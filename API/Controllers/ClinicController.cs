@@ -14,7 +14,11 @@ namespace API.Controllers;
 
 
 public class ClinicController(IUnitOfWork unit,
-    UserManager<AppUser> userManager, IMapper mapper, IClinicStatusService clinicStatusService) : BaseApiController
+    UserManager<AppUser> userManager, 
+    IMapper mapper, 
+    IClinicStatusService clinicStatusService,
+    IWebHostEnvironment env
+    ) : BaseApiController
 {
     
     [HttpGet("active")]
@@ -63,7 +67,9 @@ public class ClinicController(IUnitOfWork unit,
             Address = dto.Address,
             PhoneNumber = dto.PhoneNumber,
             Email = dto.Email,
-            PictureUrl = dto.PictureUrl
+            PictureUrl = dto.PictureUrl,
+            SignatureUrl = dto.SignatureUrl
+
         };
 
         unit.Repository<Clinic>().Add(clinic);
@@ -90,7 +96,8 @@ public class ClinicController(IUnitOfWork unit,
             Address = dto.Address,
             PhoneNumber = dto.PhoneNumber,
             Email = dto.Email,
-            PictureUrl = dto.PictureUrl
+            PictureUrl = dto.PictureUrl,
+            SignatureUrl = dto.SignatureUrl
         });
 
     }
@@ -474,6 +481,45 @@ public class ClinicController(IUnitOfWork unit,
         }
 
         return BadRequest("Failed to update clinic schedules.");
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("{id}/signature")]
+    public async Task<ActionResult> UploadClinicSignature(int id, IFormFile file)
+    {
+        var clinic = await  unit.Repository<Clinic>().GetByIdAsync(id);
+        if (clinic == null) return NotFound();
+
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest(new { message = "No file uploaded"});
+        }
+
+        var uploadPath = Path.Combine(
+            env.WebRootPath,
+            "assets",
+            "signature"
+        );
+
+        if (!Directory.Exists(uploadPath))
+        {
+            Directory.CreateDirectory(uploadPath);
+        }
+
+        var fileExtension = Path.GetExtension(file.FileName);
+
+        var uniqueFileName = $"{Guid.NewGuid().ToString()}{fileExtension}";
+        var filePath = Path.Combine(uploadPath, uniqueFileName);
+
+        using(var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        var publicUrl = $"/assets/signature/{uniqueFileName}";
+
+        return Ok(new ImageUploadResponseDto { Url = publicUrl});
+
     }
 
 }

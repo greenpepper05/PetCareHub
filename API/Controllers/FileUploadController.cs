@@ -17,13 +17,8 @@ public class FileUploadController(IWebHostEnvironment env) : BaseApiController
         try
         {
             string uploadPath = Path.Combine(
-                env.ContentRootPath,
-                "..",
-                "client",
-                "public",
-                "assets",
-                "images",
-                "pets"
+                env.WebRootPath,
+                "assets"
             );
 
             if (!Directory.Exists(uploadPath))

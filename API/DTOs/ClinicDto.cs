@@ -11,6 +11,7 @@ public class ClinicDto
     public string PhoneNumber { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string PictureUrl { get; set; } = string.Empty;
+    public string SignatureUrl { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public bool IsOpen { get; set; }
     public DateTime CreateAt { get; set; }

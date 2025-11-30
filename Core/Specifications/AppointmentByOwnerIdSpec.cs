@@ -10,5 +10,7 @@ public class AppointmentByOwnerIdSpec : BaseSpecification<Appointment>
         AddInclude(x => x.Service!);
         AddInclude(x => x.Clinic!);
         AddInclude(x => x.Owner!);
+
+        AddOrderByDescending(x => x.AppointmentDate);
     }
 }

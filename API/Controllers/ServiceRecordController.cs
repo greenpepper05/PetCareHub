@@ -233,7 +233,7 @@ public class ServiceRecordController(IUnitOfWork unit,
         ";
         
         var email = pet.Owner.Email;
-        var pdfUrl = pdfService.GenerateServiceRecordPdf(serviceRecord, pet);
+        
 
         if (!string.IsNullOrWhiteSpace(email))
         {
@@ -241,7 +241,7 @@ public class ServiceRecordController(IUnitOfWork unit,
         }
 
 
-        return Ok(new {pdfUrl});
+        return Ok( new { message = "Service Record completed"});
     }
 
     [Authorize(Roles = "Admin")]
