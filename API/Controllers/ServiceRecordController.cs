@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 public class ServiceRecordController(IUnitOfWork unit,
-    IMapper mapper, UserManager<AppUser> userManager, IEmailService emailService, PdfService pdfService) : BaseApiController
+    IMapper mapper, UserManager<AppUser> userManager, IEmailService emailService) : BaseApiController
 {
     // GET SERVICE RECORD BY ID
     [HttpGet("{id:int}")]
