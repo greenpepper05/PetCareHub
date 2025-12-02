@@ -59,6 +59,10 @@ export class ServiceRecordService {
     return this.http.get<Pagination<ServiceRecord>>(`${this.baseUrl}servicerecord/pet`, { params });
   }
 
+  startProcedure(serviceId: number) {
+    return this.http.patch(`${this.baseUrl}servicerecord/start-procedure`, serviceId);
+  }
+
   getAllServiceRecord() {
     return this.http.get<ServiceRecord[]>(`${this.baseUrl}servicerecord/all`);
   }

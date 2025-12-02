@@ -21,6 +21,13 @@
                 <h3 class="text-2xl font-bold text-[var(--primary)] mb-4">Appointment Details:</h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 px-0 md:px-8">
+
+                    <!-- Appointment ID -->
+                    <div class="mb-2">
+                        <p class="text-sm font-medium text-gray-500">Appointment ID</p>
+                        <p class="text-lg font-bold">{{ appointment.id }}</p>
+                    </div>
+
                     <div class="mb-2">
                         <p class="text-sm font-medium text-gray-500">Service Name</p>
                         <p class="text-lg font-bold">{{ appointment.serviceName || 'N/A' }}</p>
@@ -41,7 +48,6 @@
                             </span>
                         </p>
                     </div>
-                    <div class="hidden md:block"></div> 
                 </div>
             </div>
 
@@ -49,6 +55,13 @@
                 <h3 class="text-2xl font-bold text-[var(--primary)] mb-4">Pet Details:</h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 px-0 md:px-8">
+
+                    <!-- Pet ID -->
+                    <div class="mb-2">
+                        <p class="text-sm font-medium text-gray-500">Pet ID</p>
+                        <p class="text-lg font-bold">{{ appointment.petId }}</p>
+                    </div>
+
                     <div class="mb-2">
                         <p class="text-sm font-medium text-gray-500">Name</p>
                         <p class="text-lg font-bold">{{ appointment.petName }}</p>

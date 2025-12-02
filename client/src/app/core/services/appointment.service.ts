@@ -52,7 +52,7 @@ export class AppointmentService {
     params = params.append('pageSize', upcomingParams.pageSize);  
     params = params.append('pageIndex', upcomingParams.pageNumber);
     
-    return this.http.get<Pagination<Appointment>>(`${this.baseUrl}appointments/upcoming`, { params });
+    return this.http.get<Pagination<Appointment>>(`${this.baseUrl}appointments/upcoming/${clinicId}`, { params });
   }
 
   getAppointmentByClinicAndDate(appointmentParams: AppointmentParams, date: Date) {

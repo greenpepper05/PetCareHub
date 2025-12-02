@@ -175,7 +175,8 @@ export class ManageClinicComponent implements OnInit {
 
   openCreateStaffModal() {
     const dialogRef = this.dialog.open(CreateStaffComponent, {
-      width: '500px',
+      width: '750px',
+      maxWidth: '90vw',
       disableClose: true,
       autoFocus: true
     });

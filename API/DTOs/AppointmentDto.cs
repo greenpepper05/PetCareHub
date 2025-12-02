@@ -20,5 +20,6 @@ public class AppointmentDto
     public string OwnerId { get; set; } = string.Empty;
     public string OwnerEmail { get; set; } = string.Empty;
     public string? Notes { get; set; }
+    public DateTime? LastReminderSent { get; set; }
 
 }

@@ -16,7 +16,6 @@ import { MatInputModule } from '@angular/material/input';
     MatIcon,
     MatFormField,
     MatLabel,
-    MatError,
     ReactiveFormsModule,
     MatInputModule
   ],

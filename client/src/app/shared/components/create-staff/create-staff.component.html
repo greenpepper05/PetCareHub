@@ -1,38 +1,22 @@
-<div class="relative bg-white p-6 rounded-2xl shadow-xl max-w-lg w-full mx-auto border border-gray-200">
+<form [formGroup]="staffForm" class="space-y-6 p-8">
 
-    <!-- Close Button -->
-    <button 
-      (click)="close()"
-      class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 transition"
-    >
-      <mat-icon>close</mat-icon>
-    </button>
-
-    <h2 class="text-2xl font-bold mb-6 text-gray-800">
-      Add Staff
-    </h2>
-
-  <form [formGroup]="staffForm" class="space-y-5">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
     <!-- Upload Section -->
-    <div class="md:col-span-1 flex flex-col items-center pt-2">
+    <div class="flex flex-col items-center pt-3">
 
-      <label for="staff-picture-upload" class="cursor-pointer">
+      <label for="staff-picture-upload" class="cursor-pointer group">
         <div 
           class="w-48 h-48 rounded-full border-4 border-dashed border-indigo-300 
-                 flex items-center justify-center overflow-hidden bg-gray-100 
-                 hover:border-indigo-500 transition-colors shadow-inner"
+                 bg-gray-50 flex items-center justify-center overflow-hidden
+                 group-hover:border-indigo-500 transition-colors shadow-sm"
         >
           @if (imageUrl) {
-            <img 
-              [src]="imageUrl" 
-              alt="Staff Profile" 
-              class="w-full h-full object-cover"
-            />
+            <img [src]="imageUrl" class="w-full h-full object-cover" />
           } @else {
             <div class="text-center text-indigo-400">
-              <mat-icon class="text-6xl">pets</mat-icon>
-              <p class="text-xs mt-1 font-medium">Click to upload picture</p>
+              <mat-icon class="text-5xl opacity-70">pets</mat-icon>
+              <p class="text-[13px] mt-2 font-medium opacity-80">Click to upload</p>
             </div>
           }
         </div>
@@ -49,72 +33,49 @@
       <p class="mt-4 text-sm text-gray-500">Max size 5MB (Recommended: Square)</p>
     </div>
 
+    <!-- Form Fields -->
+    <div class="space-y-5">
 
-    <!-- First Name -->
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>First Name</mat-label>
-      <input matInput formControlName="firstName" required />
-      @if (staffForm.get('firstName')?.hasError('required')) {
-        <mat-error>
-          First name is required.
-        </mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName" />
+      </mat-form-field>
 
-    <!-- Last Name -->
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Last Name</mat-label>
-      <input matInput formControlName="lastName" required />
-      @if (staffForm.get('lastName')?.hasError('required')) {
-        <mat-error>
-          Last name is required.
-        </mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" />
+      </mat-form-field>
 
-    <!-- Email -->
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Email</mat-label>
-      <input matInput formControlName="email" type="email" required />
-      @if (staffForm.get('email')?.hasError('email')) {
-        <mat-error>
-          Enter a valid email address.
-        </mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" />
+      </mat-form-field>
 
-    <!-- Phone Number -->
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Phone Number</mat-label>
-      <input matInput formControlName="phoneNumber" required />
-      @if (staffForm.get('phoneNumber')?.hasError('required')) {
-        <mat-error>
-          Phone number is required.
-        </mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Phone Number</mat-label>
+        <input matInput formControlName="phoneNumber" />
+      </mat-form-field>
 
-    <!-- Role -->
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Role</mat-label>
-      <input matInput formControlName="staffRole" required />
-      @if (staffForm.get('staffRole')?.hasError('required')) {
-        <mat-error>
-          Role is required.
-        </mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Role</mat-label>
+        <input matInput formControlName="staffRole" />
+      </mat-form-field>
 
-    <!-- Submit Button -->
+    </div>
+
+  </div>
+
+  <!-- Submit Button -->
+  <div class="pt-4">
     <button 
       type="submit" 
       mat-flat-button
       (click)="createStaff()"
       color="primary"
-      class="w-full bg-[var(--primary)] text-white py-3 rounded-lg shadow-md font-semibold"
+      class="w-full py-3 rounded-lg font-semibold shadow-md bg-[var(--primary)] hover:bg-[var(--primary)] text-white"
     >
       Create Staff
     </button>
+  </div>
 
-  </form>
-</div>
+</form>

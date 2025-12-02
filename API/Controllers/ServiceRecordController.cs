@@ -244,6 +244,92 @@ public class ServiceRecordController(IUnitOfWork unit,
     }
 
     [Authorize(Roles = "Admin")]
+    [HttpPatch("start-procedure")]
+    public async Task<ActionResult> StartProcedure([FromBody] int serviceId)
+    {
+        var specRecord = new ServiceRecordSpecification(serviceId);
+        var serviceRecord = await unit.Repository<ServiceRecord>().GetEntityWithSpec(specRecord);
+
+        var spec = new PetServiceIdSpecification(serviceId);
+        var pet = await unit.Repository<Pet>().GetEntityWithSpec(spec);
+
+        if (serviceRecord == null) return NotFound();
+        if (pet == null) return NotFound();
+
+        serviceRecord.Status = "Ongoing";
+
+        unit.Repository<ServiceRecord>().Update(serviceRecord);
+        await unit.Complete();
+
+        var subject = "🐾 Pet Service Started";
+
+        var message = $@"
+            <p>Hello <strong>{pet.Owner.FirstName} {pet.Owner.LastName}</strong>,</p>
+
+            <p>We wanted to let you know that the service for your pet 
+                <strong>{pet.Name}</strong> has officially <strong>started</strong>.
+            </p>
+
+            <table style='border-collapse: collapse; width: 100%; margin-top: 10px;'>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>Service Record ID:</td>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>
+                        <strong>#{serviceRecord.Id}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>Pet Name:</td>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>
+                        <strong>{pet.Name}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>Service Type:</td>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>
+                        <strong>{serviceRecord.Service?.Name ?? "N/A"}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>Clinic:</td>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>
+                        <strong>{serviceRecord.Clinic?.ClinicName ?? "N/A"}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>Start Time:</td>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>
+                        <strong>{DateTime.UtcNow:MMMM dd, yyyy (dddd)} at {DateTime.UtcNow:hh:mm tt}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>Current Status:</td>
+                    <td style='padding: 8px; border: 1px solid #ddd; color: #f59e0b;'>
+                        <strong>Ongoing</strong>
+                    </td>
+                </tr>
+            </table>
+
+            <p style='margin-top: 16px;'>
+                We will notify you again once the service is completed.
+            </p>
+
+            <p>Thank you for trusting us with your pet's care!</p>
+            <p>— <strong>{serviceRecord.Clinic?.ClinicName ?? "Your Veterinary Clinic"}</strong></p>
+        ";
+
+        
+        var email = pet.Owner.Email;
+        
+
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            await emailService.SendEmailAsync(email, subject, message);
+        }
+
+        return Ok( new { message = "Service Record Started"});
+    }
+
+    [Authorize(Roles = "Admin")]
     [HttpDelete("records/{serviceId}")]
     public async Task<ActionResult> DeleteService(int serviceId)
     {

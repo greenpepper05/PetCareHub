@@ -63,43 +63,42 @@
                     </div>
                 </div>
             </div>
-
             <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 flex flex-col">
-                <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 flex items-center">
-                    <mat-icon class="text-2xl mr-2 text-amber-600">event</mat-icon> Upcoming Appointments
+                <h3 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2 flex items-center"> 
+                    <mat-icon class="text-2xl mr-2 text-amber-600">event</mat-icon> Upcoming Appointments 
                 </h3>
-                
                 <div class="space-y-4 flex-grow">
-                    <div class="border-l-4 border-l-blue-500 p-3 bg-blue-50 rounded-md">
-                        <p class="font-semibold text-sm text-gray-800">Maximus the Dog</p>
-                        <p class="text-xs text-gray-600">Today, 2:00 PM - Routine Checkup</p>
-                    </div>
-
-                    <div class="border-l-4 border-l-amber-500 p-3 bg-amber-50 rounded-md">
-                        <p class="font-semibold text-sm text-gray-800">Luna the Cat</p>
-                        <p class="text-xs text-gray-600">Tomorrow, 10:30 AM - Vaccination</p>
-                    </div>
-
-                    <div class="border-l-4 border-l-gray-300 p-3 bg-gray-50 rounded-md opacity-70">
-                        <p class="font-semibold text-sm text-gray-800">Charlie the Hamster</p>
-                        <p class="text-xs text-gray-600">05/20/2025, 4:00 PM - Nail Trim</p>
-                    </div>
+    
+                    @for (appt of upcomingAppointments(); track appt.id) {
+                        
+                        <div class="p-3 rounded-md border-l-4"
+                            routerLink="/admin/appointment/{{appt.id}}"
+                            [ngClass]="{
+                                'border-l-blue-500 bg-blue-50': true
+                            }"
+                            >
+                                <p class="font-semibold text-sm text-gray-800">
+                                    {{ appt.petName }}
+                                </p>
+                                
+                                <p class="text-xs text-gray-600">
+                                    {{ appt.appointmentDate | date:'MMM dd, yyyy, h:mm a' }}
+                                    - {{ appt.serviceName }}
+                                </p>
+                        </div>
                     
-                    @if (upcomingAppointments().length === 0) {
-                    <div class="text-center p-4 text-gray-500">
-                        <mat-icon class="text-4xl mb-2">check</mat-icon>
-                        <p class="text-sm">No upcoming appointments this week.</p>
-                    </div>
                     }
                     
-                </div>
-
-                <div class="mt-4 pt-4 border-t border-gray-100">
-                    <button mat-flat-button class="w-full bg-blue-500 text-white hover:bg-blue-600">
-                        View All Appointments
-                    </button>
+                    @if (upcomingAppointments().length === 0) {
+                        <div class="text-center p-4 text-gray-500">
+                            <mat-icon class="text-4xl mb-2">check</mat-icon>
+                            <p class="text-sm">No upcoming appointments this week.</p>
+                        </div>
+                    }
                 </div>
             </div>
+
+
 
         </div>
     </div>

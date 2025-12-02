@@ -1,12 +1,15 @@
-import { CurrencyPipe, DecimalPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { MatCard } from "@angular/material/card";
 import { MatIcon } from '@angular/material/icon';
 import { PetService } from '../../../core/services/pet.service';
 import { AccountService } from '../../../core/services/account.service';
 import { ServiceRecordService } from '../../../core/services/service-record.service';
 import { ServiceRecord } from '../../../shared/models/serviceRecord';
 import { AppointmentService } from '../../../core/services/appointment.service';
+import { AppointmentParams } from '../../../shared/models/appointmentParams';
+import { Appointment } from '../../../shared/models/appointment';
+import { Pagination } from '../../../shared/models/pagination';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-dashboard',
@@ -14,8 +17,11 @@ import { AppointmentService } from '../../../core/services/appointment.service';
   imports: [
     MatIcon,
     DecimalPipe,
-    CurrencyPipe
-  ],
+    CurrencyPipe,
+    NgClass,
+    DatePipe,
+    RouterLink
+],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -29,10 +35,17 @@ export class DashboardComponent implements OnInit{
   totalRevue = signal(0);
   totalAppointments = signal(0);
 
+  upcoming?: Pagination<Appointment>;
+
+  appointmentParams = new AppointmentParams();
+
+  clinicId = this.accountService.currentUser()?.clinicId;
+
   ngOnInit(): void {
     this.loadPetCount();
     this.loadRevenueCounter();
     this.loadAppointmentCount();
+    this.loadUpcoming();
   }
 
   loadPetCount() {
@@ -70,8 +83,17 @@ export class DashboardComponent implements OnInit{
     })
   }
 
+  loadUpcoming() {
+
+    if (!this.clinicId)  return;
+
+    this.appointmentService.getUpcomingAppointment(this.appointmentParams, this.clinicId).subscribe({
+      next: (data) => this.upcoming = data
+    })
+  }
+
   upcomingAppointments() {
-    return [];
+    return this.upcoming?.data ?? [];
   }
 
 }

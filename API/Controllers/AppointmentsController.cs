@@ -410,7 +410,7 @@ public class AppointmentsController(IUnitOfWork unit,
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpGet("upcoming")]
+    [HttpGet("upcoming/{clinicId}")]
     public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> GetUpcomingAppointments([FromQuery] AppointmentSpecParams specParams, int clinicId)
     {
         var user = await userManager.GetUserByEmail(User);
@@ -421,7 +421,9 @@ public class AppointmentsController(IUnitOfWork unit,
             return BadRequest("This admin is not assigned to a clinic.");
         }
 
-        var spec = new AppointmentPaginatedSpecification(specParams, clinicId);
+        var now = DateTime.UtcNow;
+
+        var spec = new AppointmentPaginatedSpecification(specParams, clinicId, now);
 
         var totalItems = await unit.Repository<Appointment>().CountAsync(spec);
 
@@ -450,5 +452,6 @@ public class AppointmentsController(IUnitOfWork unit,
             
         return Ok(bookedTimes);
     }
+
 
 }

@@ -165,18 +165,20 @@ export class PetServiceDetailComponent implements OnInit{
 
     dialogRef.afterClosed().subscribe(selectedStaffId => {
       if (!selectedStaffId) return;
-
-      this.serviceRecord.assignStaff(this.services!.id, selectedStaffId).subscribe({
+      this.serviceRecord.startProcedure(this.services!.id).subscribe({
         next: () => {
-          this.snackbarService.success("Staff assigned!");
-          this.router.navigate(
-            ['admin', 'service-record', this.services!.id, 'procedure'],
-            { queryParams: { staffId: selectedStaffId }}
-          );
+          this.serviceRecord.assignStaff(this.services!.id, selectedStaffId).subscribe({
+            next: () => {
+              this.snackbarService.success("Staff assigned!");
+              this.router.navigate(
+                ['admin', 'service-record', this.services!.id, 'procedure'],
+                { queryParams: { staffId: selectedStaffId }}
+              );
+            }
+          })
         }
       })
       
-
     })
   }
 

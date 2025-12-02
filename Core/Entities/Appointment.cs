@@ -20,6 +20,7 @@ public class Appointment : BaseEntity
     public Clinic? Clinic { get; set; }
 
     public string? Notes { get; set; }
+    public DateTime? LastReminderSent { get; set; }
 
     public ICollection<ServiceRecord> ServiceRecords { get; set; } = [];
 }

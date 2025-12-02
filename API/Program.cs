@@ -68,9 +68,9 @@ app.UseStaticFiles();
 
 app.UseHangfireDashboard("/hangfire");
 RecurringJob.AddOrUpdate<AppointmentReminderJob>(
-    "hourly-appointment-reminder",
+    "send-appointment-reminder",
     job => job.SendReminderAsync(),
-    Cron.Hourly()
+    "0 */12 * * *"
 );
 // BackgroundJob.Enqueue<AppointmentReminderJob>(job => job.SendReminderAsync());
 
